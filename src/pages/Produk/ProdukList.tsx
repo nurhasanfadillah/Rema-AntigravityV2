@@ -4,20 +4,21 @@ import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
-import { Plus, ArrowLeft, Package } from 'lucide-react';
+import { Plus, ArrowLeft, Package, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function ProdukList() {
     const { categories, fetchCategories } = useCategoryStore();
-    const { products, fetchProducts, isLoading, addProduct } = useProductStore();
+    const { products, fetchProducts, isLoading, addProduct, updateProduct, deleteProduct } = useProductStore();
 
     const [showAddForm, setShowAddForm] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         nama_produk: '',
         category_id: '',
         deskripsi: '',
         harga_default: '',
-        status: 'Aktif' as const,
+        status: 'Aktif' as 'Aktif' | 'Tidak Aktif',
         foto_produk: ''
     });
 
@@ -28,14 +29,41 @@ export function ProdukList() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await addProduct({
+        const payload = {
             ...formData,
             category_id: formData.category_id || null,
-            harga_default: formData.harga_default ? parseInt(formData.harga_default, 10) : 0,
+            harga_default: formData.harga_default ? parseInt(formData.harga_default.toString(), 10) : 0,
             foto_produk: formData.foto_produk || null
-        });
+        };
+
+        if (editingId) {
+            await updateProduct(editingId, payload);
+        } else {
+            await addProduct(payload);
+        }
+
         setShowAddForm(false);
+        setEditingId(null);
         setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
+    };
+
+    const handleEdit = (prod: any) => {
+        setFormData({
+            nama_produk: prod.nama_produk,
+            category_id: prod.category_id || '',
+            deskripsi: prod.deskripsi || '',
+            harga_default: prod.harga_default ? prod.harga_default.toString() : '',
+            status: prod.status,
+            foto_produk: prod.foto_produk || ''
+        });
+        setEditingId(prod.id);
+        setShowAddForm(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+            await deleteProduct(id);
+        }
     };
 
     return (
@@ -58,7 +86,7 @@ export function ProdukList() {
             {showAddForm && (
                 <Card className="border-emerald-500/30 bg-emerald-500/5">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-gray-800 pb-2 text-emerald-100">Tambah Produk Baru</h3>
+                        <h3 className="font-semibold text-lg border-b border-gray-800 pb-2 text-emerald-100">{editingId ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
@@ -86,18 +114,30 @@ export function ProdukList() {
                                 <textarea rows={2} value={formData.deskripsi} onChange={e => setFormData({ ...formData, deskripsi: e.target.value })} className="w-full bg-[#1e1e1e] border border-gray-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="Bahan kanvas, ukuran 20x15..." />
                             </div>
 
+                            <div className="space-y-1.5">
+                                <label className="block text-sm font-medium text-gray-300 ml-1">Status</label>
+                                <select
+                                    className="w-full bg-[#1e1e1e] border border-gray-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                    value={formData.status}
+                                    onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
+                                >
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Tidak Aktif">Tidak Aktif</option>
+                                </select>
+                            </div>
+
                             <NumberInput
                                 label="Harga Default (Rp)"
-                                value={formData.harga_default}
+                                value={formData.harga_default.toString()}
                                 onChange={(val) => setFormData({ ...formData, harga_default: val })}
                                 placeholder="45000"
                             />
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => setShowAddForm(false)}>Batal</Button>
+                            <Button type="button" variant="ghost" fullWidth onClick={() => { setShowAddForm(false); setEditingId(null); setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' }); }}>Batal</Button>
                             <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600/50">
-                                {isLoading ? 'Menyimpan...' : 'Simpan Produk'}
+                                {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Produk')}
                             </Button>
                         </div>
                     </form>
@@ -118,9 +158,17 @@ export function ProdukList() {
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start mb-1">
                                     <h4 className="font-semibold text-gray-100 truncate pr-2">{prod.nama_produk}</h4>
-                                    <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium ${prod.status === 'Aktif' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
-                                        {prod.status}
-                                    </span>
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${prod.status === 'Aktif' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                                            {prod.status}
+                                        </span>
+                                        <button onClick={() => handleEdit(prod)} className="p-1 text-gray-400 hover:text-blue-400 rounded hover:bg-blue-500/10 transition-colors">
+                                            <Edit2 className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button onClick={() => handleDelete(prod.id)} className="p-1 text-gray-400 hover:text-red-400 rounded hover:bg-red-500/10 transition-colors">
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
                                 </div>
                                 {prod.categories && (
                                     <p className="text-xs text-purple-400 mb-2">{prod.categories.nama_kategori}</p>

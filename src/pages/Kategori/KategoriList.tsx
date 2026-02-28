@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useCategoryStore } from '../../store/categoryStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { Plus, ArrowLeft, LayoutDashboard } from 'lucide-react';
+import { Plus, ArrowLeft, LayoutDashboard, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function KategoriList() {
-    const { categories, fetchCategories, isLoading, addCategory } = useCategoryStore();
+    const { categories, fetchCategories, isLoading, addCategory, updateCategory, deleteCategory } = useCategoryStore();
     const [showAddForm, setShowAddForm] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [namaKategori, setNamaKategori] = useState('');
 
     useEffect(() => {
@@ -17,9 +18,28 @@ export function KategoriList() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!namaKategori.trim()) return;
-        await addCategory({ nama_kategori: namaKategori });
+
+        if (editingId) {
+            await updateCategory(editingId, { nama_kategori: namaKategori });
+        } else {
+            await addCategory({ nama_kategori: namaKategori });
+        }
+
         setShowAddForm(false);
+        setEditingId(null);
         setNamaKategori('');
+    };
+
+    const handleEdit = (cat: any) => {
+        setNamaKategori(cat.nama_kategori);
+        setEditingId(cat.id);
+        setShowAddForm(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+            await deleteCategory(id);
+        }
     };
 
     return (
@@ -42,7 +62,7 @@ export function KategoriList() {
             {showAddForm && (
                 <Card className="border-purple-500/30 bg-purple-500/5">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-gray-800 pb-2 text-purple-100">Tambah Kategori</h3>
+                        <h3 className="font-semibold text-lg border-b border-gray-800 pb-2 text-purple-100">{editingId ? 'Edit Kategori' : 'Tambah Kategori'}</h3>
 
                         <div className="space-y-1.5">
                             <label className="block text-sm font-medium text-gray-300 ml-1">Nama Kategori</label>
@@ -57,9 +77,9 @@ export function KategoriList() {
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => setShowAddForm(false)}>Batal</Button>
+                            <Button type="button" variant="ghost" fullWidth onClick={() => { setShowAddForm(false); setEditingId(null); setNamaKategori(''); }}>Batal</Button>
                             <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-purple-600 hover:bg-purple-700 border-purple-600/50">
-                                {isLoading ? 'Menyimpan...' : 'Simpan'}
+                                {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan')}
                             </Button>
                         </div>
                     </form>
@@ -77,8 +97,16 @@ export function KategoriList() {
                             <div className="p-3 bg-purple-500/10 rounded-lg">
                                 <LayoutDashboard className="w-6 h-6 text-purple-400" />
                             </div>
-                            <div>
+                            <div className="flex-1">
                                 <h4 className="font-semibold text-gray-100 text-lg">{cat.nama_kategori}</h4>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => handleEdit(cat)} className="p-1.5 text-gray-400 hover:text-purple-400 rounded-md hover:bg-purple-500/10 transition-colors">
+                                    <Edit2 className="w-4 h-4" />
+                                </button>
+                                <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-gray-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors">
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
                             </div>
                         </Card>
                     ))

@@ -34,6 +34,8 @@ interface OrderState {
     isLoading: boolean;
     fetchOrders: () => Promise<void>;
     addOrder: (order: Omit<Order, 'order_details' | 'mitra'>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
+    updateOrderStatus: (no_pesanan: string, status: Order['status']) => Promise<void>;
+    deleteOrder: (no_pesanan: string) => Promise<void>;
 }
 
 export const useOrderStore = create<OrderState>((set) => ({
@@ -99,5 +101,27 @@ export const useOrderStore = create<OrderState>((set) => ({
         } finally {
             set({ isLoading: false });
         }
+    },
+    updateOrderStatus: async (no_pesanan, status) => {
+        set({ isLoading: true });
+        const { error } = await supabase.from('orders').update({ status }).eq('no_pesanan', no_pesanan);
+        if (!error) {
+            const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
+            if (data) set({ orders: data as Order[] });
+        } else {
+            console.error(error);
+        }
+        set({ isLoading: false });
+    },
+    deleteOrder: async (no_pesanan) => {
+        set({ isLoading: true });
+        const { error } = await supabase.from('orders').delete().eq('no_pesanan', no_pesanan);
+        if (!error) {
+            const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
+            if (data) set({ orders: data as Order[] });
+        } else {
+            console.error(error);
+        }
+        set({ isLoading: false });
     }
 }));

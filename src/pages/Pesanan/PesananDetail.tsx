@@ -1,12 +1,16 @@
-import { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle } from 'lucide-react';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
-    const { orders, fetchOrders, isLoading } = useOrderStore();
+    const { orders, fetchOrders, isLoading, updateOrderStatus, deleteOrder } = useOrderStore();
+    const navigate = useNavigate();
+
+    const [isEditingStatus, setIsEditingStatus] = useState(false);
+    const [newStatus, setNewStatus] = useState<string>('');
 
     useEffect(() => {
         if (orders.length === 0) fetchOrders();
@@ -49,17 +53,54 @@ export function PesananDetail() {
                     <h2 className="text-xl font-bold tracking-tight">Detail Pesanan</h2>
                     <p className="text-orange-400 text-xs mt-0.5 font-mono">{order.no_pesanan}</p>
                 </div>
+                <button onClick={async () => {
+                    if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+                        await deleteOrder(order.no_pesanan);
+                        navigate('/pesanan');
+                    }
+                }} className="p-2 text-red-400 hover:text-red-300 rounded hover:bg-red-500/10 transition-colors">
+                    <Trash2 className="w-5 h-5" />
+                </button>
             </div>
 
             <Card className="space-y-4 border-orange-500/20 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-[100px] pointer-events-none"></div>
 
                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-2">
-                        <ShoppingCart className="w-5 h-5 text-gray-400" />
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-                            {order.status}
-                        </span>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                            <ShoppingCart className="w-5 h-5 text-gray-400" />
+                            {!isEditingStatus ? (
+                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
+                                    {order.status}
+                                </span>
+                            ) : (
+                                <select
+                                    className="bg-[#1e1e1e] border border-gray-700 rounded px-2 py-1 text-xs text-white"
+                                    value={newStatus}
+                                    onChange={(e) => setNewStatus(e.target.value)}
+                                >
+                                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                                    <option value="Diproses">Diproses</option>
+                                    <option value="Packing">Packing</option>
+                                    <option value="Selesai">Selesai</option>
+                                    <option value="Dibatalkan">Dibatalkan</option>
+                                </select>
+                            )}
+
+                            {!isEditingStatus ? (
+                                <button onClick={() => { setIsEditingStatus(true); setNewStatus(order.status); }} className="p-1 text-gray-400 hover:text-blue-400 rounded hover:bg-blue-500/10">
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                </button>
+                            ) : (
+                                <button onClick={async () => {
+                                    await updateOrderStatus(order.no_pesanan, newStatus as any);
+                                    setIsEditingStatus(false);
+                                }} className="p-1 text-emerald-400 hover:text-emerald-300 rounded hover:bg-emerald-500/10">
+                                    <CheckCircle className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <div className="text-right">
                         <p className="text-xs text-gray-500">Total Transaksi</p>
