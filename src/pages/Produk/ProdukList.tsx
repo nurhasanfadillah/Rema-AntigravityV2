@@ -7,6 +7,8 @@ import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
 import { Plus, ArrowLeft, Package, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ProductImageUpload } from '../../components/Produk/ProductImageUpload';
+import { getImageUrl, deleteProductImage } from '../../utils/storage';
 
 export function ProdukList() {
     const { categories, fetchCategories } = useCategoryStore();
@@ -68,10 +70,15 @@ export function ProdukList() {
         setShowAddForm(true);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (prod: any) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
             try {
-                await deleteProduct(id);
+                // Delete photo from storage if exists
+                if (prod.foto_produk) {
+                    await deleteProductImage(prod.foto_produk);
+                }
+
+                await deleteProduct(prod.id);
                 toast.success('Produk berhasil dihapus');
             } catch (error) {
                 toast.error('Gagal menghapus produk');
@@ -140,6 +147,11 @@ export function ProdukList() {
                                 </select>
                             </div>
 
+                            <ProductImageUpload
+                                value={formData.foto_produk}
+                                onChange={(path) => setFormData({ ...formData, foto_produk: path || '' })}
+                            />
+
                             <NumberInput
                                 label="Harga Default (Rp)"
                                 value={formData.harga_default.toString()}
@@ -165,32 +177,38 @@ export function ProdukList() {
                     <p className="text-center text-zinc-500 py-8 text-sm">Belum ada produk yang ditambahkan.</p>
                 ) : (
                     products.map(prod => (
-                        <Card key={prod.id} className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-colors flex items-start gap-4">
-                            <div className="p-3 bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] rounded-lg shrink-0">
-                                <Package className="w-8 h-8 text-white drop-shadow-sm" />
+                        <Card key={prod.id} className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-all duration-300 flex items-start gap-4 group p-3">
+                            <div className="relative aspect-square w-20 bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 rounded-xl shrink-0 overflow-hidden group-hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all">
+                                {prod.foto_produk ? (
+                                    <img src={getImageUrl(prod.foto_produk) || ''} alt={prod.nama_produk} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                ) : (
+                                    <div className="flex items-center justify-center w-full h-full text-zinc-600 bg-zinc-900/50">
+                                        <Package className="w-8 h-8 opacity-40" />
+                                    </div>
+                                )}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start mb-1">
-                                    <h4 className="font-semibold text-zinc-100 truncate pr-2">{prod.nama_produk}</h4>
+                                    <h4 className="font-bold text-zinc-100 truncate pr-2 group-hover:text-blue-200 transition-colors">{prod.nama_produk}</h4>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${prod.status === 'Aktif' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border border-blue-700/50' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border ${prod.status === 'Aktif' ? 'bg-blue-900/20 text-blue-400 border-blue-800/50' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                                             {prod.status}
                                         </span>
-                                        <button onClick={() => handleEdit(prod)} className="p-1 text-zinc-400 hover:text-blue-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 transition-colors">
-                                            <Edit2 className="w-3.5 h-3.5" />
+                                        <button onClick={() => handleEdit(prod)} className="p-1.5 text-zinc-500 hover:text-white hover:bg-blue-600/20 rounded-lg transition-colors">
+                                            <Edit2 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(prod.id)} className="p-1 text-zinc-400 hover:text-red-400 rounded hover:bg-red-500/10 transition-colors">
-                                            <Trash2 className="w-3.5 h-3.5" />
+                                        <button onClick={() => handleDelete(prod)} className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-600/10 rounded-lg transition-colors">
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                                 {prod.categories && (
-                                    <p className="text-xs text-white drop-shadow-sm mb-2">{prod.categories.nama_kategori}</p>
+                                    <p className="text-[11px] font-medium text-blue-400/80 drop-shadow-sm mb-2">{prod.categories.nama_kategori}</p>
                                 )}
-                                <div className="flex justify-between items-center mt-2 pt-2 border-t border-zinc-800">
-                                    <span className="text-xs text-zinc-500">Harga Base</span>
-                                    <span className="text-sm font-medium text-white drop-shadow-sm">
-                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(prod.harga_default)}
+                                <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-zinc-800/50 group-hover:border-blue-800/30 transition-colors">
+                                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Harga Base</span>
+                                    <span className="text-sm font-bold text-white group-hover:text-blue-100 transition-colors">
+                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(prod.harga_default)}
                                     </span>
                                 </div>
                             </div>

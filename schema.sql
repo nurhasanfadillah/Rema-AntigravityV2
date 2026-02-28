@@ -77,3 +77,38 @@ CREATE POLICY "Allow all public access" ON public.categories FOR ALL USING (true
 CREATE POLICY "Allow all public access" ON public.products FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.orders FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.order_details FOR ALL USING (true);
+
+-- ==========================================
+-- STORAGE CONFIGURATION (Supabase Storage)
+-- ==========================================
+
+-- 1. Pastikan bucket 'products' ada
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('products', 'products', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 2. Kebijakan RLS untuk storage.objects
+-- Karena storage.objects adalah tabel internal Supabase, kita buat policy berdasarkan bucket_id
+
+-- Hapus policy lama jika ada untuk menghindari konflik
+DROP POLICY IF EXISTS "Allow public upload" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public view" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public update" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public delete" ON storage.objects;
+
+-- Policy untuk mengizinkan upload (INSERT)
+CREATE POLICY "Allow public upload" ON storage.objects 
+FOR INSERT WITH CHECK (bucket_id = 'products');
+
+-- Policy untuk mengizinkan melihat file (SELECT)
+CREATE POLICY "Allow public view" ON storage.objects 
+FOR SELECT USING (bucket_id = 'products');
+
+-- Policy untuk mengizinkan update file (UPDATE)
+CREATE POLICY "Allow public update" ON storage.objects 
+FOR UPDATE USING (bucket_id = 'products');
+
+-- Policy untuk mengizinkan hapus file (DELETE)
+CREATE POLICY "Allow public delete" ON storage.objects 
+FOR DELETE USING (bucket_id = 'products');
+

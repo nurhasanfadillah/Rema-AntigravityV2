@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026-03-01] - Fitur Foto Produk & Integrasi Storage
+### Added
+- **Integrasi Supabase Storage**: Implementasi penyimpanan foto produk pada bucket `products` di Supabase.
+- **Komponen Upload Premium**: Penambahan komponen `ProductImageUpload` dengan fitur:
+  - Preview foto dengan aspek rasio tetap (1:1).
+  - Validasi tipe file (JPG, PNG, WebP) dan batasan ukuran (Maks 5MB).
+  - Indikator proses upload (Loading spinner).
+  - Penamaan file unik otomatis (`timestamp-random`) untuk mencegah duplikasi/konflik.
+- **Manajemen Orphan Files**: Mekanisme otomatis menghapus file lama dari storage saat foto diganti atau produk dihapus.
+- **UI Produk yang Diperbarui**: Tampilan daftar produk kini menyertakan foto dengan placeholder yang rapi dan konsisten, menggunakan grid layout yang selaras.
+
 ## [2026-03-01] - Data Integrity & Mandatory Mitra Relation
 ### Added
 - **Mandat Relasi Mitra-Pesanan**: Memastikan setiap entitas pesanan (`orders`) wajib memiliki relasi ke entitas `mitra` (non-nullable).

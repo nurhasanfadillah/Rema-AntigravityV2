@@ -82,3 +82,4 @@ API KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im
   1. Otomatisasi status pesanan menjadi 'Packing' saat SEMUA `order_details` diverifikasi 'Selesai'.
   2. Mencegah (disable) hapus pesanan bila status pesanan sudah 'Diproses', 'Packing', atau 'Selesai' dan membatasi item dari 'Menunggu' kecuali status pesanan sudah 'Diproses'.
   3. Form khusus Pesanan: Input `file_resi` otomatis wajib jika 'Online' dan input informasi pelanggan wajib jika 'Offline'.
+- **(Maret 2026)**: Implementasi fitur foto produk (products.foto_produk) terintegrasi penuh dengan Supabase Storage (bucket products), dilengkapi validasi file (JPG/PNG/WebP, <5MB), pratinjau rasio 1:1, dan manajemen penghapusan berkas storage untuk mencegah orphan files.
