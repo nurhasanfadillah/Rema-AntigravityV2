@@ -9,6 +9,9 @@ import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FileResiUpload } from '../../components/Pesanan/FileResiUpload';
+import { DesignFileUpload } from '../../components/Pesanan/DesignFileUpload';
+import { deleteOrderFile } from '../../utils/orderStorage';
 
 export function PesananBaru() {
     const navigate = useNavigate();
@@ -21,6 +24,7 @@ export function PesananBaru() {
         tanggal: new Date().toISOString().split('T')[0],
         sumber_pesanan: 'Online' as 'Online' | 'Offline',
         mitra_id: '',
+        file_resi: null as string | null,
         nama_penerima: '',
         kontak_penerima: '',
         alamat_penerima: ''
@@ -34,7 +38,6 @@ export function PesananBaru() {
         design_file: []
     }]);
 
-    const [resiFile, setResiFile] = useState<File | null>(null);
 
     useEffect(() => {
         fetchMitras();
@@ -58,7 +61,7 @@ export function PesananBaru() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (formData.sumber_pesanan === 'Online' && !resiFile) {
+        if (formData.sumber_pesanan === 'Online' && !formData.file_resi) {
             toast.error('File Resi (PDF) wajib diunggah untuk pesanan Online.');
             return;
         }
@@ -69,23 +72,27 @@ export function PesananBaru() {
         }
 
         try {
-            let file_resi_url = null;
-            if (resiFile) {
-                // In a real implementation this would upload to Supabase storage
-                file_resi_url = resiFile.name;
-            }
-
             await addOrder({
                 ...formData,
-                mitra_id: formData.mitra_id,
-                file_resi: file_resi_url,
                 status: 'Menunggu Konfirmasi'
             }, items);
 
             toast.success('Pesanan berhasil dibuat');
             navigate('/pesanan');
         } catch (error) {
-            toast.error('Gagal membuat pesanan');
+            // Prevent orphan files: attempt to rollback uploaded files
+            if (formData.file_resi) {
+                await deleteOrderFile(formData.file_resi);
+            }
+            for (const item of items) {
+                if (item.design_file && item.design_file.length > 0) {
+                    for (const path of item.design_file) {
+                        await deleteOrderFile(path);
+                    }
+                }
+            }
+
+            toast.error('Gagal membuat pesanan. File yang diupload telah dibersihkan.');
             console.error(error);
         }
     };
@@ -134,9 +141,12 @@ export function PesananBaru() {
                         </div>
 
                         {formData.sumber_pesanan === 'Online' ? (
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300">Upload Resi (PDF)</label>
-                                <input required type="file" accept="application/pdf" onChange={e => setResiFile(e.target.files?.[0] || null)} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900/40 file:text-blue-300 hover:file:bg-blue-800/40" />
+                            <div className="space-y-1.5 pt-2">
+                                <label className="block text-sm font-medium text-zinc-300 ml-1">Upload Resi (PDF)</label>
+                                <FileResiUpload
+                                    value={formData.file_resi}
+                                    onChange={(path) => setFormData({ ...formData, file_resi: path })}
+                                />
                             </div>
                         ) : (
                             <>
@@ -192,8 +202,17 @@ export function PesananBaru() {
 
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-300">Instruksi Desain (Opsional)</label>
-                                    <textarea rows={1} value={item.deskripsi_desain || ''} onChange={e => { const newItems = [...items]; newItems[idx].deskripsi_desain = e.target.value; setItems(newItems); }} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Letak sablon depan..." />
+                                    <textarea rows={1} value={item.deskripsi_desain || ''} onChange={e => { const newItems = [...items]; newItems[idx].deskripsi_desain = e.target.value; setItems(newItems); }} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 mb-2" placeholder="Letak sablon depan..." />
                                 </div>
+
+                                <DesignFileUpload
+                                    value={item.design_file}
+                                    onChange={(paths) => {
+                                        const newItems = [...items];
+                                        newItems[idx].design_file = paths;
+                                        setItems(newItems);
+                                    }}
+                                />
                             </div>
                         ))}
                     </div>

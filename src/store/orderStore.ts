@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
+import { deleteOrderFile } from '../utils/orderStorage';
 import type { Mitra } from './mitraStore';
 import type { Product } from './productStore';
 
@@ -148,10 +149,26 @@ export const useOrderStore = create<OrderState>((set) => ({
         set({ isLoading: true });
 
         // Logic Data #2: Pesanan 'Diproses', 'Packing' dan 'Selesai' hanya bisa ‘Dibatalkan’ tidak bisa dihapus
-        const { data: order } = await supabase.from('orders').select('status').eq('no_pesanan', no_pesanan).single();
-        if (order && ['Diproses', 'Packing', 'Selesai'].includes(order.status)) {
+        const { data: orderToDelete } = await supabase.from('orders').select('*, order_details(*)').eq('no_pesanan', no_pesanan).single();
+        if (orderToDelete && ['Diproses', 'Packing', 'Selesai'].includes(orderToDelete.status)) {
             set({ isLoading: false });
             throw new Error('Pesanan yang sudah diproses tidak dapat dihapus, hanya bisa dibatalkan.');
+        }
+
+        // Cleanup storage files
+        if (orderToDelete) {
+            if (orderToDelete.file_resi) {
+                await deleteOrderFile(orderToDelete.file_resi);
+            }
+            if (orderToDelete.order_details) {
+                for (const detail of orderToDelete.order_details) {
+                    if (detail.design_file) {
+                        for (const path of detail.design_file) {
+                            await deleteOrderFile(path);
+                        }
+                    }
+                }
+            }
         }
 
         const { error } = await supabase.from('orders').delete().eq('no_pesanan', no_pesanan);

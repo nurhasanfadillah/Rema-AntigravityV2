@@ -3,7 +3,8 @@ import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle, FileText } from 'lucide-react';
+import { getOrderFileUrl } from '../../utils/orderStorage';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
@@ -164,6 +165,27 @@ export function PesananDetail() {
                             <p className="text-sm text-zinc-300 leading-relaxed">{order.alamat_penerima}</p>
                         </div>
                     )}
+                    {order.sumber_pesanan === 'Online' && (
+                        <div className="col-span-2 pt-2">
+                            <div className="flex items-center gap-1.5 text-zinc-500 mb-1.5">
+                                <FileText className="w-3.5 h-3.5" />
+                                <span className="text-xs">File Resi (PDF)</span>
+                            </div>
+                            {order.file_resi ? (
+                                <a
+                                    href={getOrderFileUrl(order.file_resi) || '#'}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-900/40 border border-blue-700/50 rounded-lg text-xs text-blue-300 hover:bg-blue-800/40 transition-colors"
+                                >
+                                    <FileText className="w-3.5 h-3.5" />
+                                    Lihat Resi Pengiriman
+                                </a>
+                            ) : (
+                                <p className="text-xs text-red-400 italic font-medium">Resi belum diunggah</p>
+                            )}
+                        </div>
+                    )}
                 </div>
             </Card>
 
@@ -209,10 +231,42 @@ export function PesananDetail() {
                             </p>
                         </div>
 
+                        {item.design_file && item.design_file.length > 0 && (
+                            <div className="mt-4">
+                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 pl-1">File Desain</p>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {item.design_file.map((path, pIdx) => {
+                                        const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(path.split('.').pop()?.toLowerCase() || '');
+                                        return (
+                                            <a
+                                                key={pIdx}
+                                                href={getOrderFileUrl(path) || '#'}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="relative aspect-square rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden group"
+                                            >
+                                                {isImg ? (
+                                                    <img
+                                                        src={getOrderFileUrl(path) || ''}
+                                                        alt="Design"
+                                                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center">
+                                                        <FileText className="w-5 h-5 text-blue-400" />
+                                                    </div>
+                                                )}
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
                         {item.deskripsi_desain && (
-                            <div className="mt-3 p-3 bg-zinc-900 rounded-lg border border-zinc-800">
-                                <p className="text-xs text-zinc-500 mb-1">Instruksi Desain</p>
-                                <p className="text-sm text-zinc-300 italic">"{item.deskripsi_desain}"</p>
+                            <div className="mt-3 p-3 bg-zinc-900 rounded-lg border border-zinc-800 shadow-inner">
+                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Instruksi Desain</p>
+                                <p className="text-sm text-zinc-300 italic leading-relaxed">"{item.deskripsi_desain}"</p>
                             </div>
                         )}
                     </Card>
