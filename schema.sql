@@ -62,21 +62,94 @@ CREATE TABLE IF NOT EXISTS public.order_details (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 6. Tabel: order_audit_trail (Audit Trail Pesanan)
+CREATE TABLE IF NOT EXISTS public.order_audit_trail (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    no_pesanan VARCHAR(50) REFERENCES public.orders(no_pesanan) ON DELETE CASCADE,
+    status_lama VARCHAR(50),
+    status_baru VARCHAR(50),
+    alasan TEXT,
+    aksi_oleh VARCHAR(100), -- Nama user atau role
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Row Level Security (RLS) Settings
--- Enable RLS logic for anonymous usage if needed, or disable since it's a private operational app.
--- For simple setup in a private corp app, we might allow all if relying on app layer, or set proper auth.
--- Here we enable an open policy for the sake of the demo, but usually you'd tie it to users.
 ALTER TABLE public.mitra ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_details ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_audit_trail ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all public access" ON public.mitra FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.categories FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.products FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.orders FOR ALL USING (true);
 CREATE POLICY "Allow all public access" ON public.order_details FOR ALL USING (true);
+CREATE POLICY "Allow all public access" ON public.order_audit_trail FOR ALL USING (true);
+
+
+-- ==========================================
+-- TRIGGERS & BUSINESS LOGIC (BACKEND ENFORCEMENT)
+-- ==========================================
+
+-- A. Otomatisasi status 'Packing' saat semua item 'Selesai'
+CREATE OR REPLACE FUNCTION public.check_all_items_done()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM public.order_details WHERE o_pesanan = NEW.o_pesanan AND status != 'Selesai') = 0 THEN
+        UPDATE public.orders 
+        SET status = 'Packing' 
+        WHERE no_pesanan = NEW.o_pesanan AND status NOT IN ('Packing', 'Selesai', 'Dibatalkan');
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_check_items_done
+AFTER UPDATE OF status ON public.order_details
+FOR EACH ROW
+WHEN (NEW.status = 'Selesai')
+EXECUTE FUNCTION public.check_all_items_done();
+
+
+-- B. Proteksi Hapus Pesanan (Diproses, Packing, Selesai)
+CREATE OR REPLACE FUNCTION public.prevent_order_deletion()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.status IN ('Diproses', 'Packing', 'Selesai') THEN
+        RAISE EXCEPTION 'Pesanan dengan status % tidak dapat dihapus, gunakan opsi Dibatalkan.', OLD.status;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_prevent_order_delete
+BEFORE DELETE ON public.orders
+FOR EACH ROW
+EXECUTE FUNCTION public.prevent_order_deletion();
+
+
+-- C. Validasi Transisi Detail Pesanan (Hanya bisa dari Menunggu jika Order Diproses)
+CREATE OR REPLACE FUNCTION public.validate_detail_transition()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_order_status VARCHAR(50);
+BEGIN
+    SELECT status INTO v_order_status FROM public.orders WHERE no_pesanan = NEW.o_pesanan;
+    
+    IF (OLD.status = 'Menunggu' AND NEW.status != 'Menunggu' AND v_order_status != 'Diproses') THEN
+        RAISE EXCEPTION 'Item hanya dapat diproses (dipindahkan dari status Menunggu) jika status Pesanan adalah Diproses.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validate_detail_status
+BEFORE UPDATE OF status ON public.order_details
+FOR EACH ROW
+EXECUTE FUNCTION public.validate_detail_transition();
+
 
 -- ==========================================
 -- STORAGE CONFIGURATION (Supabase Storage)
@@ -88,27 +161,19 @@ VALUES ('products', 'products', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Kebijakan RLS untuk storage.objects
--- Karena storage.objects adalah tabel internal Supabase, kita buat policy berdasarkan bucket_id
-
--- Hapus policy lama jika ada untuk menghindari konflik
 DROP POLICY IF EXISTS "Allow public upload" ON storage.objects;
 DROP POLICY IF EXISTS "Allow public view" ON storage.objects;
 DROP POLICY IF EXISTS "Allow public update" ON storage.objects;
 DROP POLICY IF EXISTS "Allow public delete" ON storage.objects;
 
--- Policy untuk mengizinkan upload (INSERT)
 CREATE POLICY "Allow public upload" ON storage.objects 
 FOR INSERT WITH CHECK (bucket_id = 'products');
 
--- Policy untuk mengizinkan melihat file (SELECT)
 CREATE POLICY "Allow public view" ON storage.objects 
 FOR SELECT USING (bucket_id = 'products');
 
--- Policy untuk mengizinkan update file (UPDATE)
 CREATE POLICY "Allow public update" ON storage.objects 
 FOR UPDATE USING (bucket_id = 'products');
 
--- Policy untuk mengizinkan hapus file (DELETE)
 CREATE POLICY "Allow public delete" ON storage.objects 
 FOR DELETE USING (bucket_id = 'products');
-

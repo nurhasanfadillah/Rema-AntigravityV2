@@ -3,8 +3,10 @@ import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle, FileText } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle, FileText, X } from 'lucide-react';
 import { getOrderFileUrl } from '../../utils/orderStorage';
+import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
+import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/orderRules';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
@@ -13,6 +15,16 @@ export function PesananDetail() {
 
     const [isEditingStatus, setIsEditingStatus] = useState(false);
     const [newStatus, setNewStatus] = useState<string>('');
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [statusModalConfig, setStatusModalConfig] = useState<{
+        targetStatus: string;
+        currentStatus: string;
+        prerequisiteError: string | null;
+        consequences: string[];
+        requiresReason: boolean;
+        type: 'order' | 'detail';
+        detailId?: string;
+    } | null>(null);
 
     useEffect(() => {
         if (orders.length === 0) fetchOrders();
@@ -21,7 +33,60 @@ export function PesananDetail() {
     const order = orders.find(o => o.no_pesanan === id);
     const canDelete = order ? !['Diproses', 'Packing', 'Selesai'].includes(order.status) : false;
 
-    if (isLoading) {
+    const handleOpenStatusModal = (target: string, type: 'order' | 'detail', detailId?: string) => {
+        if (!order) return;
+
+        if (type === 'order') {
+            const rule = getOrderTransitionRule(order.status as any, target as any);
+            const error = rule ? rule.prerequisites(order) : (target === 'Dibatalkan' ? null : 'Transisi status tidak valid');
+
+            setStatusModalConfig({
+                targetStatus: target,
+                currentStatus: order.status,
+                prerequisiteError: error,
+                consequences: rule?.consequences || (target === 'Dibatalkan' ? ['Pesanan akan dibatalkan secara permanen.'] : []),
+                requiresReason: rule?.requiresReason || target === 'Dibatalkan',
+                type: 'order'
+            });
+        } else {
+            const item = order.order_details?.find(d => d.id === detailId);
+            if (!item) return;
+
+            const rule = getDetailTransitionRule(item.status as any, target as any);
+            const error = rule ? rule.prerequisites(order, item) : 'Transisi status item tidak valid';
+
+            setStatusModalConfig({
+                targetStatus: target,
+                currentStatus: item.status,
+                prerequisiteError: error,
+                consequences: rule?.consequences || [],
+                requiresReason: false,
+                type: 'detail',
+                detailId
+            });
+        }
+        setIsStatusModalOpen(true);
+    };
+
+    const handleConfirmStatusChange = async (reason?: string) => {
+        if (!statusModalConfig || !id) return;
+
+        try {
+            if (statusModalConfig.type === 'order') {
+                await updateOrderStatus(id, statusModalConfig.targetStatus as any, reason);
+                toast.success(`Status pesanan berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+            } else if (statusModalConfig.detailId) {
+                await updateOrderDetailStatus(id, statusModalConfig.detailId, statusModalConfig.targetStatus as any);
+                toast.success(`Status item berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+            }
+            setIsStatusModalOpen(false);
+            setIsEditingStatus(false);
+        } catch (error: any) {
+            toast.error(error.message || 'Gagal mengubah status');
+        }
+    };
+
+    if (isLoading && orders.length === 0) {
         return <div className="p-8 text-center text-zinc-400">Memuat detail pesanan...</div>;
     }
 
@@ -44,10 +109,22 @@ export function PesananDetail() {
         }
     };
 
-    const total = order.order_details?.reduce((acc, current) => acc + (current.qty * current.harga_satuan), 0) || 0;
+    const total = order.order_details?.reduce((acc: number, current: any) => acc + (current.qty * current.harga_satuan), 0) || 0;
 
     return (
         <div className="p-4 space-y-6">
+            <StatusConfirmationModal
+                isOpen={isStatusModalOpen}
+                onClose={() => setIsStatusModalOpen(false)}
+                onConfirm={handleConfirmStatusChange}
+                currentStatus={statusModalConfig?.currentStatus || ''}
+                targetStatus={statusModalConfig?.targetStatus || ''}
+                prerequisiteError={statusModalConfig?.prerequisiteError}
+                consequences={statusModalConfig?.consequences || []}
+                requiresReason={statusModalConfig?.requiresReason}
+                isLoading={isLoading}
+            />
+
             <div className="flex items-center gap-3">
                 <Link to="/pesanan" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-gradient-to-r hover:from-blue-800/40 hover:to-blue-700/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
@@ -87,7 +164,7 @@ export function PesananDetail() {
                                 </span>
                             ) : (
                                 <select
-                                    className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+                                    className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     value={newStatus}
                                     onChange={(e) => setNewStatus(e.target.value)}
                                 >
@@ -104,18 +181,20 @@ export function PesananDetail() {
                                     <Edit2 className="w-3.5 h-3.5" />
                                 </button>
                             ) : (
-                                <button onClick={async () => {
-                                    try {
-                                        await updateOrderStatus(order.no_pesanan, newStatus as any);
-                                        toast.success('Status pesanan diperbarui');
-                                        setIsEditingStatus(false);
-                                    } catch (error) {
-                                        toast.error('Gagal memperbarui status');
-                                        console.error(error);
-                                    }
-                                }} className="p-1 text-blue-400 hover:text-emerald-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20">
-                                    <CheckCircle className="w-4 h-4" />
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => handleOpenStatusModal(newStatus, 'order')}
+                                        className="p-1 text-blue-400 hover:text-emerald-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20"
+                                    >
+                                        <CheckCircle className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsEditingStatus(false)}
+                                        className="p-1 text-zinc-500 hover:text-white rounded"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
@@ -192,7 +271,7 @@ export function PesananDetail() {
             <div className="space-y-3">
                 <h3 className="font-semibold text-lg text-zinc-200 pl-1">Daftar Item ({order.order_details?.length || 0})</h3>
 
-                {order.order_details?.map((item) => (
+                {order.order_details?.map((item: any) => (
                     <Card key={item.id} className="border-zinc-800">
                         <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-zinc-100 pr-2">{item.products?.nama_produk || 'Produk Dihapus'}</h4>
@@ -202,20 +281,12 @@ export function PesananDetail() {
                                         'text-blue-300 border-blue-700/30 bg-gradient-to-r from-blue-900/40 to-blue-800/40'
                                     }`}
                                 value={item.status}
-                                onChange={async (e) => {
-                                    try {
-                                        await updateOrderDetailStatus(order.no_pesanan, item.id, e.target.value as any);
-                                        toast.success('Status item diperbarui');
-                                    } catch (error) {
-                                        toast.error('Gagal memperbarui status item');
-                                    }
-                                }}
-                                disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}
+                                onChange={(e) => handleOpenStatusModal(e.target.value, 'detail', item.id)}
                             >
                                 <option value="Menunggu">Menunggu</option>
-                                <option value="Cetak DTF" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Cetak DTF</option>
-                                <option value="Sablon" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Sablon</option>
-                                <option value="Selesai" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Selesai</option>
+                                <option value="Cetak DTF">Cetak DTF</option>
+                                <option value="Sablon">Sablon</option>
+                                <option value="Selesai">Selesai</option>
                             </select>
                         </div>
 
@@ -235,7 +306,7 @@ export function PesananDetail() {
                             <div className="mt-4">
                                 <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 pl-1">File Desain</p>
                                 <div className="grid grid-cols-4 gap-2">
-                                    {item.design_file.map((path, pIdx) => {
+                                    {item.design_file.map((path: string, pIdx: number) => {
                                         const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(path.split('.').pop()?.toLowerCase() || '');
                                         return (
                                             <a

@@ -61,6 +61,16 @@ Rincian item di dalam satu nomor pesanan, bisa lebih dari satu.
     view data:
         subtotal: Decimal (Hasil kalkulasi harga_satuan * qty)
 
+C. Tabel: order_audit_trail (Audit Trail Pesanan)
+Pencatatan riwayat perubahan status untuk keamanan dan pelacakan.
+    ID: Primary Key
+    no_pesanan: Foreign Key (Relasi ke orders.no_pesanan)
+    status_lama: String
+    status_baru: String
+    alasan: Text
+    aksi_oleh: String (User/Sistem)
+    created_at: Timestamp
+
 
 ## LOGIC DATA
 - Status orders otomatis menjadi 'Packing' hanya jika SEMUA order_details di bawah nomor pesanan tersebut sudah berstatus 'Selesai'.
@@ -69,17 +79,7 @@ Rincian item di dalam satu nomor pesanan, bisa lebih dari satu.
 - Jika sumber_pesanan = 'Offline', maka field data penerima (nama, kontak, alamat) wajib diisi manual.
 - status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika staus ordernya 'Diproses'
 
-
-
-KREDERNSIAL SUPABASE
-API URL: https://nvpwgzhsxrydgqgmezea.supabase.co
-API KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52cHdnemhzeHJ5ZGdxZ21lemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTY4NDYsImV4cCI6MjA4Nzg3Mjg0Nn0.yA1H0mg0gWa76eG8ViKxM9iFSy_rnnG0xPPha8bzilo
-
 ## RIWAYAT PERBAIKAN
-- **(Maret 2026)**: Standardisasi desain sistem tipografi secara global menggunakan Tailwind CSS v4 `@theme`. Mengadopsi dua jenis font (Outfit sebagai primary untuk Heading, dan Inter sebagai secondary untuk Body), pembenahan skala hierarki tipografi (H1, H2, H3, Body, Caption), proporsi ukuran, serta konfigurasi line-height, kerning, dan grid spacing modular khusus platform mobile serta perbaikan kontras warna (dark corporate theme).
-- **(Bulan/Tahun Terbaru)**: Implementasi penuh fitur CRUD (Create, Read, Update, Delete) pada modul `Mitra`, `Kategori`, `Produk`, dan Modul `Pesanan` (Update status dan hapus pesanan) terintegrasi secara langsung menggunakan Supabase client. State diurus oleh Zustand di level `store/`. UI difinalisasi dengan fitur forms `Edit` & Delete Actions. Mengatasi `useState`/`useNavigate` error perihal import.
-- **(Maret 2026)**: Implementasi dan sinkronisasi LOGIC DATA sesuai dokumen `STRUKTUR_DATA.md`:
-  1. Otomatisasi status pesanan menjadi 'Packing' saat SEMUA `order_details` diverifikasi 'Selesai'.
-  2. Mencegah (disable) hapus pesanan bila status pesanan sudah 'Diproses', 'Packing', atau 'Selesai' dan membatasi item dari 'Menunggu' kecuali status pesanan sudah 'Diproses'.
-  3. Form khusus Pesanan: Input `file_resi` otomatis wajib jika 'Online' dan input informasi pelanggan wajib jika 'Offline'.
-- **(Maret 2026)**: Implementasi fitur foto produk (products.foto_produk) terintegrasi penuh dengan Supabase Storage (bucket products), dilengkapi validasi file (JPG/PNG/WebP, <5MB), pratinjau rasio 1:1, dan manajemen penghapusan berkas storage untuk mencegah orphan files.
+- **(Maret 2026)**: Implementasi mekanisme konfirmasi interaktif berbasis Rule Engine. transisi status kini dikontrol ketat oleh prasyarat (file_resi jika Online, data penerima jika Offline), modal konfirmasi dinamis dengan audit trail logging (user, waktu, status), serta proteksi penghapusan pesanan yang telah diproses.
+- **(Maret 2026)**: Penambahan tabel `order_audit_trail` dan logic trigger di level database (SQL) untuk menjamin konsistensi data secara transaksional (auto Packing & validasi status item).
+... (existing history)

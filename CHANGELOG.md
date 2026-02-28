@@ -1,5 +1,23 @@
 # Changelog
 
+## [2026-03-01] - Mekanisme Perubahan Status Interaktif & Rule Engine
+### Added
+- **Interactive Rule Engine**: Implementasi sistem kontrol transisi status (State Transition Control) yang membatasi alur perubahan status hanya pada jalur yang valid sesuai logika bisnis.
+- **Dynamic Confirmation Modal**: Pengenalan komponen `StatusConfirmationModal` yang menampilkan rincian komprehensif sebelum perubahan status:
+  - Visualisasi status saat ini vs status tujuan.
+  - Verifikasi prasyarat (Prerequisite Check) secara *real-time* (e.g., pengecekan keberadaan `file_resi` untuk Online, data penerima untuk Offline).
+  - Daftar konsekuensi perubahan untuk transparansi operasional.
+  - Input alasan (Reasoning) wajib untuk pembatalan atau status kritis.
+  - Fitur Double Confirmation untuk mencegah kesalahan pada status final/kritis (Selesai/Dibatalkan).
+- **Audit Trail System**: Pencatatan otomatis setiap riwayat perubahan status ke tabel `order_audit_trail` (mencakup user, waktu, status lama, status baru, dan alasan).
+- **Backend Transactional Enforcement**: Penggunaan trigger PostgreSQL untuk menjamin integritas data secara absolut di level database:
+  - `trg_check_items_done`: Otomatisasi status 'Packing' saat semua detail item 'Selesai'.
+  - `trg_prevent_order_delete`: Proteksi penghapusan pesanan yang sudah masuk tahap proses/produksi.
+  - `trg_validate_detail_status`: Validasi integrasi transisi status detail item terhadap status pesanan induk.
+### Changed
+- **Refactoring Order Store**: Pembaruan `orderStore.ts` untuk mendukung parameter audit dan integrasi dengan tabel riwayat.
+- **Enhanced Pesanan Detail**: Pembaruan antarmuka `PesananDetail.tsx` menggantikan dropdown status standar dengan alur konfirmasi interaktif yang lebih aman dan terperinci.
+
 ## [2026-03-01] - Fitur Foto Produk & Integrasi Storage
 ### Added
 - **Integrasi Supabase Storage**: Implementasi penyimpanan foto produk pada bucket `products` di Supabase.
