@@ -25,7 +25,7 @@ Tahun : 2026
     deskripsi: Detail spesifikasi produk
     harga_default: Decimal/BigInt (Harga per satuan)
     status: Enum ('Aktif', 'Tidak Aktif')
-    foto_produk: String (URL/Path gambar)
+    foto_produk: String (URL/Path gambar), penyimpanan di supabase storage
     created_at / updated_at: Timestamp
 
 ## PLAN 2
@@ -35,13 +35,16 @@ Tahun : 2026
     no_pesanan: Primary Key (Format: RBM-XXXX)
     tanggal: Date (dd/mm/yyyy)
     mitra_id: Foreign Key (Relasi ke mitra.id)
-    sumber_pesanan: Enum ('Online', 'Offline')
+    sumber_pesanan: Enum ('Online', 'Offline'), pesanan yang didapat oleh mitra ini untuk kebuthunan dalam pencetakan resi, jika 'Online' maka harus upload file resi dalam bentuk pdf, dan jika 'Offline' maka harus mengisi nama_penerima, kontak_penerima, dan alamat_penerima   
     file_resi: String (Path PDF, khusus pesanan Online)
     nama_penerima: String (Wajib jika Offline)
     kontak_penerima: String (Wajib jika Offline)
     alamat_penerima: Text (Wajib jika Offline)
     status: Enum ('Menunggu Konfirmasi'(default), 'Diproses', 'Packing', 'Selesai', Dibatalkan)
     created_at / updated_at: Timestamp
+    view data:
+        total_qty: Integer (Hasil kalkulasi SUM(detail_pesanan.qty))
+        total_jumlah: Decimal (Hasil kalkulasi SUM(detail_pesanan.subtotal))
 
 B. Tabel: order_details (Data Detail Pesanan)
 Rincian item di dalam satu nomor pesanan, bisa lebih dari satu.
@@ -51,9 +54,24 @@ Rincian item di dalam satu nomor pesanan, bisa lebih dari satu.
     harga_satuan: Decimal (ambil harga default produk dan bisa dibuah)
     qty: Integer
     deskripsi_desain: Text (Instruksi khusus desain)
-    design_file: String (multiple URL file format JPEG, PNG dan PDF, bisa lebih dari satu)
+    design_file: String (multiple URL file format JPEG, PNG dan PDF, bisa lebih dari satu), jika ada file JPEG atau PNG gambar terlihat di UI, penyimpanan di supabase storage
     status: Enum ('Menunggu'(default), 'Cetak DTF', 'Sablon', 'Selesai')
     created_at / updated_at: Timestamp
+    view data:
+        subtotal: Decimal (Hasil kalkulasi harga_satuan * qty)
+
+
+## LOGIC DATA
+- Status orders otomatis menjadi 'Packing' hanya jika SEMUA order_details di bawah nomor pesanan tersebut sudah berstatus 'Selesai'.
+- Pesanan dengan status  'Diproses', 'Packing' dan 'Selesai' hanya bisa ‘Dibatalkan’ tidak bisa dihapus
+- Jika sumber_pesanan = 'Online', maka field file_resi wajib diisi.
+- Jika sumber_pesanan = 'Offline', maka field data penerima (nama, kontak, alamat) wajib diisi manual.
+- status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika staus ordernya 'Diproses'
+
+## VIEW DATA
+
+
+
 
 
 KREDERNSIAL SUPABASE
