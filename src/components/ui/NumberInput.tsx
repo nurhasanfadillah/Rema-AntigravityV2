@@ -16,7 +16,7 @@ export function NumberInput({ value, onChange, label, error, className = '', ...
 
     return (
         <div className={`space-y-1.5 ${className}`}>
-            {label && <label className="block text-sm font-medium text-gray-300 ml-1">{label}</label>}
+            {label && <label className="block text-sm font-medium text-zinc-300 ml-1">{label}</label>}
             <div className="relative">
                 <input
                     type="text"
@@ -24,7 +24,7 @@ export function NumberInput({ value, onChange, label, error, className = '', ...
                     pattern="[0-9]*"
                     value={value}
                     onChange={handleChange}
-                    className={`w-full bg-[#1e1e1e] border ${error ? 'border-red-500' : 'border-gray-700 focus:border-blue-500'} rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-1 ${error ? 'focus:ring-red-500' : 'focus:ring-blue-500'} transition-colors`}
+                    className={`w-full bg-zinc-900 border ${error ? 'border-red-500/50' : 'border-zinc-800 focus:border-blue-600/50'} rounded-lg px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-1 ${error ? 'focus:ring-red-500/50' : 'focus:ring-blue-600/50'} transition-all`}
                     {...props}
                 />
             </div>

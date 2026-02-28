@@ -12,12 +12,12 @@ export function Button({
     className = '',
     ...props
 }: ButtonProps) {
-    const baseStyle = "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyle = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-50 disabled:pointer-events-none";
     const variants = {
-        primary: "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border border-blue-600/50",
-        secondary: "bg-[#2a2a2a] hover:bg-[#333333] text-white border border-gray-700",
-        outline: "bg-transparent border border-gray-600 text-gray-200 hover:bg-gray-800",
-        ghost: "bg-transparent text-gray-300 hover:text-white hover:bg-gray-800"
+        primary: "bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 text-white shadow-md shadow-blue-900/30 border border-blue-700/50",
+        secondary: "bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-900 text-white border border-zinc-700/50 shadow-sm",
+        outline: "bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900",
+        ghost: "bg-transparent text-blue-300 hover:text-blue-300 hover:bg-gradient-to-r hover:from-blue-900/30 hover:to-blue-800/30 active:from-blue-900/50 active:to-blue-800/50"
     };
 
     const spacingStyle = "px-4 py-3 text-sm"; // Mobile optimized touch target sizes

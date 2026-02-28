@@ -2,18 +2,26 @@
 
 @theme {
   /* Colors - Dark Corporate Theme */
-  --color-brand-bg: #121212;
-  --color-brand-surface: #1e1e1e;
-  --color-brand-border: #334155;
+  --color-brand-bg: #09090b;
+  /* zinc-950 */
+  --color-brand-surface: #18181b;
+  /* zinc-900 */
+  --color-brand-border: #27272a;
+  /* zinc-800 */
 
   /* Accent Colors */
   --color-brand-accent: #3b82f6;
+  /* blue-500 */
   --color-brand-accent-dark: #1e3a8a;
+  /* blue-900 */
 
   /* Text Colors with Adequate Contrast */
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-tertiary: #94a3b8;
+  --color-text-primary: #f4f4f5;
+  /* zinc-100 */
+  --color-text-secondary: #a1a1aa;
+  /* zinc-400 */
+  --color-text-tertiary: #52525b;
+  /* zinc-600 */
 
   /* Typography Design System */
   /* Fonts: Outfit for Heading, Inter for Body */
