@@ -79,4 +79,5 @@ API URL: https://nvpwgzhsxrydgqgmezea.supabase.co
 API KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52cHdnemhzeHJ5ZGdxZ21lemVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyOTY4NDYsImV4cCI6MjA4Nzg3Mjg0Nn0.yA1H0mg0gWa76eG8ViKxM9iFSy_rnnG0xPPha8bzilo
 
 ## RIWAYAT PERBAIKAN
+- **(Maret 2026)**: Standardisasi desain sistem tipografi secara global menggunakan Tailwind CSS v4 `@theme`. Mengadopsi dua jenis font (Outfit sebagai primary untuk Heading, dan Inter sebagai secondary untuk Body), pembenahan skala hierarki tipografi (H1, H2, H3, Body, Caption), proporsi ukuran, serta konfigurasi line-height, kerning, dan grid spacing modular khusus platform mobile serta perbaikan kontras warna (dark corporate theme).
 - **(Bulan/Tahun Terbaru)**: Implementasi penuh fitur CRUD (Create, Read, Update, Delete) pada modul `Mitra`, `Kategori`, `Produk`, dan Modul `Pesanan` (Update status dan hapus pesanan) terintegrasi secara langsung menggunakan Supabase client. State diurus oleh Zustand di level `store/`. UI difinalisasi dengan fitur forms `Edit` & Delete Actions. Mengatasi `useState`/`useNavigate` error perihal import.
