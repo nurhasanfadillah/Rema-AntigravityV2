@@ -77,21 +77,21 @@ export function ProdukList() {
                     <p className="text-zinc-400 text-xs mt-0.5">Kelola daftar produk dan harga</p>
                 </div>
                 {!showAddForm && (
-                    <Button variant="primary" className="!p-2 bg-emerald-600 hover:bg-emerald-700 border-emerald-600/50" onClick={() => setShowAddForm(true)}>
+                    <Button variant="primary" className="!p-2 bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30" onClick={() => setShowAddForm(true)}>
                         <Plus className="w-5 h-5" />
                     </Button>
                 )}
             </div>
 
             {showAddForm && (
-                <Card className="border-emerald-500/30 bg-emerald-500/5">
+                <Card className="border-blue-700/50 shadow-lg shadow-blue-900/20 bg-gradient-to-b from-blue-950/30 to-blue-900/10">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-zinc-800 pb-2 text-emerald-100">{editingId ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
+                        <h3 className="font-semibold text-lg border-b border-zinc-800 pb-2 text-blue-100">{editingId ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-medium text-zinc-300 ml-1">Nama Produk</label>
-                                <input required type="text" value={formData.nama_produk} onChange={e => setFormData({ ...formData, nama_produk: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="Pouch Custom Logo..." />
+                                <input required type="text" value={formData.nama_produk} onChange={e => setFormData({ ...formData, nama_produk: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Pouch Custom Logo..." />
                             </div>
 
                             <div className="space-y-1.5">
@@ -100,7 +100,7 @@ export function ProdukList() {
                                     required
                                     value={formData.category_id}
                                     onChange={e => setFormData({ ...formData, category_id: e.target.value })}
-                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 appearance-none"
+                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 appearance-none"
                                 >
                                     <option value="" disabled>Pilih Kategori</option>
                                     {categories.map(c => (
@@ -111,13 +111,13 @@ export function ProdukList() {
 
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-medium text-zinc-300 ml-1">Deskripsi</label>
-                                <textarea rows={2} value={formData.deskripsi} onChange={e => setFormData({ ...formData, deskripsi: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-emerald-500" placeholder="Bahan kanvas, ukuran 20x15..." />
+                                <textarea rows={2} value={formData.deskripsi} onChange={e => setFormData({ ...formData, deskripsi: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Bahan kanvas, ukuran 20x15..." />
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-medium text-zinc-300 ml-1">Status</label>
                                 <select
-                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-emerald-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
                                     value={formData.status}
                                     onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
                                 >
@@ -136,7 +136,7 @@ export function ProdukList() {
 
                         <div className="flex gap-3 pt-2">
                             <Button type="button" variant="ghost" fullWidth onClick={() => { setShowAddForm(false); setEditingId(null); setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' }); }}>Batal</Button>
-                            <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-emerald-600 hover:bg-emerald-700 border-emerald-600/50">
+                            <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30">
                                 {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Produk')}
                             </Button>
                         </div>
@@ -152,14 +152,14 @@ export function ProdukList() {
                 ) : (
                     products.map(prod => (
                         <Card key={prod.id} className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-colors flex items-start gap-4">
-                            <div className="p-3 bg-emerald-500/10 rounded-lg shrink-0">
-                                <Package className="w-8 h-8 text-emerald-400" />
+                            <div className="p-3 bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] rounded-lg shrink-0">
+                                <Package className="w-8 h-8 text-white drop-shadow-sm" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start mb-1">
                                     <h4 className="font-semibold text-zinc-100 truncate pr-2">{prod.nama_produk}</h4>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${prod.status === 'Aktif' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${prod.status === 'Aktif' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border border-blue-700/50' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
                                             {prod.status}
                                         </span>
                                         <button onClick={() => handleEdit(prod)} className="p-1 text-zinc-400 hover:text-blue-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 transition-colors">
@@ -171,11 +171,11 @@ export function ProdukList() {
                                     </div>
                                 </div>
                                 {prod.categories && (
-                                    <p className="text-xs text-purple-400 mb-2">{prod.categories.nama_kategori}</p>
+                                    <p className="text-xs text-white drop-shadow-sm mb-2">{prod.categories.nama_kategori}</p>
                                 )}
                                 <div className="flex justify-between items-center mt-2 pt-2 border-t border-zinc-800">
                                     <span className="text-xs text-zinc-500">Harga Base</span>
-                                    <span className="text-sm font-medium text-emerald-400">
+                                    <span className="text-sm font-medium text-white drop-shadow-sm">
                                         {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(prod.harga_default)}
                                     </span>
                                 </div>

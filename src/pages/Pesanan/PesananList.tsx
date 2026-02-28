@@ -15,10 +15,10 @@ export function PesananList() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'Selesai': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            case 'Selesai': return 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50';
             case 'Dibatalkan': return 'bg-red-500/10 text-red-400 border-red-500/20';
             case 'Diproses': return 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30';
-            case 'Packing': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+            case 'Packing': return 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50';
             default: return 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20';
         }
     };
@@ -33,7 +33,7 @@ export function PesananList() {
                     <h2 className="text-xl font-bold tracking-tight">Data Pesanan</h2>
                     <p className="text-zinc-400 text-xs mt-0.5">Kelola transaksi pesanan</p>
                 </div>
-                <Button variant="primary" className="!p-2 bg-orange-600 hover:bg-orange-700 border-orange-600/50" onClick={() => navigate('/pesanan/baru')}>
+                <Button variant="primary" className="!p-2 bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30" onClick={() => navigate('/pesanan/baru')}>
                     <Plus className="w-5 h-5" />
                 </Button>
             </div>
@@ -49,7 +49,7 @@ export function PesananList() {
                             <Card className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-colors">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-center gap-2">
-                                        <ShoppingCart className="w-4 h-4 text-orange-400" />
+                                        <ShoppingCart className="w-4 h-4 text-white drop-shadow-sm" />
                                         <h4 className="font-bold text-zinc-100">{order.no_pesanan}</h4>
                                     </div>
                                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${getStatusColor(order.status)}`}>

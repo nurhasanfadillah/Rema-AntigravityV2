@@ -86,17 +86,17 @@ export function PesananBaru() {
                     <div className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="block text-sm font-medium text-zinc-300">No. Pesanan</label>
-                            <input required type="text" value={formData.no_pesanan} onChange={e => setFormData({ ...formData, no_pesanan: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" />
+                            <input required type="text" value={formData.no_pesanan} onChange={e => setFormData({ ...formData, no_pesanan: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
 
                         <div className="space-y-1.5">
                             <label className="block text-sm font-medium text-zinc-300">Tanggal</label>
-                            <input required type="date" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" />
+                            <input required type="date" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
 
                         <div className="space-y-1.5">
                             <label className="block text-sm font-medium text-zinc-300">Sumber Pesanan</label>
-                            <select value={formData.sumber_pesanan} onChange={e => setFormData({ ...formData, sumber_pesanan: e.target.value as any })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500">
+                            <select value={formData.sumber_pesanan} onChange={e => setFormData({ ...formData, sumber_pesanan: e.target.value as any })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600">
                                 <option value="Online">Online / Mitra</option>
                                 <option value="Offline">Offline / Non-Mitra</option>
                             </select>
@@ -105,7 +105,7 @@ export function PesananBaru() {
                         {formData.sumber_pesanan === 'Online' ? (
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-medium text-zinc-300">Pilih Mitra</label>
-                                <select required value={formData.mitra_id} onChange={e => setFormData({ ...formData, mitra_id: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500">
+                                <select required value={formData.mitra_id} onChange={e => setFormData({ ...formData, mitra_id: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600">
                                     <option value="" disabled>Pilih Mitra B2B</option>
                                     {mitras.map(m => (
                                         <option key={m.id} value={m.id}>{m.nama_mitra}</option>
@@ -116,15 +116,15 @@ export function PesananBaru() {
                             <>
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-300">Nama Penerima</label>
-                                    <input required type="text" value={formData.nama_penerima} onChange={e => setFormData({ ...formData, nama_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" />
+                                    <input required type="text" value={formData.nama_penerima} onChange={e => setFormData({ ...formData, nama_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" />
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-300">Kontak Penerima</label>
-                                    <input required type="tel" value={formData.kontak_penerima} onChange={e => setFormData({ ...formData, kontak_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" />
+                                    <input required type="tel" value={formData.kontak_penerima} onChange={e => setFormData({ ...formData, kontak_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" />
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-300">Alamat Penerima</label>
-                                    <textarea required rows={2} value={formData.alamat_penerima} onChange={e => setFormData({ ...formData, alamat_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" />
+                                    <textarea required rows={2} value={formData.alamat_penerima} onChange={e => setFormData({ ...formData, alamat_penerima: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" />
                                 </div>
                             </>
                         )}
@@ -133,8 +133,8 @@ export function PesananBaru() {
 
                 <Card>
                     <div className="flex justify-between items-center border-b border-zinc-800 pb-2 mb-4">
-                        <h3 className="font-semibold text-lg text-orange-100">Daftar Item</h3>
-                        <Button type="button" variant="ghost" className="!p-1.5 text-orange-400" onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}>
+                        <h3 className="font-semibold text-lg text-blue-100">Daftar Item</h3>
+                        <Button type="button" variant="ghost" className="!p-1.5 text-white drop-shadow-sm" onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}>
                             <Plus className="w-5 h-5" />
                         </Button>
                     </div>
@@ -145,7 +145,7 @@ export function PesananBaru() {
                                 <div className="flex justify-between items-start gap-2">
                                     <div className="flex-1 space-y-1.5">
                                         <label className="block text-sm font-medium text-zinc-300">Produk</label>
-                                        <select required value={item.product_id} onChange={e => handleProductSelect(idx, e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-orange-500 truncate">
+                                        <select required value={item.product_id} onChange={e => handleProductSelect(idx, e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 truncate">
                                             <option value="" disabled>Pilih Produk</option>
                                             {products.map(p => (
                                                 <option key={p.id} value={p.id}>{p.nama_produk}</option>
@@ -166,7 +166,7 @@ export function PesananBaru() {
 
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-medium text-zinc-300">Instruksi Desain (Opsional)</label>
-                                    <textarea rows={1} value={item.deskripsi_desain || ''} onChange={e => { const newItems = [...items]; newItems[idx].deskripsi_desain = e.target.value; setItems(newItems); }} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-orange-500" placeholder="Letak sablon depan..." />
+                                    <textarea rows={1} value={item.deskripsi_desain || ''} onChange={e => { const newItems = [...items]; newItems[idx].deskripsi_desain = e.target.value; setItems(newItems); }} className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Letak sablon depan..." />
                                 </div>
                             </div>
                         ))}
@@ -174,7 +174,7 @@ export function PesananBaru() {
 
                     <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900 sticky bottom-0">
                         <span className="font-medium text-zinc-400">Total Transaksi</span>
-                        <span className="font-bold text-orange-400 text-lg">
+                        <span className="font-bold text-white drop-shadow-sm text-lg">
                             {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(calculateTotal())}
                         </span>
                     </div>
@@ -182,7 +182,7 @@ export function PesananBaru() {
 
                 <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 flex justify-end gap-3 z-40">
                     <Button type="button" variant="ghost" onClick={() => navigate('/pesanan')}>Batal</Button>
-                    <Button type="submit" variant="primary" disabled={isLoading} className="bg-orange-600 hover:bg-orange-700 border-orange-600/50 flex items-center gap-2">
+                    <Button type="submit" variant="primary" disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30 flex items-center gap-2">
                         <Save className="w-4 h-4" />
                         {isLoading ? 'Menyimpan...' : 'Simpan Transaksi'}
                     </Button>

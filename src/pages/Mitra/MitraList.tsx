@@ -138,7 +138,7 @@ export function MitraList() {
                                     <p className="text-sm text-zinc-400 mt-1">{mitra.kontak || 'Tidak ada kontak'}</p>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${mitra.status === 'Aktif' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${mitra.status === 'Aktif' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border border-blue-700/50' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
                                         {mitra.status}
                                     </span>
                                     <div className="flex items-center gap-2 mt-2">

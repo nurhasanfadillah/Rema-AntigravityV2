@@ -5,9 +5,9 @@ import { Card } from '../components/ui/Card';
 export function Dashboard() {
     const menuItems = [
         { label: 'Data Mitra', path: '/mitra', icon: Users, color: 'text-blue-300', bg: 'bg-gradient-to-r from-blue-900/40 to-blue-800/40' },
-        { label: 'Kategori Produk', path: '/kategori', icon: LayoutDashboard, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-        { label: 'Data Produk', path: '/produk', icon: Package, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-        { label: 'Data Pesanan', path: '/pesanan', icon: ShoppingCart, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+        { label: 'Kategori Produk', path: '/kategori', icon: LayoutDashboard, color: 'text-blue-300', bg: 'bg-gradient-to-r from-blue-900/40 to-blue-800/40' },
+        { label: 'Data Produk', path: '/produk', icon: Package, color: 'text-blue-300', bg: 'bg-gradient-to-r from-blue-900/40 to-blue-800/40' },
+        { label: 'Data Pesanan', path: '/pesanan', icon: ShoppingCart, color: 'text-blue-300', bg: 'bg-gradient-to-r from-blue-900/40 to-blue-800/40' },
     ];
 
     return (

@@ -26,17 +26,17 @@ export function PesananDetail() {
         return (
             <div className="p-8 text-center space-y-4">
                 <p className="text-zinc-400">Pesanan tidak ditemukan.</p>
-                <Link to="/pesanan" className="text-orange-400 hover:underline">Kembali ke Daftar</Link>
+                <Link to="/pesanan" className="text-blue-400 hover:underline">Kembali ke Daftar</Link>
             </div>
         );
     }
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'Selesai': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            case 'Selesai': return 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50';
             case 'Dibatalkan': return 'bg-red-500/10 text-red-400 border-red-500/20';
             case 'Diproses': return 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30';
-            case 'Packing': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+            case 'Packing': return 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20 text-white drop-shadow-sm border-blue-700/50';
             default: return 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20';
         }
     };
@@ -51,7 +51,7 @@ export function PesananDetail() {
                 </Link>
                 <div className="flex-1">
                     <h2 className="text-xl font-bold tracking-tight">Detail Pesanan</h2>
-                    <p className="text-orange-400 text-xs mt-0.5 font-mono">{order.no_pesanan}</p>
+                    <p className="text-white drop-shadow-sm text-xs mt-0.5 font-mono">{order.no_pesanan}</p>
                 </div>
                 <button onClick={async () => {
                     if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
@@ -63,7 +63,7 @@ export function PesananDetail() {
                 </button>
             </div>
 
-            <Card className="space-y-4 border-orange-500/20 relative overflow-hidden">
+            <Card className="space-y-4 border-blue-700/50 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-[100px] pointer-events-none"></div>
 
                 <div className="flex justify-between items-start">
@@ -96,7 +96,7 @@ export function PesananDetail() {
                                 <button onClick={async () => {
                                     await updateOrderStatus(order.no_pesanan, newStatus as any);
                                     setIsEditingStatus(false);
-                                }} className="p-1 text-emerald-400 hover:text-emerald-300 rounded hover:bg-emerald-500/10">
+                                }} className="p-1 text-blue-400 hover:text-emerald-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20">
                                     <CheckCircle className="w-4 h-4" />
                                 </button>
                             )}
@@ -104,7 +104,7 @@ export function PesananDetail() {
                     </div>
                     <div className="text-right">
                         <p className="text-xs text-zinc-500">Total Transaksi</p>
-                        <p className="font-bold text-orange-400 text-lg">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total)}</p>
+                        <p className="font-bold text-white drop-shadow-sm text-lg">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total)}</p>
                     </div>
                 </div>
 
@@ -152,7 +152,7 @@ export function PesananDetail() {
                     <Card key={item.id} className="border-zinc-800">
                         <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-zinc-100 pr-2">{item.products?.nama_produk || 'Produk Dihapus'}</h4>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] whitespace-nowrap border ${item.status === 'Selesai' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : item.status === 'Menunggu' ? 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' : 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30'}`}>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] whitespace-nowrap border ${item.status === 'Selesai' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50' : item.status === 'Menunggu' ? 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' : 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30'}`}>
                                 {item.status}
                             </span>
                         </div>
