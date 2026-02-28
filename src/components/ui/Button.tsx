@@ -12,7 +12,7 @@ export function Button({
     className = '',
     ...props
 }: ButtonProps) {
-    const baseStyle = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-50 disabled:pointer-events-none";
+    const baseStyle = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
     const variants = {
         primary: "bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 text-white shadow-md shadow-blue-900/30 border border-blue-700/50",
         secondary: "bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-900 text-white border border-zinc-700/50 shadow-sm",

@@ -1,24 +1,49 @@
 import { Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { BottomNavigation } from './BottomNavigation';
 
 export function MobileLayout() {
     return (
-        <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 max-w-md mx-auto shadow-2xl relative left-0 right-0">
+        <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 max-w-md mx-auto shadow-2xl relative">
             {/* Top Header */}
-            <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-blue-900 px-4 py-4 flex items-center justify-between shadow-md">
-                <div className="flex items-center gap-2">
+            <header className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-zinc-800/60 transition-all duration-200">
+                <div className="flex items-center gap-2.5">
                     {/* Brand Logo Placeholder */}
-                    <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-bold text-white shadow-inner">
-                        R
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-900/40">
+                        <span className="font-bold text-white text-sm">R</span>
                     </div>
-                    <h1 className="text-lg font-semibold tracking-tight text-white">REMA v2</h1>
+                    <h1 className="text-lg font-semibold tracking-tight text-white/90">REMA <span className="text-blue-500 font-bold">v2</span></h1>
                 </div>
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 w-full overflow-y-auto pb-24">
-                {/* Safe area padding bottom for mobile browsers */}
+            <main className="flex-1 w-full overflow-y-auto pb-20 no-scrollbar">
                 <Outlet />
             </main>
+
+            {/* Bottom Navigation */}
+            <BottomNavigation />
+
+            {/* Global Toaster for notifications */}
+            <Toaster
+                position="top-center"
+                toastOptions={{
+                    duration: 3000,
+                    style: {
+                        background: '#18181b', // zinc-900
+                        color: '#f4f4f5', // zinc-100
+                        border: '1px solid #27272a', // zinc-800
+                        borderRadius: '0.75rem',
+                        fontSize: '0.875rem',
+                    },
+                    success: {
+                        iconTheme: { primary: '#3b82f6', secondary: '#fff' },
+                    },
+                    error: {
+                        iconTheme: { primary: '#ef4444', secondary: '#fff' },
+                    },
+                }}
+            />
         </div>
     );
 }

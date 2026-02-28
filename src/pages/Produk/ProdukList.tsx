@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useCategoryStore } from '../../store/categoryStore';
 import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
@@ -36,15 +37,22 @@ export function ProdukList() {
             foto_produk: formData.foto_produk || null
         };
 
-        if (editingId) {
-            await updateProduct(editingId, payload);
-        } else {
-            await addProduct(payload);
-        }
+        try {
+            if (editingId) {
+                await updateProduct(editingId, payload);
+                toast.success('Produk berhasil diperbarui');
+            } else {
+                await addProduct(payload);
+                toast.success('Produk berhasil ditambahkan');
+            }
 
-        setShowAddForm(false);
-        setEditingId(null);
-        setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
+            setShowAddForm(false);
+            setEditingId(null);
+            setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
+        } catch (error) {
+            toast.error('Gagal menyimpan data produk');
+            console.error(error);
+        }
     };
 
     const handleEdit = (prod: any) => {
@@ -62,7 +70,13 @@ export function ProdukList() {
 
     const handleDelete = async (id: string) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-            await deleteProduct(id);
+            try {
+                await deleteProduct(id);
+                toast.success('Produk berhasil dihapus');
+            } catch (error) {
+                toast.error('Gagal menghapus produk');
+                console.error(error);
+            }
         }
     };
 

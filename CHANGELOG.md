@@ -14,3 +14,9 @@
   - **Indikator Status, Badge, dan Link**: Warna solid dan spesifik modul diubah secara massal menjadi `bg-gradient-to-r from-blue-900/40 to-blue-800/40` atau badge gradien untuk memberikan tampilan transparan modern dan harmonis secara aplikasi-sentris.
   - **Elemen Fokus dan Progress**: Border serta ring color pada state focus menggunakan basis warna solid/gradien `blue-600` untuk konsistensi di input form (`NumberInput`, select, text area). Menghilangkan warna emerald, purple, serta orange dari state focus.
   - **Ikon dan Highlight Teks**: Dikonversi penuh ke `text-blue-300` agar memberikan *accessibility contrast* (WCAG AA) yang andal dan keterbacaan tinggi di atas latar warna gelap `zinc-900/50`. Teks form label menggunakan gradien cerah `from-blue-100 to-blue-300`.
+
+### UX Improvements
+- **Perbaikan Alur Navigasi**: Menambahkan `BottomNavigation` yang intuitif untuk perpindahan antar modul utama (Home, Pesanan, Produk, Mitra) tanpa harus kembali ke dashboard utama, meminimalkan steps.
+- **Feedback Visual (Toast)**: Mengintegrasikan `react-hot-toast` secara global untuk memberikan umpan balik (success/error messages) yang jelas dan instan pada setiap aksi CRUD (Create, Update, Delete) di semua modul aplikasi.
+- **Responsivitas Interaksi**: Menambahkan efek mikrotouch `active:scale-95` dan pointer pada `Button` component untuk mempercepat waktu respons sentuhan antarmuka dan mengurangi friksi bagi pengguna.
+- **Penyesuaian Safe Area Mobile**: Menerapkan kelas padding bottom khusus di `MobileLayout` untuk memastikan `BottomNavigation` dan daftar list data tidak bertumpuk serta memastikan scroll page tetap terlihat jelas sampai paling bawah.

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
@@ -55,8 +56,14 @@ export function PesananDetail() {
                 </div>
                 <button onClick={async () => {
                     if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
-                        await deleteOrder(order.no_pesanan);
-                        navigate('/pesanan');
+                        try {
+                            await deleteOrder(order.no_pesanan);
+                            toast.success('Pesanan berhasil dihapus');
+                            navigate('/pesanan');
+                        } catch (error) {
+                            toast.error('Gagal menghapus pesanan');
+                            console.error(error);
+                        }
                     }
                 }} className="p-2 text-red-400 hover:text-red-300 rounded hover:bg-red-500/10 transition-colors">
                     <Trash2 className="w-5 h-5" />
@@ -94,8 +101,14 @@ export function PesananDetail() {
                                 </button>
                             ) : (
                                 <button onClick={async () => {
-                                    await updateOrderStatus(order.no_pesanan, newStatus as any);
-                                    setIsEditingStatus(false);
+                                    try {
+                                        await updateOrderStatus(order.no_pesanan, newStatus as any);
+                                        toast.success('Status pesanan diperbarui');
+                                        setIsEditingStatus(false);
+                                    } catch (error) {
+                                        toast.error('Gagal memperbarui status');
+                                        console.error(error);
+                                    }
                                 }} className="p-1 text-blue-400 hover:text-emerald-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20">
                                     <CheckCircle className="w-4 h-4" />
                                 </button>

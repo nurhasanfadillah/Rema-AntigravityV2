@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useCategoryStore } from '../../store/categoryStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -19,15 +20,22 @@ export function KategoriList() {
         e.preventDefault();
         if (!namaKategori.trim()) return;
 
-        if (editingId) {
-            await updateCategory(editingId, { nama_kategori: namaKategori });
-        } else {
-            await addCategory({ nama_kategori: namaKategori });
-        }
+        try {
+            if (editingId) {
+                await updateCategory(editingId, { nama_kategori: namaKategori });
+                toast.success('Kategori berhasil diperbarui');
+            } else {
+                await addCategory({ nama_kategori: namaKategori });
+                toast.success('Kategori berhasil ditambahkan');
+            }
 
-        setShowAddForm(false);
-        setEditingId(null);
-        setNamaKategori('');
+            setShowAddForm(false);
+            setEditingId(null);
+            setNamaKategori('');
+        } catch (error) {
+            toast.error('Gagal menyimpan kategori');
+            console.error(error);
+        }
     };
 
     const handleEdit = (cat: any) => {
@@ -38,7 +46,13 @@ export function KategoriList() {
 
     const handleDelete = async (id: string) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
-            await deleteCategory(id);
+            try {
+                await deleteCategory(id);
+                toast.success('Kategori berhasil dihapus');
+            } catch (error) {
+                toast.error('Gagal menghapus kategori');
+                console.error(error);
+            }
         }
     };
 

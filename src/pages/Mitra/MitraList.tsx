@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useMitraStore } from '../../store/mitraStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -29,15 +30,22 @@ export function MitraList() {
             limit_tagihan: formData.limit_tagihan ? parseInt(formData.limit_tagihan.toString(), 10) : 0
         };
 
-        if (editingId) {
-            await updateMitra(editingId, payload);
-        } else {
-            await addMitra(payload);
-        }
+        try {
+            if (editingId) {
+                await updateMitra(editingId, payload);
+                toast.success('Mitra berhasil diperbarui');
+            } else {
+                await addMitra(payload);
+                toast.success('Mitra berhasil ditambahkan');
+            }
 
-        setShowAddForm(false);
-        setEditingId(null);
-        setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
+            setShowAddForm(false);
+            setEditingId(null);
+            setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
+        } catch (error) {
+            toast.error('Gagal menyimpan data mitra');
+            console.error(error);
+        }
     };
 
     const handleEdit = (mitra: any) => {
@@ -54,7 +62,13 @@ export function MitraList() {
 
     const handleDelete = async (id: string) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus mitra ini?')) {
-            await deleteMitra(id);
+            try {
+                await deleteMitra(id);
+                toast.success('Mitra berhasil dihapus');
+            } catch (error) {
+                toast.error('Gagal menghapus mitra');
+                console.error(error);
+            }
         }
     };
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import { useOrderStore } from '../../store/orderStore';
 import type { OrderDetail } from '../../store/orderStore';
 import { useMitraStore } from '../../store/mitraStore';
@@ -55,18 +56,24 @@ export function PesananBaru() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (items.some(i => !i.product_id)) {
-            alert('Pilih produk untuk semua item sebelum menyimpan.');
+            toast.error('Pilih produk untuk semua item sebelum menyimpan.');
             return;
         }
 
-        await addOrder({
-            ...formData,
-            mitra_id: formData.sumber_pesanan === 'Online' ? formData.mitra_id : null,
-            file_resi: null,
-            status: 'Menunggu Konfirmasi'
-        }, items);
+        try {
+            await addOrder({
+                ...formData,
+                mitra_id: formData.sumber_pesanan === 'Online' ? formData.mitra_id : null,
+                file_resi: null,
+                status: 'Menunggu Konfirmasi'
+            }, items);
 
-        navigate('/pesanan');
+            toast.success('Pesanan berhasil dibuat');
+            navigate('/pesanan');
+        } catch (error) {
+            toast.error('Gagal membuat pesanan');
+            console.error(error);
+        }
     };
 
     return (
