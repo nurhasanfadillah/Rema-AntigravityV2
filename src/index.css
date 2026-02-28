@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #121212;
+  --color-brand-surface: #1e1e1e;
+  --color-brand-accent: #3b82f6;
+  --color-brand-accent-dark: #1e3a8a;
+  --font-family-sans: "Inter", "Roboto", system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  color: #f3f4f6;
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
