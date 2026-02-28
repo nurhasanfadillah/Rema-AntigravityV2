@@ -1,5 +1,34 @@
 # Changelog
 
+## [2026-03-01] - Data Integrity & Mandatory Mitra Relation
+### Added
+- **Mandat Relasi Mitra-Pesanan**: Memastikan setiap entitas pesanan (`orders`) wajib memiliki relasi ke entitas `mitra` (non-nullable).
+- **Penyederhanaan Sumber Pesanan**: Menyesuaikan label dropdown Sumber Pesanan menjadi hanya "Online" dan "Offline" untuk menghilangkan ambiguitas, karena seluruh pesanan kini sudah pasti terikat pada mitra.
+- **Integritas Referensial**: Implementasi pencegahan penghapusan mitra yang masih memiliki riwayat pesanan di level aplikasi (Referential Integrity Check).
+- **Mekanisme Migrasi**: Penambahan utility `src/utils/dataMigration.ts` untuk audit otomatis dan perbaikan data pesanan yang tidak memiliki relasi valid.
+### Changed
+- **UI Pesanan Baru**: Update form input pesanan agar pemilihan Mitra bersifat wajib untuk semua sumber pesanan (Online maupun Offline) dan label sumber pesanan disederhanakan.
+- **UI Daftar Pesanan**: Penyesuaian tampilan daftar pesanan agar konsisten menampilkan nama mitra penanggung jawab untuk semua jenis sumber pesanan.
+- **Order Store**: Penyesuaian `interface Order` dan fungsi `addOrder` untuk mendukung skema mandatory `mitra_id`.
+
+## [2026-03-01] - Data Structure & Logic Alignment
+### Added
+- Sinkronisasi struktur data tabel `mitra`, `categories`, `products`, `orders`, dan `order_details` sesuai PLAN 1 & PLAN 2.
+- Implementasi Logika Data Transaksi:
+  - Validasi hapus pesanan: Pesanan status 'Diproses', 'Packing', dan 'Selesai' tidak dapat dihapus (Logic Data #2).
+  - Validasi proses item: Status item hanya bisa diubah dari 'Menunggu' jika status pesanan induk adalah 'Diproses' (Logic Data #5).
+  - Automasi status 'Packing': Pesanan otomatis menjadi 'Packing' jika seluruh item detail sudah berstatus 'Selesai' (Logic Data #1).
+- Penambahan Ringkasan Transaksi: Menampilkan `Total Qty` dan `Total Jumlah` pada setiap card di daftar pesanan (View Data requirement).
+### Changed
+- Penyesuaian label field `limit_tagihan` menjadi **"Limit"** pada modul Mitra agar sesuai dengan terminologi PLAN 1.
+- Validasi strict `sumber_pesanan`: Memastikan file_resi wajib untuk Online dan data penerima wajib untuk Offline (Logic Data #3 & #4).
+
+## [2026-03-01] - UI/UX Polish & Bug Fixes
+### Fixed
+- **Modul Pesanan (Pesanan Baru)**: Memperbaiki masalah tombol "Simpan Transaksi" dan "Batal" yang tidak muncul karena tertutup oleh `BottomNavigation`. 
+  - `BottomNavigation` kini otomatis tersembunyi pada halaman input pesanan baru dan detail pesanan untuk memaksimalkan ruang kerja.
+  - Peningkatan `z-index` dan *styling* pada bar aksi (bottom bar) agar lebih kontras dan premium.
+
 ## [Unreleased]
 ### Added
 - Diperbarui (Updated) seluruh tema warna UI ke desain **Dark Corporate Modern** sesuai dengan standar dan instruksi.

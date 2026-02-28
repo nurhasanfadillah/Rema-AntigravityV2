@@ -34,6 +34,8 @@ export function PesananBaru() {
         design_file: []
     }]);
 
+    const [resiFile, setResiFile] = useState<File | null>(null);
+
     useEffect(() => {
         fetchMitras();
         fetchProducts();
@@ -55,16 +57,28 @@ export function PesananBaru() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (formData.sumber_pesanan === 'Online' && !resiFile) {
+            toast.error('File Resi (PDF) wajib diunggah untuk pesanan Online.');
+            return;
+        }
+
         if (items.some(i => !i.product_id)) {
             toast.error('Pilih produk untuk semua item sebelum menyimpan.');
             return;
         }
 
         try {
+            let file_resi_url = null;
+            if (resiFile) {
+                // In a real implementation this would upload to Supabase storage
+                file_resi_url = resiFile.name;
+            }
+
             await addOrder({
                 ...formData,
-                mitra_id: formData.sumber_pesanan === 'Online' ? formData.mitra_id : null,
-                file_resi: null,
+                mitra_id: formData.mitra_id,
+                file_resi: file_resi_url,
                 status: 'Menunggu Konfirmasi'
             }, items);
 
@@ -104,20 +118,25 @@ export function PesananBaru() {
                         <div className="space-y-1.5">
                             <label className="block text-sm font-medium text-zinc-300">Sumber Pesanan</label>
                             <select value={formData.sumber_pesanan} onChange={e => setFormData({ ...formData, sumber_pesanan: e.target.value as any })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600">
-                                <option value="Online">Online / Mitra</option>
-                                <option value="Offline">Offline / Non-Mitra</option>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="block text-sm font-medium text-zinc-300">Pilih Mitra</label>
+                            <select required value={formData.mitra_id} onChange={e => setFormData({ ...formData, mitra_id: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                <option value="" disabled>Pilih Mitra B2B</option>
+                                {mitras.map(m => (
+                                    <option key={m.id} value={m.id}>{m.nama_mitra}</option>
+                                ))}
                             </select>
                         </div>
 
                         {formData.sumber_pesanan === 'Online' ? (
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300">Pilih Mitra</label>
-                                <select required value={formData.mitra_id} onChange={e => setFormData({ ...formData, mitra_id: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600">
-                                    <option value="" disabled>Pilih Mitra B2B</option>
-                                    {mitras.map(m => (
-                                        <option key={m.id} value={m.id}>{m.nama_mitra}</option>
-                                    ))}
-                                </select>
+                                <label className="block text-sm font-medium text-zinc-300">Upload Resi (PDF)</label>
+                                <input required type="file" accept="application/pdf" onChange={e => setResiFile(e.target.files?.[0] || null)} className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900/40 file:text-blue-300 hover:file:bg-blue-800/40" />
                             </div>
                         ) : (
                             <>
@@ -187,9 +206,9 @@ export function PesananBaru() {
                     </div>
                 </Card>
 
-                <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 flex justify-end gap-3 z-40">
+                <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800/50 flex justify-end gap-3 z-50">
                     <Button type="button" variant="ghost" onClick={() => navigate('/pesanan')}>Batal</Button>
-                    <Button type="submit" variant="primary" disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30 flex items-center gap-2">
+                    <Button type="submit" variant="primary" disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 active:from-blue-700 active:to-blue-900 border-blue-700/50 shadow-lg shadow-blue-900/40 flex items-center gap-2">
                         <Save className="w-4 h-4" />
                         {isLoading ? 'Menyimpan...' : 'Simpan Transaksi'}
                     </Button>

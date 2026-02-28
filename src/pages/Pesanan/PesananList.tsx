@@ -58,13 +58,27 @@ export function PesananList() {
                                 </div>
 
                                 <div className="text-sm text-zinc-300">
-                                    <p>{order.sumber_pesanan === 'Online' ? (order.mitra?.nama_mitra || 'Online Customer') : order.nama_penerima}</p>
+                                    <p className="font-semibold">{order.mitra?.nama_mitra || '-'}</p>
+                                    {order.sumber_pesanan === 'Offline' && <p className="text-xs text-zinc-400">Penerima: {order.nama_penerima}</p>}
                                     <p className="text-xs text-zinc-500 mt-1">{new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                 </div>
 
                                 {order.order_details && order.order_details.length > 0 && (
                                     <div className="mt-3 pt-3 border-t border-zinc-800 flex justify-between items-center">
-                                        <span className="text-xs text-zinc-500">{order.order_details.length} item(s)</span>
+                                        <div className="flex gap-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-zinc-500 uppercase">Total Qty</span>
+                                                <span className="text-xs font-semibold text-zinc-300">
+                                                    {order.order_details.reduce((acc, curr) => acc + curr.qty, 0)} Pcs
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-zinc-500 uppercase">Total Jumlah</span>
+                                                <span className="text-xs font-semibold text-blue-300">
+                                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(order.order_details.reduce((acc, curr) => acc + (curr.qty * curr.harga_satuan), 0))}
+                                                </span>
+                                            </div>
+                                        </div>
                                         <ChevronRight className="w-4 h-4 text-zinc-600" />
                                     </div>
                                 )}

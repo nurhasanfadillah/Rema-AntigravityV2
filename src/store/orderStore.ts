@@ -6,7 +6,7 @@ import type { Product } from './productStore';
 export interface Order {
     no_pesanan: string;
     tanggal: string;
-    mitra_id: string | null;
+    mitra_id: string; // Mandatory non-nullable
     sumber_pesanan: 'Online' | 'Offline';
     file_resi: string | null;
     nama_penerima: string | null;
@@ -35,6 +35,7 @@ interface OrderState {
     fetchOrders: () => Promise<void>;
     addOrder: (order: Omit<Order, 'order_details' | 'mitra'>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
     updateOrderStatus: (no_pesanan: string, status: Order['status']) => Promise<void>;
+    updateOrderDetailStatus: (order_id: string, detail_id: string, status: OrderDetail['status']) => Promise<void>;
     deleteOrder: (no_pesanan: string) => Promise<void>;
 }
 
@@ -113,8 +114,46 @@ export const useOrderStore = create<OrderState>((set) => ({
         }
         set({ isLoading: false });
     },
+    updateOrderDetailStatus: async (order_id, detail_id, status) => {
+        set({ isLoading: true });
+
+        // Logic Data #5: status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika status ordernya 'Diproses'
+        const { data: currentOrder } = await supabase.from('orders').select('status').eq('no_pesanan', order_id).single();
+        const { data: currentDetail } = await supabase.from('order_details').select('status').eq('id', detail_id).single();
+
+        if (currentDetail && currentDetail.status === 'Menunggu' && currentOrder && currentOrder.status !== 'Diproses') {
+            set({ isLoading: false });
+            throw new Error('Item hanya dapat diproses (dipindahkan dari status Menunggu) jika status Pesanan adalah Diproses.');
+        }
+
+        const { error } = await supabase.from('order_details').update({ status }).eq('id', detail_id);
+        if (!error) {
+            // Logic Data #1: Status orders otomatis menjadi 'Packing' hanya jika SEMUA order_details sudah 'Selesai'
+            const { data: orderData } = await supabase.from('orders').select('*, order_details(*)').eq('no_pesanan', order_id).single();
+            if (orderData && orderData.order_details) {
+                const allDone = orderData.order_details.every((d: any) => d.status === 'Selesai');
+                if (allDone && orderData.status !== 'Packing' && orderData.status !== 'Selesai' && orderData.status !== 'Dibatalkan') {
+                    await supabase.from('orders').update({ status: 'Packing' }).eq('no_pesanan', order_id);
+                }
+            }
+
+            const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
+            if (data) set({ orders: data as Order[] });
+        } else {
+            console.error(error);
+        }
+        set({ isLoading: false });
+    },
     deleteOrder: async (no_pesanan) => {
         set({ isLoading: true });
+
+        // Logic Data #2: Pesanan 'Diproses', 'Packing' dan 'Selesai' hanya bisa ‘Dibatalkan’ tidak bisa dihapus
+        const { data: order } = await supabase.from('orders').select('status').eq('no_pesanan', no_pesanan).single();
+        if (order && ['Diproses', 'Packing', 'Selesai'].includes(order.status)) {
+            set({ isLoading: false });
+            throw new Error('Pesanan yang sudah diproses tidak dapat dihapus, hanya bisa dibatalkan.');
+        }
+
         const { error } = await supabase.from('orders').delete().eq('no_pesanan', no_pesanan);
         if (!error) {
             const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });

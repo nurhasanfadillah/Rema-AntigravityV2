@@ -34,14 +34,15 @@ Tahun : 2026
     Header transaksi pemesanan.
     no_pesanan: Primary Key (Format: RBM-XXXX)
     tanggal: Date (dd/mm/yyyy)
-    mitra_id: Foreign Key (Relasi ke mitra.id)
-    sumber_pesanan: Enum ('Online', 'Offline'), pesanan yang didapat oleh mitra ini untuk kebuthunan dalam pencetakan resi, jika 'Online' maka harus upload file resi dalam bentuk pdf, dan jika 'Offline' maka harus mengisi nama_penerima, kontak_penerima, dan alamat_penerima   
+    mitra_id: Foreign Key (Relasi ke mitra.id) - **MANDATORY (Non-Nullable)**
+    sumber_pesanan: Enum ('Online', 'Offline'), Klasifikasi kanal masuk pesanan (Digital vs Non-Digital), seluruh pesanan wajib terikat ke mitra. Jika 'Online' wajib file resi (PDF), jika 'Offline' wajib data penerima.
     file_resi: String (Path PDF, khusus pesanan Online)
     nama_penerima: String (Wajib jika Offline)
     kontak_penerima: String (Wajib jika Offline)
     alamat_penerima: Text (Wajib jika Offline)
     status: Enum ('Menunggu Konfirmasi'(default), 'Diproses', 'Packing', 'Selesai', Dibatalkan)
     created_at / updated_at: Timestamp
+    **Integritas Data:** Foreign Key ke `mitra` bersifat `RESTRICT` (Mitra tidak bisa dihapus jika memiliki pesanan).
     view data:
         total_qty: Integer (Hasil kalkulasi SUM(detail_pesanan.qty))
         total_jumlah: Decimal (Hasil kalkulasi SUM(detail_pesanan.subtotal))
@@ -68,10 +69,6 @@ Rincian item di dalam satu nomor pesanan, bisa lebih dari satu.
 - Jika sumber_pesanan = 'Offline', maka field data penerima (nama, kontak, alamat) wajib diisi manual.
 - status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika staus ordernya 'Diproses'
 
-## VIEW DATA
-
-
-
 
 
 KREDERNSIAL SUPABASE
@@ -81,3 +78,7 @@ API KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im
 ## RIWAYAT PERBAIKAN
 - **(Maret 2026)**: Standardisasi desain sistem tipografi secara global menggunakan Tailwind CSS v4 `@theme`. Mengadopsi dua jenis font (Outfit sebagai primary untuk Heading, dan Inter sebagai secondary untuk Body), pembenahan skala hierarki tipografi (H1, H2, H3, Body, Caption), proporsi ukuran, serta konfigurasi line-height, kerning, dan grid spacing modular khusus platform mobile serta perbaikan kontras warna (dark corporate theme).
 - **(Bulan/Tahun Terbaru)**: Implementasi penuh fitur CRUD (Create, Read, Update, Delete) pada modul `Mitra`, `Kategori`, `Produk`, dan Modul `Pesanan` (Update status dan hapus pesanan) terintegrasi secara langsung menggunakan Supabase client. State diurus oleh Zustand di level `store/`. UI difinalisasi dengan fitur forms `Edit` & Delete Actions. Mengatasi `useState`/`useNavigate` error perihal import.
+- **(Maret 2026)**: Implementasi dan sinkronisasi LOGIC DATA sesuai dokumen `STRUKTUR_DATA.md`:
+  1. Otomatisasi status pesanan menjadi 'Packing' saat SEMUA `order_details` diverifikasi 'Selesai'.
+  2. Mencegah (disable) hapus pesanan bila status pesanan sudah 'Diproses', 'Packing', atau 'Selesai' dan membatasi item dari 'Menunggu' kecuali status pesanan sudah 'Diproses'.
+  3. Form khusus Pesanan: Input `file_resi` otomatis wajib jika 'Online' dan input informasi pelanggan wajib jika 'Offline'.

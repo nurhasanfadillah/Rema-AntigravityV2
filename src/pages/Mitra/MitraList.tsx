@@ -122,12 +122,14 @@ export function MitraList() {
                                 </select>
                             </div>
 
-                            <NumberInput
-                                label="Limit Tagihan (Rp)"
-                                value={formData.limit_tagihan.toString()}
-                                onChange={(val) => setFormData({ ...formData, limit_tagihan: val })}
-                                placeholder="10000000"
-                            />
+                            <div className="space-y-1.5">
+                                <label className="block text-sm font-medium text-zinc-300 ml-1">Limit (Rp)</label>
+                                <NumberInput
+                                    value={formData.limit_tagihan.toString()}
+                                    onChange={(val) => setFormData({ ...formData, limit_tagihan: val })}
+                                    placeholder="10000000"
+                                />
+                            </div>
                         </div>
 
                         <div className="flex gap-3 pt-2">
@@ -165,14 +167,12 @@ export function MitraList() {
                                     </div>
                                 </div>
                             </div>
-                            {mitra.limit_tagihan > 0 && (
-                                <div className="mt-3 pt-3 border-t border-zinc-800 flex justify-between items-center">
-                                    <span className="text-xs text-zinc-500">Limit Tagihan</span>
-                                    <span className="text-sm font-medium text-zinc-300">
-                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(mitra.limit_tagihan)}
-                                    </span>
-                                </div>
-                            )}
+                            <div className="mt-3 pt-3 border-t border-zinc-800 flex justify-between items-center">
+                                <span className="text-xs text-zinc-500">Limit</span>
+                                <span className="text-sm font-medium text-zinc-300">
+                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(mitra.limit_tagihan)}
+                                </span>
+                            </div>
                         </Card>
                     ))
                 )}

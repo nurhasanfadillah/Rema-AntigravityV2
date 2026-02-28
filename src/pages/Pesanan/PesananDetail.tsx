@@ -7,7 +7,7 @@ import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, Ch
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
-    const { orders, fetchOrders, isLoading, updateOrderStatus, deleteOrder } = useOrderStore();
+    const { orders, fetchOrders, isLoading, updateOrderStatus, updateOrderDetailStatus, deleteOrder } = useOrderStore();
     const navigate = useNavigate();
 
     const [isEditingStatus, setIsEditingStatus] = useState(false);
@@ -18,6 +18,7 @@ export function PesananDetail() {
     }, [orders.length, fetchOrders]);
 
     const order = orders.find(o => o.no_pesanan === id);
+    const canDelete = order ? !['Diproses', 'Packing', 'Selesai'].includes(order.status) : false;
 
     if (isLoading) {
         return <div className="p-8 text-center text-zinc-400">Memuat detail pesanan...</div>;
@@ -54,20 +55,22 @@ export function PesananDetail() {
                     <h2 className="text-xl font-bold tracking-tight">Detail Pesanan</h2>
                     <p className="text-white drop-shadow-sm text-xs mt-0.5 font-mono">{order.no_pesanan}</p>
                 </div>
-                <button onClick={async () => {
-                    if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
-                        try {
-                            await deleteOrder(order.no_pesanan);
-                            toast.success('Pesanan berhasil dihapus');
-                            navigate('/pesanan');
-                        } catch (error) {
-                            toast.error('Gagal menghapus pesanan');
-                            console.error(error);
+                {canDelete && (
+                    <button onClick={async () => {
+                        if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+                            try {
+                                await deleteOrder(order.no_pesanan);
+                                toast.success('Pesanan berhasil dihapus');
+                                navigate('/pesanan');
+                            } catch (error) {
+                                toast.error('Gagal menghapus pesanan');
+                                console.error(error);
+                            }
                         }
-                    }
-                }} className="p-2 text-red-400 hover:text-red-300 rounded hover:bg-red-500/10 transition-colors">
-                    <Trash2 className="w-5 h-5" />
-                </button>
+                    }} className="p-2 text-red-400 hover:text-red-300 rounded hover:bg-red-500/10 transition-colors">
+                        <Trash2 className="w-5 h-5" />
+                    </button>
+                )}
             </div>
 
             <Card className="space-y-4 border-blue-700/50 relative overflow-hidden">
@@ -139,12 +142,18 @@ export function PesananDetail() {
                     <div className="col-span-2">
                         <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
                             <User className="w-3.5 h-3.5" />
-                            <span className="text-xs">Pelanggan</span>
+                            <span className="text-xs">Mitra Penanggung Jawab</span>
                         </div>
                         <p className="text-sm font-medium text-zinc-200">
-                            {order.sumber_pesanan === 'Online' ? order.mitra?.nama_mitra : order.nama_penerima}
+                            {order.mitra?.nama_mitra || '-'}
                         </p>
-                        {order.sumber_pesanan === 'Offline' && <p className="text-xs text-zinc-400">{order.kontak_penerima}</p>}
+                        {order.sumber_pesanan === 'Offline' && (
+                            <div className="mt-2 pt-2 border-t border-zinc-800/20">
+                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-0.5">Penerima Akhir</p>
+                                <p className="text-sm font-medium text-zinc-300">{order.nama_penerima}</p>
+                                <p className="text-xs text-zinc-400">{order.kontak_penerima}</p>
+                            </div>
+                        )}
                     </div>
                     {order.sumber_pesanan === 'Offline' && order.alamat_penerima && (
                         <div className="col-span-2">
@@ -165,9 +174,27 @@ export function PesananDetail() {
                     <Card key={item.id} className="border-zinc-800">
                         <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-zinc-100 pr-2">{item.products?.nama_produk || 'Produk Dihapus'}</h4>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] whitespace-nowrap border ${item.status === 'Selesai' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50' : item.status === 'Menunggu' ? 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' : 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30'}`}>
-                                {item.status}
-                            </span>
+                            <select
+                                className={`px-2 py-0.5 rounded text-[10px] font-medium border focus:outline-none focus:ring-1 focus:ring-blue-500 bg-zinc-900 transition-colors ${item.status === 'Selesai' ? 'text-blue-300 border-blue-700/50 shadow-[0_0_10px_rgba(59,130,246,0.15)] bg-gradient-to-r from-blue-900/50 to-blue-800/50' :
+                                    item.status === 'Menunggu' ? 'text-zinc-400 border-zinc-500/20 bg-zinc-500/10' :
+                                        'text-blue-300 border-blue-700/30 bg-gradient-to-r from-blue-900/40 to-blue-800/40'
+                                    }`}
+                                value={item.status}
+                                onChange={async (e) => {
+                                    try {
+                                        await updateOrderDetailStatus(order.no_pesanan, item.id, e.target.value as any);
+                                        toast.success('Status item diperbarui');
+                                    } catch (error) {
+                                        toast.error('Gagal memperbarui status item');
+                                    }
+                                }}
+                                disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}
+                            >
+                                <option value="Menunggu">Menunggu</option>
+                                <option value="Cetak DTF" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Cetak DTF</option>
+                                <option value="Sablon" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Sablon</option>
+                                <option value="Selesai" disabled={order.status !== 'Diproses' && item.status === 'Menunggu'}>Selesai</option>
+                            </select>
                         </div>
 
                         <div className="flex justify-between items-end mt-4">

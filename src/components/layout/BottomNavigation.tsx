@@ -11,6 +11,16 @@ export function BottomNavigation() {
         { label: 'Mitra', path: '/mitra', icon: Users },
     ];
 
+    // List of paths where the bottom navigation should be hidden
+    const hiddenPaths = ['/pesanan/baru', '/pesanan/']; // Starts with these
+
+    const shouldHide = hiddenPaths.some(path => {
+        if (path === '/pesanan/') return location.pathname.startsWith('/pesanan/') && location.pathname !== '/pesanan';
+        return location.pathname.startsWith(path);
+    });
+
+    if (shouldHide) return null;
+
     // Check if the current path starts with the nav item path
     // Special case for Home ('/') so it doesn't match everything
     const isActive = (path: string) => {
