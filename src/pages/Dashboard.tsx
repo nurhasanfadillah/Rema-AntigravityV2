@@ -39,15 +39,15 @@ const menuGroups: MenuGroup[] = [
                 label: 'Pesanan',
                 path: '/pesanan',
                 icon: ShoppingCart,
-                iconColor: 'text-emerald-600',
-                iconBgStyle: { backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #3b82f6, #1e40af)' },
             },
             {
                 label: 'Produksi',
                 path: '/produksi',
                 icon: PackageOpen,
-                iconColor: 'text-orange-600',
-                iconBgStyle: { backgroundColor: 'rgba(249, 115, 22, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #3b82f6, #1e40af)' },
             },
         ],
     },
@@ -58,22 +58,22 @@ const menuGroups: MenuGroup[] = [
                 label: 'Mitra',
                 path: '/mitra',
                 icon: Users,
-                iconColor: 'text-blue-600',
-                iconBgStyle: { backgroundColor: 'rgba(59, 130, 246, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #64748b, #334155)' }, // More "stable" blue/neutral
             },
             {
                 label: 'Kategori',
                 path: '/kategori',
                 icon: LayoutGrid,
-                iconColor: 'text-indigo-600',
-                iconBgStyle: { backgroundColor: 'rgba(99, 102, 241, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #64748b, #334155)' },
             },
             {
                 label: 'Produk',
                 path: '/produk',
                 icon: Package,
-                iconColor: 'text-purple-600',
-                iconBgStyle: { backgroundColor: 'rgba(168, 85, 247, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #64748b, #334155)' },
             },
         ],
     },
@@ -84,8 +84,8 @@ const menuGroups: MenuGroup[] = [
                 label: 'Keuangan',
                 path: '/keuangan',
                 icon: Wallet,
-                iconColor: 'text-sky-600',
-                iconBgStyle: { backgroundColor: 'rgba(14, 165, 233, 0.1)' },
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #10b981, #065f46)' },
             },
         ],
     },
@@ -114,24 +114,26 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
             <div
                 className="
                     relative flex-shrink-0 flex items-center justify-center
-                    border border-black/5
-                    group-hover:border-brand-accent/20
                     group-active:scale-[0.93]
                     group-hover:scale-[1.06]
                     transition-all duration-300 ease-out
                 "
                 style={{
-                    width: '58px',
-                    height: '58px',
-                    borderRadius: '16px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '18px',
+                    boxShadow: '0 10px 20px -5px rgba(0,0,0,0.15)',
                     ...item.iconBgStyle,
                 }}
             >
                 <Icon
                     className={`${item.iconColor} relative z-10`}
-                    style={{ width: '22px', height: '22px' }}
-                    strokeWidth={2}
+                    style={{
+                        width: '24px',
+                        height: '24px',
+                        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+                    }}
+                    strokeWidth={2.5}
                 />
             </div>
 

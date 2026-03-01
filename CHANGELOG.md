@@ -1,3 +1,11 @@
+## [2026-03-02] - Penyesuaian Ikon Navigasi Dashboard
+### Fixed & Improved
+- Mengubah tampilan ikon navigasi Dashboard dari transparan/glassmorphism menjadi solid gradient (100% opacity).
+- Mengimplementasikan skema warna fungsional: Biru untuk Operasional, Slate/Neutral untuk Master Data, dan Emerald untuk Keuangan.
+- Meningkatkan kontras ikon dengan menggunakan warna putih dan mempertebal stroke-width menjadi 2.5.
+- Meningkatkan ukuran container ikon dan radius (18px) untuk tampilan yang lebih premium dan profesional.
+- Penambahan bayangan (shadow) yang lebih kuat (stronger) untuk memberikan kedalaman visual yang lebih baik.
+
 ## [2026-03-02] - Finalisasi Modul Mitra & Standarisasi UI Components
 ### Added
 - **Migration Plan 5 (`plan5_mitra_uniqueness.sql`)**: 
@@ -224,6 +232,8 @@
 - **Modul Pesanan (Pesanan Baru)**: Memperbaiki masalah tombol "Simpan Transaksi" dan "Batal" yang tidak muncul karena tertutup oleh `BottomNavigation`. 
   - `BottomNavigation` kini otomatis tersembunyi pada halaman input pesanan baru dan detail pesanan untuk memaksimalkan ruang kerja.
   - Peningkatan `z-index` dan *styling* pada bar aksi (bottom bar) agar lebih kontras dan premium.
+
+
 
 ## [Unreleased]
 ### Added

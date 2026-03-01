@@ -24,6 +24,7 @@
    2.7 Proses input data harus cepat dan efisien.
    2.8 Gunakan Bahasa Indonesia pada antarmuka (UI).
    2.9 Pola Interaksi Kartu (Card Interaction Pattern): Gunakan area kartu yang luas untuk navigasi utama (Full Card Click), pisahkan mekanisme sekunder seperti expand/collapse menggunakan pegangan (handle) visual di bagian bawah, dan pastikan setiap elemen daftar internal mandiri memiliki trigger navigasi yang unik melalui stopPropagation untuk efisiensi alur kerja.
+   2.10 Standar Ikon Navigasi Dashboard: Gunakan container ikon dengan ukuran 60x60px dan radius 18px menggunakan gradasi solid yang tegas (tanpa transparansi). Warna dikategorikan berdasarkan fungsi: Operasional (Gradasi Biru), Master Data (Gradasi Biru-Neutral/Slate), dan Keuangan (Gradasi Hijau/Emerald). Ikon menggunakan warna putih dengan stroke-width minimal 2.5 untuk tampilan yang kuat dan profesional.
 
 3. Standar Regional
    3.1 Gunakan format Indonesia untuk mata uang, angka, dan tanggal.
