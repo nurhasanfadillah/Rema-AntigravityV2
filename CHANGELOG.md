@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026-03-01] - Penyederhanaan UI Daftar Pesanan & Sistem Expand/Collapse
+### Changed
+- **Penyederhanaan Baris Data Utama**: Menghilangkan label field eksplisit pada daftar pesanan untuk tampilan yang lebih bersih. Nama Mitra kini menjadi elemen paling dominan, didukung informasi inti (Tanggal, No. Pesanan, Status, dan Total Qty) dalam format ringkas bersimbol yang mudah dipindai.
+- **Sistem Expand/Collapse Per Baris**: Mengimplementasikan kartu pesanan yang dapat dikembangkan (expandable) untuk melihat kilasan `detail_pesanan` secara langsung dari daftar.
+- **Layout Detail Terstruktur**: Pada tampilan *expanded*, informasi ditampilkan terstruktur dengan Nama Produk sebagai judul utama, Qty, dan Deskripsi Desain yang dibatasi (line-clamp) untuk menjaga kerapian grid tanpa atribut berlebih.
+- **Akses Cepat Detail Lengkap**: Menyediakan tombol aksi terpisah pada sisi kanan baris pesanan untuk membuka tampilan detail pesanan secara penuh.
+- **Optimasi Whitespace & Transisi**: Menyempurnakan pemanfaatan ruang kosong, hierarki tipografi, serta animasi expand/collapse yang mulus tanpa merusak alignment antar baris pesanan.
+
 ## [2026-03-01] - Reorganisasi Hierarki Informasi & Desain Premium Pesanan
 ### Added
 - **Pembaruan Hierarki Visual Pesanan**: Restrukturisasi total tata letak pada halaman daftar dan detail pesanan untuk mempertegas prioritas konten:

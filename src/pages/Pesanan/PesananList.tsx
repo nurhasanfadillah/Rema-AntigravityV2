@@ -1,10 +1,109 @@
-import { useEffect } from 'react';
-import { useOrderStore } from '../../store/orderStore';
+import { useEffect, useState } from 'react';
+import { useOrderStore, type Order } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ArrowLeft, Plus, ChevronRight, Hash, Globe, ShoppingBag, Wallet } from 'lucide-react';
+import { ArrowLeft, Plus, ChevronDown, ChevronUp, ShoppingBag, ExternalLink, Package, History } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+
+function PesananListItem({ order }: { order: Order }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const totalQty = order.order_details?.reduce((acc, curr) => acc + curr.qty, 0) || 0;
+
+    return (
+        <Card className={`group relative overflow-hidden flex flex-col border-zinc-800/80 hover:border-zinc-700/80 transition-all duration-300 ${isExpanded ? 'border-zinc-700/80 bg-zinc-900/40' : 'bg-transparent hover:bg-zinc-900/20'}`}>
+            {/* Accent background effect left edge */}
+            <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-b from-blue-500 to-blue-700' : 'bg-gradient-to-b from-zinc-700 to-zinc-800 group-hover:from-blue-600/50 group-hover:to-blue-900/50'}`}></div>
+
+            {/* Main Row / Header */}
+            <div
+                className="flex items-start justify-between p-4 pl-5 cursor-pointer select-none"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
+                {/* Left Side: Mitra, Date, Package Info */}
+                <div className="flex flex-col gap-1 items-start flex-1 min-w-0 pr-4">
+                    <h3 className="text-[17px] font-bold text-white font-display truncate w-full group-hover:text-blue-400 transition-colors tracking-tight leading-none mb-0.5">
+                        {order.mitra?.nama_mitra || 'Pelanggan'}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-1 text-zinc-500 text-[11px] font-medium tracking-wide w-full">
+                        <span className="shrink-0 flex items-center gap-1">
+                            <History className="w-3 h-3 text-zinc-600" />
+                            {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
+                        <span className="font-mono text-zinc-400 shrink-0 uppercase tracking-wider">{order.no_pesanan}</span>
+                        <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
+                        <span className="text-zinc-300 shrink-0 flex items-center gap-1 font-semibold">
+                            <Package className="w-3 h-3 text-zinc-500" />
+                            {totalQty} Pcs
+                        </span>
+                    </div>
+                </div>
+
+                {/* Right Side: Status Badge & Actions */}
+                <div className="flex flex-col items-end justify-between self-stretch shrink-0 gap-2">
+                    <StatusBadge status={order.status} size="sm" />
+
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                        <Link
+                            to={`/pesanan/${order.no_pesanan}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1.5 text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-colors flex items-center justify-center"
+                            title="Buka Detail Lengkap"
+                        >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                        </Link>
+                        <button
+                            className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${isExpanded ? 'text-white bg-zinc-800' : 'text-zinc-500 hover:text-white hover:bg-zinc-800'}`}
+                            title={isExpanded ? "Tutup Detail" : "Buka Detail"}
+                        >
+                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Expanded Content */}
+            <div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden">
+                    <div className="p-4 pt-1 pb-4 pl-5">
+                        <div className="pt-3 border-t border-zinc-800/80">
+                            {order.order_details && order.order_details.length > 0 ? (
+                                <div className="flex flex-col gap-3">
+                                    {order.order_details.map((detail, idx) => (
+                                        <div key={detail.id || idx} className="flex gap-3 items-start border-l-2 border-zinc-800 pl-3 py-0.5 group/detail hover:border-zinc-600 transition-colors">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between gap-2 mb-1">
+                                                    <h4 className="text-sm font-semibold text-zinc-200 truncate pr-2 group-hover/detail:text-white transition-colors">
+                                                        {detail.products?.nama_produk || 'Produk Tanpa Nama'}
+                                                    </h4>
+                                                    <span className="text-xs font-bold text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded-md whitespace-nowrap">
+                                                        {detail.qty} Pcs
+                                                    </span>
+                                                </div>
+                                                {detail.deskripsi_desain ? (
+                                                    <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed max-w-[90%]">
+                                                        {detail.deskripsi_desain}
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-xs text-zinc-600 italic">Tanpa deskripsi</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-2 text-center">
+                                    <p className="text-xs text-zinc-600 italic">Detail pesanan kosong.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Card>
+    );
+}
 
 export function PesananList() {
     const { orders, fetchOrders, isLoading } = useOrderStore();
@@ -47,86 +146,9 @@ export function PesananList() {
                         <p className="text-zinc-500 text-sm">Belum ada pesanan yang dicatat.</p>
                     </div>
                 ) : (
-                    orders.map(order => {
-                        const totalQty = order.order_details?.reduce((acc, curr) => acc + curr.qty, 0) || 0;
-                        const totalPrice = order.order_details?.reduce((acc, curr) => acc + (curr.qty * curr.harga_satuan), 0) || 0;
-
-                        return (
-                            <Link key={order.no_pesanan} to={`/pesanan/${order.no_pesanan}`} className="block transform transition-active active:scale-[0.98]">
-                                <Card className="group relative overflow-hidden p-4 border-zinc-800/80 hover:border-blue-700/50 hover:bg-zinc-900/60 transition-all duration-300">
-                                    {/* Accent background effect */}
-                                    <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
-
-                                    <div className="flex justify-between items-start mb-1">
-                                        <div className="flex-1">
-                                            {/* Primary Heading: Nama Mitra */}
-                                            <h3 className="text-lg font-bold text-white font-display truncate pr-2 group-hover:text-blue-400 transition-colors">
-                                                {order.mitra?.nama_mitra || 'Pelanggan'}
-                                            </h3>
-
-                                            {/* Primary Meta: Tanggal */}
-                                            <p className="text-zinc-500 text-xs font-medium">
-                                                {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                            </p>
-                                        </div>
-
-                                        {/* Status Badge */}
-                                        <StatusBadge status={order.status} size="sm" />
-                                    </div>
-
-                                    {/* Secondary Info Grid */}
-                                    <div className="grid grid-cols-2 gap-y-3 mt-4 pt-4 border-t border-zinc-900">
-                                        <div className="flex items-center gap-2">
-                                            <div className="p-1.5 bg-zinc-900 rounded-lg text-zinc-500">
-                                                <Hash className="w-3.5 h-3.5" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-wider">No. Pesanan</span>
-                                                <span className="text-xs font-mono text-zinc-400 truncate max-w-[100px]">{order.no_pesanan}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 justify-self-end">
-                                            <div className="p-1.5 bg-zinc-900 rounded-lg text-zinc-500">
-                                                <Globe className="w-3.5 h-3.5" />
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-wider">Sumber</span>
-                                                <span className="text-xs text-zinc-400 font-medium">{order.sumber_pesanan}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <div className="p-1.5 bg-zinc-900 rounded-lg text-zinc-500">
-                                                <ShoppingBag className="w-3.5 h-3.5" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-wider">Total Qty</span>
-                                                <span className="text-xs text-zinc-300 font-bold">{totalQty} <span className="text-zinc-500 font-normal">Pcs</span></span>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 justify-self-end">
-                                            <div className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500">
-                                                <Wallet className="w-3.5 h-3.5" />
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-wider">Total Harga</span>
-                                                <span className="text-xs text-blue-400 font-bold">
-                                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalPrice)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Indicator */}
-                                    <div className="absolute bottom-4 right-4 text-zinc-700 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
-                                        <ChevronRight className="w-5 h-5" />
-                                    </div>
-                                </Card>
-                            </Link>
-                        );
-                    })
+                    orders.map(order => (
+                        <PesananListItem key={order.no_pesanan} order={order} />
+                    ))
                 )}
             </div>
         </div>
