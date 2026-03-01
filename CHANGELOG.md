@@ -1,4 +1,8 @@
-# Changelog
+## [2026-03-02] - Optimasi Header & Visual Logo (Compact Mode)
+### Changed
+- **Header Layout Optimization**: Mengurangi padding vertikal (`py-2.5`) dan horizontal (`px-4`) pada header untuk menciptakan tampilan yang lebih compact namun tetap ergonomis.
+- **Peningkatan Skala Logo Header**: Memperbesar ukuran logo (`LOGO_HEADER_REMVAV2`) sebesar ±30% dari ukuran sebelumnya (`h-9` untuk mobile, `sm:h-[42px]` untuk tablet/desktop) untuk mempertegas identitas visual brand.
+- **Penyelarasan Presisi**: Menyesuaikan `max-width` kontainer logo untuk memastikan alignment tetap center secara presisi dan mencegah logo terpotong pada berbagai ukuran layar, serta menjaga keseimbangan visual dengan elemen sekitarnya.
 
 ## [2026-03-02] - Optimasi Build & Bundle Split (Vite)
 ### Changed
