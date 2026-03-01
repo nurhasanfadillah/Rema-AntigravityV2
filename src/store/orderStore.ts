@@ -3,6 +3,7 @@ import { supabase } from '../utils/supabase';
 import { deleteOrderFile } from '../utils/orderStorage';
 import type { Mitra } from './mitraStore';
 import type { Product } from './productStore';
+import { isValidOrderTransition, getOrderTransitionRule, isValidDetailTransition } from '../utils/orderRules';
 
 export interface Order {
     no_pesanan: string;
@@ -40,7 +41,7 @@ interface OrderState {
     deleteOrder: (no_pesanan: string) => Promise<void>;
 }
 
-export const useOrderStore = create<OrderState>((set) => ({
+export const useOrderStore = create<OrderState>((set, get) => ({
     orders: [],
     isLoading: false,
     fetchOrders: async () => {
@@ -116,6 +117,23 @@ export const useOrderStore = create<OrderState>((set) => ({
 
         const oldStatus = currentOrder?.status;
 
+        // Validation: Prevent invalid status jumps
+        if (oldStatus && !isValidOrderTransition(oldStatus, status)) {
+            set({ isLoading: false });
+            throw new Error(`Transisi status dari ${oldStatus} ke ${status} tidak valid.`);
+        }
+
+        // Validation: Prerequisites check
+        const rule = getOrderTransitionRule(oldStatus as any, status as any);
+        if (rule) {
+            const fullOrder = get().orders.find(o => o.no_pesanan === no_pesanan);
+            const error = rule.prerequisites(fullOrder);
+            if (error) {
+                set({ isLoading: false });
+                throw new Error(error);
+            }
+        }
+
         // 2. Update status
         const { error } = await supabase
             .from('orders')
@@ -153,6 +171,12 @@ export const useOrderStore = create<OrderState>((set) => ({
         }
 
         const oldDetailStatus = currentDetail.status;
+
+        // Validation: Prevent invalid status jumps for details
+        if (!isValidDetailTransition(oldDetailStatus, status)) {
+            set({ isLoading: false });
+            throw new Error(`Transisi status item dari ${oldDetailStatus} ke ${status} tidak valid (Wajib Progresif: Menunggu -> Cetak DTF -> Sablon -> Selesai).`);
+        }
 
         // Logic Data #5: status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika status ordernya 'Diproses'
         if (oldDetailStatus === 'Menunggu' && currentOrder && currentOrder.status !== 'Diproses') {

@@ -77,29 +77,13 @@ export const DETAIL_TRANSITIONS: DetailTransitionRule[] = [
         consequences: ['Item masuk ke tahap produksi Cetak DTF.'],
     },
     {
-        from: ['Menunggu'],
+        from: ['Cetak DTF'],
         to: 'Sablon',
-        prerequisites: (order) => {
-            if (order.status !== 'Diproses') {
-                return 'Item hanya dapat diproses (dipindahkan dari status Menunggu) jika status Pesanan adalah "Diproses".';
-            }
-            return null;
-        },
+        prerequisites: () => null,
         consequences: ['Item masuk ke tahap produksi Sablon.'],
     },
     {
-        from: ['Menunggu'],
-        to: 'Selesai',
-        prerequisites: (order) => {
-            if (order.status !== 'Diproses') {
-                return 'Item hanya dapat diselesaikan jika status Pesanan adalah "Diproses".';
-            }
-            return null;
-        },
-        consequences: ['Item ditandai Selesai.', 'Jika semua item selesai, status pesanan otomatis akan berubah menjadi "Packing".'],
-    },
-    {
-        from: ['Cetak DTF', 'Sablon'],
+        from: ['Sablon'],
         to: 'Selesai',
         prerequisites: () => null,
         consequences: ['Item ditandai Selesai.', 'Jika semua item selesai, status pesanan otomatis akan berubah menjadi "Packing".'],

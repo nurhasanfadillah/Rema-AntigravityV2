@@ -1,6 +1,31 @@
 # Changelog
 
+## [2026-03-01] - Reorganisasi Hierarki Informasi & Desain Premium Pesanan
+### Added
+- **Pembaruan Hierarki Visual Pesanan**: Restrukturisasi total tata letak pada halaman daftar dan detail pesanan untuk mempertegas prioritas konten:
+  - **Daftar Pesanan (List)**: Kini menampilkan "Nama Mitra" sebagai judul utama (Heading) yang dominan, diikuti Tanggal sebagai metadata primer, sementara detail teknis (No. Pesanan, Sumber, Total) ditata dalam grid sekunder yang rapi.
+  - **Detail Item Produksi**: Mengangkat "Nama Produk" sebagai judul utama setiap kartu item, dengan "Qty" dan "Deskripsi Desain" sebagai informasi inti yang paling menonjol.
+- **Status Stepper & Progress Tracking**: Implementasi komponen `StatusStepper` dan `StatusBadge` baru yang memberikan visualisasi alur progres sistem (Menunggu -> Cetak -> Sablon -> Selesai) secara konsisten dan elegan.
+- **Smart Text Management**: 
+  - Penambahan fitur **Expand/Collapse** dengan *line-clamp* pada deskripsi desain yang panjang agar layout tetap rapi namun tetap dapat diakses penuh.
+  - Implementasi galeri aset desain yang elegan dengan scroll horizontal dan ring highlight untuk preview file.
+- **Optimasi Layout & Ruang**: Penggunaan whitespace yang lebih luas, tipografi berjenjang (`font-display` untuk heading), dan aksen gradien biru yang lebih halus untuk menciptakan kesan premium dan profesional.
+- **Aksesiibilitas & Responsivitas**: Peningkatan keterbacaan pada berbagai ukuran layar dengan alignment yang konsisten dan pengelolaan teks yang lebih terkontrol.
+
+## [2026-03-01] - Button-Driven Status UX & Progressive Workflow
+### Added
+- **State-Driven Button System**: Menggantikan dropdown status tradisional dengan sistem tombol berbasis kondisi (state) yang lebih intuitif dan terkontrol:
+  - **Order Level**: 
+    - Tombol "Konfirmasi Pesanan" (Aktif) -> "Pesanan Dikonfirmasi" (Terkunci) -> "Diproses" (Indikator Animasi) -> "Packing dan Selesaikan" (Aktif) -> "Selesai" (Indikator).
+    - Tombol "Batalkan Pesanan" dengan proteksi konfirmasi destruktif berlapis (alasan + double confirm) setelah pesanan selesai.
+  - **Detail Level**: 
+    - Alur kerja progresif otomatis: "Cetak DTF" -> "Sablon" -> "Selesaikan Item" -> "SELESAI".
+    - Penyembunyian tombol detail jika pesanan induk belum dikonfirmasi ("Menunggu Konfirmasi").
+- **Strict Logic Validation**: Integrasi Rule Engine langsung ke `orderStore.ts` untuk memvalidasi setiap transisi status (mencegah lompatan status tidak sah) dan memastikan pencatatan audit trail yang akurat untuk setiap perubahan.
+- **Visual Feedback & Triggers**: Penambahan indikator *pulse* pada status "Diproses" dan sinkronisasi otomatis status Pesanan induk menjadi "Packing" segera setelah semua item selesai.
+
 ## [2026-03-01] - Mekanisme Perubahan Status Interaktif & Rule Engine
+
 ### Added
 - **Interactive Rule Engine**: Implementasi sistem kontrol transisi status (State Transition Control) yang membatasi alur perubahan status hanya pada jalur yang valid sesuai logika bisnis.
 - **Dynamic Confirmation Modal**: Pengenalan komponen `StatusConfirmationModal` yang menampilkan rincian komprehensif sebelum perubahan status:

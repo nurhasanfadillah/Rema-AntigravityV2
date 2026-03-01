@@ -80,6 +80,7 @@ Pencatatan riwayat perubahan status untuk keamanan dan pelacakan.
 - status dorder_details dari 'Menunggu' hanya bisa dikonfirmasi jika staus ordernya 'Diproses'
 
 ## RIWAYAT PERBAIKAN
+- **(Maret 2026)**: Refaktor besar peribahan status (UX Buttons). Menggantikan dropdown dengan sistem tombol berbasis *state-driven* yang sinkron dengan database: Level `orders` progresif (Konfirmasi -> Diproses -> Packing -> Selesai -> Batalkan), Level `order_details` disinkronkan ke status induk dan bersifat progresif (DTF -> Sablon -> Selesai). Seluruh transisi kini divalidasi ketat di `orderStore` (Rule Engine) serta otomatisasi audit trail audit yang lebih detail.
 - **(Maret 2026)**: Implementasi mekanisme konfirmasi interaktif berbasis Rule Engine. transisi status kini dikontrol ketat oleh prasyarat (file_resi jika Online, data penerima jika Offline), modal konfirmasi dinamis dengan audit trail logging (user, waktu, status), serta proteksi penghapusan pesanan yang telah diproses.
 - **(Maret 2026)**: Penambahan tabel `order_audit_trail` dan logic trigger di level database (SQL) untuk menjamin konsistensi data secara transaksional (auto Packing & validasi status item).
 ... (existing history)

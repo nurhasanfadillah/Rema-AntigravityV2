@@ -3,19 +3,20 @@ import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Edit2, Trash2, CheckCircle, FileText, X } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, ChevronDown, ChevronUp, Package, Globe, Wallet } from 'lucide-react';
 import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/orderRules';
+import { StatusBadge, StatusStepper } from '../../components/ui/StatusBadge';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
     const { orders, fetchOrders, isLoading, updateOrderStatus, updateOrderDetailStatus, deleteOrder } = useOrderStore();
     const navigate = useNavigate();
 
-    const [isEditingStatus, setIsEditingStatus] = useState(false);
-    const [newStatus, setNewStatus] = useState<string>('');
+
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [expandedDesigns, setExpandedDesigns] = useState<Record<string, boolean>>({});
     const [statusModalConfig, setStatusModalConfig] = useState<{
         targetStatus: string;
         currentStatus: string;
@@ -80,7 +81,6 @@ export function PesananDetail() {
                 toast.success(`Status item berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
             }
             setIsStatusModalOpen(false);
-            setIsEditingStatus(false);
         } catch (error: any) {
             toast.error(error.message || 'Gagal mengubah status');
         }
@@ -99,15 +99,7 @@ export function PesananDetail() {
         );
     }
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'Selesai': return 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border-blue-700/50';
-            case 'Dibatalkan': return 'bg-red-500/10 text-red-400 border-red-500/20';
-            case 'Diproses': return 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 text-blue-300 border-blue-700/30';
-            case 'Packing': return 'bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20 text-white drop-shadow-sm border-blue-700/50';
-            default: return 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20';
-        }
-    };
+
 
     const total = order.order_details?.reduce((acc: number, current: any) => acc + (current.qty * current.harga_satuan), 0) || 0;
 
@@ -126,12 +118,16 @@ export function PesananDetail() {
             />
 
             <div className="flex items-center gap-3">
-                <Link to="/pesanan" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-gradient-to-r hover:from-blue-800/40 hover:to-blue-700/40 transition-colors">
+                <Link to="/pesanan" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-zinc-800/50 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
-                    <h2 className="text-xl font-bold tracking-tight">Detail Pesanan</h2>
-                    <p className="text-white drop-shadow-sm text-xs mt-0.5 font-mono">{order.no_pesanan}</p>
+                    <h2 className="text-xl font-bold tracking-tight font-display">Detail Pesanan</h2>
+                    <div className="flex items-center gap-2 mt-0.5">
+                        <StatusBadge status={order.status} size="sm" />
+                        <span className="text-zinc-600">•</span>
+                        <span className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">{order.no_pesanan}</span>
+                    </div>
                 </div>
                 {canDelete && (
                     <button onClick={async () => {
@@ -145,203 +141,287 @@ export function PesananDetail() {
                                 console.error(error);
                             }
                         }
-                    }} className="p-2 text-red-400 hover:text-red-300 rounded hover:bg-red-500/10 transition-colors">
+                    }} className="p-2.5 text-red-500 hover:text-red-400 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20">
                         <Trash2 className="w-5 h-5" />
                     </button>
                 )}
             </div>
 
-            <Card className="space-y-4 border-blue-700/50 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-[100px] pointer-events-none"></div>
+            <Card className="border-blue-900/30 bg-zinc-900/40 relative overflow-hidden backdrop-blur-sm">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-bl-[120px] pointer-events-none"></div>
 
-                <div className="flex justify-between items-start">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                            <ShoppingCart className="w-5 h-5 text-zinc-400" />
-                            {!isEditingStatus ? (
-                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-                                    {order.status}
-                                </span>
-                            ) : (
-                                <select
-                                    className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                    value={newStatus}
-                                    onChange={(e) => setNewStatus(e.target.value)}
-                                >
-                                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
-                                    <option value="Diproses">Diproses</option>
-                                    <option value="Packing">Packing</option>
-                                    <option value="Selesai">Selesai</option>
-                                    <option value="Dibatalkan">Dibatalkan</option>
-                                </select>
-                            )}
+                {/* Primary Information Section */}
+                <div className="mb-6">
+                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-[0.2em] mb-1 block">Pelanggan / Mitra</span>
+                    <h1 className="text-2xl font-bold text-white font-display leading-tight">{order.mitra?.nama_mitra || 'Tamu / Walk-in'}</h1>
+                </div>
 
-                            {!isEditingStatus ? (
-                                <button onClick={() => { setIsEditingStatus(true); setNewStatus(order.status); }} className="p-1 text-zinc-400 hover:text-blue-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40">
-                                    <Edit2 className="w-3.5 h-3.5" />
-                                </button>
-                            ) : (
-                                <>
-                                    <button
-                                        onClick={() => handleOpenStatusModal(newStatus, 'order')}
-                                        className="p-1 text-blue-400 hover:text-emerald-300 rounded hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 border-[0.5px] border-blue-700/30 shadow-inner shadow-blue-500/20"
-                                    >
-                                        <CheckCircle className="w-4 h-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => setIsEditingStatus(false)}
-                                        className="p-1 text-zinc-500 hover:text-white rounded"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </>
-                            )}
+                <div className="grid grid-cols-2 gap-6 pb-6 border-b border-zinc-800/50">
+                    <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2 text-zinc-500">
+                            <Wallet className="w-4 h-4" />
+                            <span className="text-[11px] font-bold uppercase tracking-wider">Total Pembayaran</span>
                         </div>
+                        <p className="font-bold text-blue-400 text-xl font-display leading-none">
+                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total)}
+                        </p>
                     </div>
-                    <div className="text-right">
-                        <p className="text-xs text-zinc-500">Total Transaksi</p>
-                        <p className="font-bold text-white drop-shadow-sm text-lg">{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total)}</p>
+
+                    <div className="flex flex-col items-end gap-1">
+                        {(() => {
+                            if (order.status === 'Menunggu Konfirmasi') {
+                                return (
+                                    <button
+                                        onClick={() => handleOpenStatusModal('Diproses', 'order')}
+                                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-[11px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all border border-blue-400/20"
+                                    >
+                                        Proses Sekarang
+                                    </button>
+                                );
+                            }
+                            if (order.status === 'Packing') {
+                                return (
+                                    <button
+                                        onClick={() => handleOpenStatusModal('Selesai', 'order')}
+                                        className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-800 text-white text-[11px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-900/40 hover:scale-105 active:scale-95 transition-all border border-emerald-400/20"
+                                    >
+                                        Selesaikan
+                                    </button>
+                                );
+                            }
+                            return <StatusBadge status={order.status} />;
+                        })()}
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
-                    <div>
-                        <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
+                {/* Secondary Meta Info */}
+                <div className="grid grid-cols-2 gap-y-5 pt-6">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-zinc-500">
                             <Calendar className="w-3.5 h-3.5" />
-                            <span className="text-xs">Tanggal</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Tanggal</span>
                         </div>
-                        <p className="text-sm text-zinc-200">{new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <p className="text-sm font-medium text-zinc-200">{new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
-                    <div>
-                        <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
-                            <Tag className="w-3.5 h-3.5" />
-                            <span className="text-xs">Sumber</span>
+
+                    <div className="space-y-1 justify-self-end text-right">
+                        <div className="flex items-center gap-1.5 text-zinc-500 justify-end">
+                            <Globe className="w-3.5 h-3.5" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Sumber</span>
                         </div>
-                        <p className="text-sm text-zinc-200">{order.sumber_pesanan}</p>
+                        <p className="text-sm font-medium text-zinc-200">{order.sumber_pesanan}</p>
                     </div>
-                    <div className="col-span-2">
-                        <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
-                            <User className="w-3.5 h-3.5" />
-                            <span className="text-xs">Mitra Penanggung Jawab</span>
-                        </div>
-                        <p className="text-sm font-medium text-zinc-200">
-                            {order.mitra?.nama_mitra || '-'}
-                        </p>
-                        {order.sumber_pesanan === 'Offline' && (
-                            <div className="mt-2 pt-2 border-t border-zinc-800/20">
-                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-0.5">Penerima Akhir</p>
-                                <p className="text-sm font-medium text-zinc-300">{order.nama_penerima}</p>
+
+                    {order.sumber_pesanan === 'Offline' && (
+                        <div className="col-span-2 p-3 bg-zinc-950/50 rounded-xl border border-zinc-800/30">
+                            <div className="flex items-center gap-1.5 text-zinc-500 mb-2">
+                                <User className="w-3.5 h-3.5 text-blue-500/70" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Informasi Penerima</span>
+                            </div>
+                            <div className="space-y-1.5">
+                                <p className="text-sm font-bold text-zinc-100">{order.nama_penerima}</p>
                                 <p className="text-xs text-zinc-400">{order.kontak_penerima}</p>
+                                {order.alamat_penerima && (
+                                    <div className="flex gap-2 mt-2 pt-2 border-t border-zinc-900">
+                                        <MapPin className="w-3.5 h-3.5 text-zinc-600 shrink-0 mt-0.5" />
+                                        <p className="text-xs text-zinc-500 leading-relaxed italic">{order.alamat_penerima}</p>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    {order.sumber_pesanan === 'Offline' && order.alamat_penerima && (
-                        <div className="col-span-2">
-                            <div className="flex items-center gap-1.5 text-zinc-500 mb-1">
-                                <MapPin className="w-3.5 h-3.5" />
-                                <span className="text-xs">Alamat Kirim</span>
-                            </div>
-                            <p className="text-sm text-zinc-300 leading-relaxed">{order.alamat_penerima}</p>
                         </div>
                     )}
+
                     {order.sumber_pesanan === 'Online' && (
                         <div className="col-span-2 pt-2">
-                            <div className="flex items-center gap-1.5 text-zinc-500 mb-1.5">
+                            <div className="flex items-center gap-1.5 text-zinc-500 mb-2.5">
                                 <FileText className="w-3.5 h-3.5" />
-                                <span className="text-xs">File Resi (PDF)</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Dokumen Resi</span>
                             </div>
                             {order.file_resi ? (
                                 <a
                                     href={getOrderFileUrl(order.file_resi) || '#'}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-900/40 border border-blue-700/50 rounded-lg text-xs text-blue-300 hover:bg-blue-800/40 transition-colors"
+                                    className="inline-flex items-center gap-2.5 px-4 py-2 bg-blue-900/30 border border-blue-700/30 rounded-xl text-xs font-bold text-blue-300 hover:bg-blue-800/30 transition-all hover:translate-y-[-2px] active:translate-y-0"
                                 >
-                                    <FileText className="w-3.5 h-3.5" />
-                                    Lihat Resi Pengiriman
+                                    <FileText className="w-4 h-4" />
+                                    Buka Resi Pengiriman
                                 </a>
                             ) : (
-                                <p className="text-xs text-red-400 italic font-medium">Resi belum diunggah</p>
+                                <div className="px-4 py-2 bg-red-500/5 border border-red-500/10 rounded-xl">
+                                    <p className="text-[11px] text-red-400/80 italic font-medium">Data resi pengiriman belum diunggah</p>
+                                </div>
                             )}
                         </div>
                     )}
                 </div>
             </Card>
 
-            <div className="space-y-3">
-                <h3 className="font-semibold text-lg text-zinc-200 pl-1">Daftar Item ({order.order_details?.length || 0})</h3>
+            <div className="space-y-4 pt-2 pb-24">
+                <div className="flex items-center justify-between px-1">
+                    <h3 className="font-bold text-lg text-white font-display">Informasi Produksi</h3>
+                    <div className="px-2.5 py-1 bg-zinc-900 rounded-lg text-[10px] font-bold text-zinc-500 border border-zinc-800 uppercase tracking-widest">
+                        {order.order_details?.length || 0} Item
+                    </div>
+                </div>
 
-                {order.order_details?.map((item: any) => (
-                    <Card key={item.id} className="border-zinc-800">
-                        <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium text-zinc-100 pr-2">{item.products?.nama_produk || 'Produk Dihapus'}</h4>
-                            <select
-                                className={`px-2 py-0.5 rounded text-[10px] font-medium border focus:outline-none focus:ring-1 focus:ring-blue-500 bg-zinc-900 transition-colors ${item.status === 'Selesai' ? 'text-blue-300 border-blue-700/50 shadow-[0_0_10px_rgba(59,130,246,0.15)] bg-gradient-to-r from-blue-900/50 to-blue-800/50' :
-                                    item.status === 'Menunggu' ? 'text-zinc-400 border-zinc-500/20 bg-zinc-500/10' :
-                                        'text-blue-300 border-blue-700/30 bg-gradient-to-r from-blue-900/40 to-blue-800/40'
-                                    }`}
-                                value={item.status}
-                                onChange={(e) => handleOpenStatusModal(e.target.value, 'detail', item.id)}
-                            >
-                                <option value="Menunggu">Menunggu</option>
-                                <option value="Cetak DTF">Cetak DTF</option>
-                                <option value="Sablon">Sablon</option>
-                                <option value="Selesai">Selesai</option>
-                            </select>
-                        </div>
+                {order.order_details?.map((item: any) => {
+                    const isExpanded = expandedDesigns[item.id] || false;
+                    const needsClamp = item.deskripsi_desain && item.deskripsi_desain.length > 60;
 
-                        <div className="flex justify-between items-end mt-4">
-                            <div className="space-y-1">
-                                <p className="text-xs text-zinc-500">Harga x Qty</p>
-                                <p className="text-sm text-zinc-300">
-                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.harga_satuan)} x <span className="font-mono text-white">{item.qty}</span>
-                                </p>
-                            </div>
-                            <p className="font-bold text-zinc-200">
-                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.harga_satuan * item.qty)}
-                            </p>
-                        </div>
+                    return (
+                        <Card key={item.id} className="border-zinc-800/80 bg-zinc-900/20 group pb-6">
+                            <div className="flex flex-col gap-5">
+                                {/* Product Name & Qty Section - Core Info Level 1 */}
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-bold text-lg text-white font-display leading-tight truncate-multiline group-hover:text-blue-400 transition-colors">
+                                            {item.products?.nama_produk || 'Produk Dihapus'}
+                                        </h4>
+                                        <div className="flex items-center gap-2 mt-1.5">
+                                            <div className="flex items-center gap-1 bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border border-blue-500/10">
+                                                <Package className="w-3 h-3" />
+                                                <span>Qty: {item.qty} Pcs</span>
+                                            </div>
+                                            <span className="text-zinc-700">•</span>
+                                            <span className="text-[10px] text-zinc-500 font-medium">
+                                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.harga_satuan)} / pcs
+                                            </span>
+                                        </div>
+                                    </div>
 
-                        {item.design_file && item.design_file.length > 0 && (
-                            <div className="mt-4">
-                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 pl-1">File Desain</p>
-                                <div className="grid grid-cols-4 gap-2">
-                                    {item.design_file.map((path: string, pIdx: number) => {
-                                        const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(path.split('.').pop()?.toLowerCase() || '');
-                                        return (
-                                            <a
-                                                key={pIdx}
-                                                href={getOrderFileUrl(path) || '#'}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="relative aspect-square rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden group"
-                                            >
-                                                {isImg ? (
-                                                    <img
-                                                        src={getOrderFileUrl(path) || ''}
-                                                        alt="Design"
-                                                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center">
-                                                        <FileText className="w-5 h-5 text-blue-400" />
-                                                    </div>
-                                                )}
-                                            </a>
-                                        );
-                                    })}
+                                    {/* Action Button */}
+                                    {(() => {
+                                        if (order.status === 'Menunggu Konfirmasi') return null;
+
+                                        if (item.status === 'Menunggu') {
+                                            return (
+                                                <button
+                                                    onClick={() => handleOpenStatusModal('Cetak DTF', 'detail', item.id)}
+                                                    className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-blue-900/30 hover:scale-105 active:scale-95 transition-all"
+                                                >
+                                                    Cetak
+                                                </button>
+                                            );
+                                        }
+
+                                        if (item.status === 'Cetak DTF') {
+                                            return (
+                                                <button
+                                                    onClick={() => handleOpenStatusModal('Sablon', 'detail', item.id)}
+                                                    className="px-3 py-1.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-indigo-900/30 hover:scale-105 active:scale-95 transition-all"
+                                                >
+                                                    Sablon
+                                                </button>
+                                            );
+                                        }
+
+                                        if (item.status === 'Sablon') {
+                                            return (
+                                                <button
+                                                    onClick={() => handleOpenStatusModal('Selesai', 'detail', item.id)}
+                                                    className="px-3 py-1.5 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-emerald-900/30 hover:scale-105 active:scale-95 transition-all"
+                                                >
+                                                    Selesai
+                                                </button>
+                                            );
+                                        }
+
+                                        return null;
+                                    })()}
+                                </div>
+
+                                {/* Status Progress Track */}
+                                {order.status !== 'Menunggu Konfirmasi' && (
+                                    <div className="px-1">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Tahapan Produksi</span>
+                                            <StatusBadge status={item.status} size="sm" />
+                                        </div>
+                                        <StatusStepper currentStatus={item.status} type="detail" />
+                                    </div>
+                                )}
+
+                                {/* Deskripsi Desain Section - Core Info Level 2 */}
+                                {item.deskripsi_desain && (
+                                    <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-800/40 shadow-inner">
+                                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2">
+                                            <Tag className="w-3 h-3" />
+                                            <span className="text-[10px] font-bold uppercase tracking-widest">Detail & Intruksi Desain</span>
+                                        </div>
+                                        <div className="relative">
+                                            <p className={`text-[13px] text-zinc-300 leading-relaxed italic ${!isExpanded && needsClamp ? 'line-clamp-2' : ''}`}>
+                                                "{item.deskripsi_desain}"
+                                            </p>
+                                            {needsClamp && (
+                                                <button
+                                                    onClick={() => setExpandedDesigns(prev => ({ ...prev, [item.id]: !isExpanded }))}
+                                                    className="mt-1 flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
+                                                >
+                                                    {isExpanded ? (
+                                                        <>Sembunyikan <ChevronUp className="w-3 h-3" /></>
+                                                    ) : (
+                                                        <>Selengkapnya <ChevronDown className="w-3 h-3" /></>
+                                                    )}
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Assets Grid */}
+                                {item.design_file && item.design_file.length > 0 && (
+                                    <div>
+                                        <div className="flex items-center gap-1.5 text-zinc-500 mb-3 ml-1">
+                                            <ShoppingCart className="w-3 h-3" />
+                                            <span className="text-[10px] font-bold uppercase tracking-widest">Aset Desain ({item.design_file.length})</span>
+                                        </div>
+                                        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1 px-1">
+                                            {item.design_file.map((path: string, pIdx: number) => {
+                                                const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(path.split('.').pop()?.toLowerCase() || '');
+                                                return (
+                                                    <a
+                                                        key={pIdx}
+                                                        href={getOrderFileUrl(path) || '#'}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="relative w-24 aspect-square shrink-0 rounded-xl bg-zinc-950 border border-zinc-800/50 overflow-hidden ring-1 ring-white/5 hover:ring-blue-500 transition-all group"
+                                                    >
+                                                        {isImg ? (
+                                                            <img
+                                                                src={getOrderFileUrl(path) || ''}
+                                                                alt="Design"
+                                                                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full flex flex-col items-center justify-center gap-1.5">
+                                                                <FileText className="w-6 h-6 text-blue-400/50" />
+                                                                <span className="text-[8px] font-bold text-zinc-600 uppercase">File Assets</span>
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <div className="w-full h-1 bg-blue-500/30 rounded-full overflow-hidden">
+                                                                <div className="w-full h-full bg-blue-500"></div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Item Total */}
+                                <div className="mt-2 pt-4 border-t border-zinc-800/50 flex justify-between items-center px-1">
+                                    <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Subtotal Item</span>
+                                    <span className="text-sm font-black text-white">
+                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.harga_satuan * item.qty)}
+                                    </span>
                                 </div>
                             </div>
-                        )}
-
-                        {item.deskripsi_desain && (
-                            <div className="mt-3 p-3 bg-zinc-900 rounded-lg border border-zinc-800 shadow-inner">
-                                <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Instruksi Desain</p>
-                                <p className="text-sm text-zinc-300 italic leading-relaxed">"{item.deskripsi_desain}"</p>
-                            </div>
-                        )}
-                    </Card>
-                ))}
+                        </Card>
+                    );
+                })}
             </div>
         </div>
     );
