@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['ICON_APLIKASI_LOGO_REMAV2.png'],
       manifest: {
         name: 'REMA – Redone Execution and Management Architecture',
         short_name: 'REMA',
@@ -18,6 +18,7 @@ export default defineConfig({
         theme_color: '#09090b',
         background_color: '#09090b',
         display: 'standalone',
+        orientation: 'portrait',
         lang: 'id',
         icons: [
           {
@@ -28,8 +29,35 @@ export default defineConfig({
           {
             src: '/ICON_APLIKASI_LOGO_REMAV2.png',
             sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: '/ICON_APLIKASI_LOGO_REMAV2.png',
+            sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          }
+        ],
+        shortcuts: [
+          {
+            name: 'Dashboard',
+            url: '/',
+            icons: [{ src: '/ICON_APLIKASI_LOGO_REMAV2.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Data Pesanan',
+            url: '/pesanan',
+            icons: [{ src: '/ICON_APLIKASI_LOGO_REMAV2.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Produksi',
+            url: '/produksi',
+            icons: [{ src: '/ICON_APLIKASI_LOGO_REMAV2.png', sizes: '192x192' }]
+          },
+          {
+            name: 'Laporan Keuangan',
+            url: '/keuangan',
+            icons: [{ src: '/ICON_APLIKASI_LOGO_REMAV2.png', sizes: '192x192' }]
           }
         ]
       }

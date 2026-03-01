@@ -18,9 +18,11 @@
   - Memastikan ukuran responsif (`h-7` untuk mobile, `sm:h-8` untuk tablet/desktop) dan statis (`sticky top-0`) agar tidak mengganggu navigasi.
   - Menambahkan efek interaksi halus (`hover:scale-[1.02]`) pada logo untuk pengalaman pengguna yang lebih hidup.
 - **Identitas Ikon Aplikasi (`ICON_APLIKASI_LOGO_REMAV2.png`)**:
-  - Memperbarui Favicon (`index.html`) menggunakan format PNG resolusi tinggi.
-  - Mengintegrasikan ikon ke dalam sistem PWA via `vite.config.ts`, mencakup ukuran standar (192x192) dan ukuran besar (512x512) dengan dukungan *maskable icon*.
-  - Menerapkan `apple-touch-icon` untuk konsistensi identitas pada perangkat iOS/macOS.
+  - Memperbarui Favicon (`index.html`) dan `apple-touch-icon` menggunakan aset PNG resolusi tinggi untuk konsistensi identitas pada perangkat iOS/Android/macOS.
+  - Mengintegrasikan ikon ke dalam sistem PWA via `vite.config.ts`, mencakup ukuran standar (192x192), ukuran besar (512x512), dan *maskable purpose* untuk tampilan optimal di berbagai launcher.
+  - Menambahkan **PWA Shortcuts** untuk navigasi instan ke modul Dashboard, Pesanan, Produksi, dan Keuangan langsung dari beranda perangkat.
+  - Mengatur `theme_color` dan `background_color` (`#09090b`) serta meta tag pendukung untuk integrasi Splash Screen yang mulus.
+  - Membersihkan referensi aset `favicon.ico` dan `masked-icon.svg` yang tidak relevan di konfigurasi build.
 ### Changed
 - **Pembersihan Branding Teks**: Menghapus ornamen branding teks "REMA v2.0" yang bersifat sementara di header, menggantikannya dengan aset visual resmi yang lebih profesional dan bersih.
 
