@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Tag, FileText, Globe, User, MapPin, Search, ArrowRight, Loader2, ExternalLink } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useOrderStore } from '../../store/orderStore';
-import { StatusBadge } from '../../components/ui/StatusBadge';
+import { StatusBadge, StatusStepper } from '../../components/ui/StatusBadge';
 import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getDetailTransitionRule } from '../../utils/orderRules';
@@ -117,6 +117,14 @@ export function PesananDetailItem() {
             </div>
 
             <div className="p-5 space-y-8 hide-scrollbar">
+                {/* Status Stepper Flow */}
+                <div className="bg-zinc-900/20 p-5 rounded-3xl border border-zinc-900/50">
+                    <div className="mb-4 px-1">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Tahapan Produksi</span>
+                    </div>
+                    <StatusStepper currentStatus={item.status as any} type="detail" />
+                </div>
+
                 {/* Section: Design Information */}
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 text-blue-400">

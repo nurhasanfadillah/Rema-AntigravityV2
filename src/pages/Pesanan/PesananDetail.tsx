@@ -329,12 +329,11 @@ export function PesananDetail() {
 
                                 {/* Status Progress Track */}
                                 {order.status !== 'Menunggu Konfirmasi' && (
-                                    <div className="px-1">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Tahapan Produksi</span>
-                                            <StatusBadge status={item.status} size="sm" />
+                                    <div className="bg-zinc-900/20 p-5 rounded-3xl border border-zinc-900/50">
+                                        <div className="mb-4 px-1">
+                                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Tahapan Produksi</span>
                                         </div>
-                                        <StatusStepper currentStatus={item.status} type="detail" />
+                                        <StatusStepper currentStatus={item.status as any} type="detail" />
                                     </div>
                                 )}
 
