@@ -12,12 +12,13 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'REMA v2 App',
-        short_name: 'REMA v2',
-        description: 'Aplikasi Manajemen Data Operasional dan Master Data',
-        theme_color: '#121212',
-        background_color: '#121212',
+        name: 'REMA – Redone Execution and Management Architecture',
+        short_name: 'REMA',
+        description: 'Platform manajemen pesanan, produksi, dan keuangan oleh PT. Redone Berkah Mandiri Utama.',
+        theme_color: '#09090b',
+        background_color: '#09090b',
         display: 'standalone',
+        lang: 'id',
         icons: [
           {
             src: '/pwa-192x192.png',
