@@ -1,11 +1,19 @@
 # Changelog
 
+## [2026-03-01] - Refinemen UI Produksi (Compact & Flex-Grow Tabs)
+### Changed
+- **Optimasi Tab Status**: Memperbarui sistem tab pada `ProduksiList.tsx` untuk tampilan yang lebih modern dan efisien:
+  - **Compact Text-Only**: Menghilangkan kombinasi Icon + Label, beralih ke format "Teks Ringkas Saja" (Antri, Cetak, Sablon, Selesai) dengan indikator jumlah (count) yang terintegrasi secara minimalis.
+  - **Flexible Width Layout**: Mengimplementasikan `flex-grow` pada setiap tab sehingga mengisi penuh lebar layar secara proporsional tanpa *horizontal scrolling*.
+  - **Tipografi & Active State**: Menggunakan font yang lebih kecil namun tetap tajam, dengan *active state* berupa background subtle dan garis bawah (underline) tipis yang elegan.
+  - **Penyelarasan Spasi**: Merapikan margin dan padding pada header dan card untuk mencapai keseimbangan visual dan skannabilitas yang lebih tinggi.
+
 ## [2026-03-01] - Refaktor UI Daftar Produksi & Sentralisasi Aksi Status
 ### Changed
 - **UI Card `ProduksiList.tsx`**: Menyesuaikan tampilan daftar item produksi agar lebih ringkas dan berfokus pada monitoring:
-  - Mengubah hierarki visual dengan menjadikan "Nama Mitra" sebagai elemen paling dominan pada baris pertama.
-  - Menampilkan "Nama Produk x Qty" secara menyatu pada baris kedua.
-  - Menyederhanakan Deskripsi Desain menjadi teks inline yang ringkas tanpa ornamen/box.
+  - Mengubah hierarki visual dengan menjadikan "Nama Mitra" sebagai elemen paling dominan di kiri atas dan "Nama Produk x Qty" diletakkan rata kanan (sebaris) pada baris pertama.
+  - Menyederhanakan Deskripsi Desain menjadi teks inline yang ringkas tanpa ornamen/box langsung di bawah baris pertama.
+  - Menambahkan garis pemisah tipis (subtle divider) yang elegan untuk memisahkan secara visual antara informasi utama (Mitra, Produk, Deskripsi) dan informasi sekunder.
   - Memperkecil dan meredupkan informasi sekunder seperti Tanggal, Waktu Berlalu (relative time), dan No. Pesanan di bagian terbawah card.
   - Sepenuhnya menghapus seluruh action button (seperti "Lanjut ke...") dan *StatusBadge* langsung dari baris list array untuk menjaga area card tetap bersih dari interupsi monitoring.
 - **Relokasi Action & Validasi Status ( `PesananDetailItem.tsx`)**:

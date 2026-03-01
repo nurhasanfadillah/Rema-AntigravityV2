@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-    PackageOpen, Clock, Printer, Palette, CheckCircle2, AlertCircle, Loader2
+    PackageOpen, AlertCircle, Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
@@ -19,11 +19,11 @@ export function ProduksiList() {
         fetchProduksi();
     }, [fetchProduksi]);
 
-    const tabs: { id: TabStatus; label: string; icon: React.ElementType; color: string }[] = [
-        { id: 'Menunggu', label: 'Menunggu', icon: Clock, color: 'text-zinc-400' },
-        { id: 'Cetak DTF', label: 'Cetak', icon: Printer, color: 'text-purple-400' },
-        { id: 'Sablon', label: 'Sablon', icon: Palette, color: 'text-cyan-400' },
-        { id: 'Selesai', label: 'Selesai', icon: CheckCircle2, color: 'text-emerald-400' },
+    const tabs: { id: TabStatus; label: string }[] = [
+        { id: 'Menunggu', label: 'Antri' },
+        { id: 'Cetak DTF', label: 'Cetak' },
+        { id: 'Sablon', label: 'Sablon' },
+        { id: 'Selesai', label: 'Selesai' },
     ];
 
     const filteredItems = items.filter(item => item.status === activeTab);
@@ -36,39 +36,48 @@ export function ProduksiList() {
         <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 pb-20">
 
             {/* Header */}
-            <header className="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 px-4 py-4">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-xl border border-blue-500/20">
-                        <PackageOpen className="w-6 h-6 text-blue-400" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight">Produksi</h1>
-                        <p className="text-xs text-zinc-400">Pusat kelola item pesanan</p>
+            <header className="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 pt-4 pb-3">
+                <div className="px-4 mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-xl border border-blue-500/20 shadow-sm shadow-blue-900/20">
+                            <PackageOpen className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-lg font-bold tracking-tight text-zinc-100 leading-tight">Produksi</h1>
+                            <p className="text-xs text-zinc-400 font-medium tracking-wide">Pusat kelola item</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Segmented Control / Tabs */}
-                <div className="flex w-full mt-4 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800/50 overflow-x-auto hide-scrollbar">
-                    {tabs.map((tab) => {
-                        const Icon = tab.icon;
-                        const count = items.filter(i => i.status === tab.id).length;
-                        return (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`flex-1 flex flex-col items-center justify-center py-2 px-3 rounded-lg text-sm font-medium transition-all duration-300 relative shrink-0 min-w-[80px] ${activeTab === tab.id
-                                    ? 'bg-blue-600/20 text-blue-400 shadow-sm border border-blue-500/20'
-                                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-1.5 mb-1 text-[11px] uppercase tracking-wider">
-                                    <Icon className="w-3.5 h-3.5" />
-                                    <span>{tab.label}</span>
-                                </div>
-                                <span className="text-lg font-bold leading-none">{count}</span>
-                            </button>
-                        );
-                    })}
+                {/* Compact Segmented Control / Tabs */}
+                <div className="px-4">
+                    <div className="flex w-full bg-zinc-900/50 p-1 rounded-xl border border-zinc-800/50">
+                        {tabs.map((tab) => {
+                            const count = items.filter(i => i.status === tab.id).length;
+                            const isActive = activeTab === tab.id;
+
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`flex-1 flex flex-col items-center justify-center py-2 rounded-lg transition-all duration-300 relative ${isActive
+                                        ? 'bg-zinc-800/60 text-zinc-100 shadow-sm'
+                                        : 'text-zinc-500 hover:text-zinc-400'
+                                        }`}
+                                >
+                                    <span className={`text-[10px] font-bold leading-none mb-1 transition-colors ${isActive ? 'text-blue-400' : 'text-zinc-600'}`}>
+                                        {count}
+                                    </span>
+                                    <span className={`text-[10px] uppercase font-black tracking-tight transition-colors ${isActive ? 'text-zinc-100' : 'text-zinc-500'}`}>
+                                        {tab.label}
+                                    </span>
+                                    {isActive && (
+                                        <div className="absolute -bottom-[-2px] w-6 h-[1.5px] bg-blue-500 rounded-full" />
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
             </header>
 
@@ -91,13 +100,15 @@ export function ProduksiList() {
                             return (
                                 <Card key={item.id} className="p-4 bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700/60 transition-colors cursor-pointer group" onClick={() => handleOpenDetail(item)}>
                                     {/* Primary Info */}
-                                    <div className="flex flex-col mb-3">
-                                        <h3 className="font-bold text-lg text-zinc-100 leading-tight mb-1 truncate group-hover:text-blue-400 transition-colors">
-                                            {item.orders?.mitra?.nama_mitra || 'Tamu'}
-                                        </h3>
-                                        <p className="font-medium text-[13px] text-zinc-300 truncate">
-                                            {item.products?.nama_produk || 'Produk Dihapus'} <span className="text-zinc-500 mx-1">x</span> {item.qty}
-                                        </p>
+                                    <div className="flex flex-col">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <h3 className="font-bold text-base text-zinc-100 leading-tight truncate group-hover:text-blue-400 transition-colors">
+                                                {item.orders?.mitra?.nama_mitra || 'Tamu'}
+                                            </h3>
+                                            <p className="font-semibold text-[13px] text-zinc-300 shrink-0 text-right mt-0.5">
+                                                {item.products?.nama_produk || 'Produk Dihapus'} <span className="text-zinc-500 mx-1">x</span> {item.qty}
+                                            </p>
+                                        </div>
                                         {/* Inline Deskripsi Tanpa Box */}
                                         {item.deskripsi_desain ? (
                                             <p className="text-[11px] text-zinc-400 italic line-clamp-1 mt-1 font-medium">
@@ -110,8 +121,10 @@ export function ProduksiList() {
                                         )}
                                     </div>
 
+                                    <div className="h-px bg-zinc-800/50 my-3"></div>
+
                                     {/* Secondary Info */}
-                                    <div className="flex justify-between items-center text-[10px] text-zinc-500 mt-2">
+                                    <div className="flex justify-between items-center text-[10px] text-zinc-500">
                                         <div className="flex items-center gap-1.5">
                                             <span>{new Date(item.orders?.tanggal || '').toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })}</span>
                                             <span className="text-zinc-700 mx-0.5">•</span>
