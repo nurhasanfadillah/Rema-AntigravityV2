@@ -37,15 +37,14 @@ export function ProduksiList() {
 
             {/* Header */}
             <header className="bg-zinc-950 border-b border-zinc-900 pt-4 pb-3">
-                <div className="px-4 mb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-xl border border-blue-500/20 shadow-sm shadow-blue-900/20">
-                            <PackageOpen className="w-5 h-5 text-blue-400" />
-                        </div>
-                        <div>
-                            <h1 className="text-lg font-bold tracking-tight text-zinc-100 leading-tight">Produksi</h1>
-                            <p className="text-xs text-zinc-400 font-medium tracking-wide">Pusat kelola item</p>
-                        </div>
+                <div className="px-4 mb-4 flex items-center gap-3">
+                    <div className="p-2 bg-blue-900/30 rounded-xl border border-blue-500/20 shadow-sm shadow-blue-900/20">
+                        <PackageOpen className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                        {/* h2 standar: page-title pattern, tapi dalam konteks header ProduksiList pakai h1 */}
+                        <h2 className="text-xl font-bold tracking-tight font-display text-zinc-100 leading-tight">Produksi</h2>
+                        <p className="page-subtitle mt-0.5">Pusat kelola item produksi</p>
                     </div>
                 </div>
 
@@ -65,10 +64,12 @@ export function ProduksiList() {
                                         : 'text-zinc-500 hover:text-zinc-400'
                                         }`}
                                 >
-                                    <span className={`text-[10px] font-bold leading-none mb-1 transition-colors ${isActive ? 'text-blue-400' : 'text-zinc-600'}`}>
+                                    {/* Count badge */}
+                                    <span className={`text-[11px] font-bold leading-none mb-0.5 transition-colors ${isActive ? 'text-blue-400' : 'text-zinc-600'}`}>
                                         {count}
                                     </span>
-                                    <span className={`text-[10px] uppercase font-black tracking-tight transition-colors ${isActive ? 'text-zinc-100' : 'text-zinc-500'}`}>
+                                    {/* Tab label */}
+                                    <span className={`text-[10px] uppercase font-extrabold tracking-tight transition-colors ${isActive ? 'text-zinc-100' : 'text-zinc-500'}`}>
                                         {tab.label}
                                     </span>
                                     {isActive && (
@@ -89,8 +90,8 @@ export function ProduksiList() {
                     </div>
                 ) : filteredItems.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-8 text-center bg-zinc-900/40 rounded-2xl border border-zinc-800/50 mt-4">
-                        <AlertCircle className="w-12 h-12 text-zinc-600 mb-3" />
-                        <p className="text-zinc-400">Tidak ada item di status ini</p>
+                        <AlertCircle className="w-10 h-10 text-zinc-600 mb-3" />
+                        <p className="text-sm text-zinc-500">Tidak ada item di status ini</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
@@ -102,20 +103,23 @@ export function ProduksiList() {
                                     {/* Primary Info */}
                                     <div className="flex flex-col">
                                         <div className="flex justify-between items-start gap-4">
-                                            <h3 className="font-bold text-base text-zinc-100 leading-tight truncate group-hover:text-blue-400 transition-colors">
+                                            {/* Mitra name — primary info level 1 */}
+                                            <h4 className="font-bold text-zinc-100 leading-tight truncate group-hover:text-blue-400 transition-colors">
                                                 {item.orders?.mitra?.nama_mitra || 'Tamu'}
-                                            </h3>
-                                            <p className="font-semibold text-[13px] text-zinc-300 shrink-0 text-right mt-0.5">
-                                                {item.products?.nama_produk || 'Produk Dihapus'} <span className="text-zinc-500 mx-1">x</span> {item.qty}
+                                            </h4>
+                                            {/* Produk x Qty — primary info level 1, right aligned */}
+                                            <p className="font-semibold text-sm text-zinc-300 shrink-0 text-right mt-0">
+                                                {item.products?.nama_produk || 'Produk Dihapus'} <span className="text-zinc-600 mx-0.5">×</span> {item.qty}
                                             </p>
                                         </div>
-                                        {/* Inline Deskripsi Tanpa Box */}
+
+                                        {/* Deskripsi Desain — inline note, secondary info */}
                                         {item.deskripsi_desain ? (
-                                            <p className="text-[11px] text-zinc-400 italic line-clamp-1 mt-1 font-medium">
+                                            <p className="text-xs text-zinc-500 italic line-clamp-1 mt-1">
                                                 {item.deskripsi_desain}
                                             </p>
                                         ) : (
-                                            <p className="text-[11px] text-zinc-600 italic line-clamp-1 mt-1">
+                                            <p className="text-xs text-zinc-600 italic line-clamp-1 mt-1">
                                                 Tanpa catatan desain
                                             </p>
                                         )}
@@ -123,14 +127,16 @@ export function ProduksiList() {
 
                                     <div className="h-px bg-zinc-800/50 my-3"></div>
 
-                                    {/* Secondary Info */}
-                                    <div className="flex justify-between items-center text-[10px] text-zinc-500">
+                                    {/* Secondary Info — waktu, tanggal, no pesanan */}
+                                    <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-1.5">
-                                            <span>{new Date(item.orders?.tanggal || '').toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })}</span>
-                                            <span className="text-zinc-700 mx-0.5">•</span>
-                                            <span className="text-zinc-400">{relativeTime}</span>
+                                            <span className="text-xs text-zinc-500">
+                                                {new Date(item.orders?.tanggal || '').toLocaleDateString('id-ID', { day: '2-digit', month: 'short' })}
+                                            </span>
+                                            <span className="text-zinc-700">•</span>
+                                            <span className="text-xs text-zinc-400">{relativeTime}</span>
                                         </div>
-                                        <span className="font-mono uppercase tracking-tighter text-zinc-600">
+                                        <span className="section-label text-zinc-600">
                                             #{item.orders?.no_pesanan}
                                         </span>
                                     </div>

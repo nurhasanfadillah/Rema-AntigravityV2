@@ -9,6 +9,7 @@ import { Plus, ArrowLeft, Package, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ProductImageUpload } from '../../components/Produk/ProductImageUpload';
 import { getImageUrl, deleteProductImage } from '../../utils/storage';
+import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export function ProdukList() {
     const { categories, fetchCategories } = useCategoryStore();
@@ -73,11 +74,9 @@ export function ProdukList() {
     const handleDelete = async (prod: any) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
             try {
-                // Delete photo from storage if exists
                 if (prod.foto_produk) {
                     await deleteProductImage(prod.foto_produk);
                 }
-
                 await deleteProduct(prod.id);
                 toast.success('Produk berhasil dihapus');
             } catch (error) {
@@ -89,39 +88,45 @@ export function ProdukList() {
 
     return (
         <div className="p-4 space-y-6">
+            {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-gradient-to-r hover:from-blue-800/40 hover:to-blue-700/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
-                    <h2 className="text-xl font-bold tracking-tight">Data Produk</h2>
-                    <p className="text-zinc-400 text-xs mt-0.5">Kelola daftar produk dan harga</p>
+                    <h2 className="page-title font-display">Data Produk</h2>
+                    <p className="page-subtitle mt-0.5">Kelola daftar produk dan harga</p>
                 </div>
                 {!showAddForm && (
-                    <Button variant="primary" className="!p-2 bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30" onClick={() => setShowAddForm(true)}>
+                    <Button variant="primary" className="!p-2.5" onClick={() => setShowAddForm(true)}>
                         <Plus className="w-5 h-5" />
                     </Button>
                 )}
             </div>
 
+            {/* Add / Edit Form */}
             {showAddForm && (
-                <Card className="border-blue-700/50 shadow-lg shadow-blue-900/20 bg-gradient-to-b from-blue-950/30 to-blue-900/10">
+                <Card className="border-blue-700/40 shadow-lg shadow-blue-900/20 bg-gradient-to-b from-blue-950/20 to-transparent">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-zinc-800 pb-2 text-blue-100">{editingId ? 'Edit Produk' : 'Tambah Produk Baru'}</h3>
+                        <h3 className="font-semibold border-b border-zinc-800 pb-2.5 text-zinc-100">
+                            {editingId ? 'Edit Produk' : 'Tambah Produk Baru'}
+                        </h3>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Nama Produk</label>
-                                <input required type="text" value={formData.nama_produk} onChange={e => setFormData({ ...formData, nama_produk: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Pouch Custom Logo..." />
+                                <label className="form-label">Nama Produk</label>
+                                <input required type="text" value={formData.nama_produk}
+                                    onChange={e => setFormData({ ...formData, nama_produk: e.target.value })}
+                                    className="form-input" placeholder="Pouch Custom Logo..." />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Kategori</label>
+                                <label className="form-label">Kategori</label>
                                 <select
                                     required
                                     value={formData.category_id}
                                     onChange={e => setFormData({ ...formData, category_id: e.target.value })}
-                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600 appearance-none"
+                                    className="form-input appearance-none"
                                 >
                                     <option value="" disabled>Pilih Kategori</option>
                                     {categories.map(c => (
@@ -131,14 +136,16 @@ export function ProdukList() {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Deskripsi</label>
-                                <textarea rows={2} value={formData.deskripsi} onChange={e => setFormData({ ...formData, deskripsi: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Bahan kanvas, ukuran 20x15..." />
+                                <label className="form-label">Deskripsi</label>
+                                <textarea rows={2} value={formData.deskripsi}
+                                    onChange={e => setFormData({ ...formData, deskripsi: e.target.value })}
+                                    className="form-input" placeholder="Bahan kanvas, ukuran 20x15..." />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Status</label>
+                                <label className="form-label">Status</label>
                                 <select
-                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                                    className="form-input"
                                     value={formData.status}
                                     onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
                                 >
@@ -161,8 +168,12 @@ export function ProdukList() {
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => { setShowAddForm(false); setEditingId(null); setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' }); }}>Batal</Button>
-                            <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 border-blue-700/50 shadow-md shadow-blue-900/30">
+                            <Button type="button" variant="ghost" fullWidth onClick={() => {
+                                setShowAddForm(false);
+                                setEditingId(null);
+                                setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
+                            }}>Batal</Button>
+                            <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
                                 {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Produk')}
                             </Button>
                         </div>
@@ -170,44 +181,52 @@ export function ProdukList() {
                 </Card>
             )}
 
+            {/* List */}
             <div className="space-y-3">
                 {isLoading && !showAddForm ? (
-                    <p className="text-center text-zinc-400 py-8">Memuat produk...</p>
+                    <p className="text-center text-zinc-500 py-8 text-sm">Memuat produk...</p>
                 ) : products.length === 0 ? (
                     <p className="text-center text-zinc-500 py-8 text-sm">Belum ada produk yang ditambahkan.</p>
                 ) : (
                     products.map(prod => (
-                        <Card key={prod.id} className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-all duration-300 flex items-start gap-4 group p-3">
-                            <div className="relative aspect-square w-20 bg-gradient-to-br from-zinc-800 to-zinc-900 border border-zinc-700/50 rounded-xl shrink-0 overflow-hidden group-hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] transition-all">
+                        <Card key={prod.id} className="hover:border-blue-700/40 hover:bg-zinc-900/60 transition-all duration-200 flex items-start gap-3.5 group p-3">
+                            {/* Product Image */}
+                            <div className="relative aspect-square w-[72px] bg-zinc-800/50 border border-zinc-700/50 rounded-xl shrink-0 overflow-hidden group-hover:shadow-[0_0_12px_rgba(59,130,246,0.12)] transition-all">
                                 {prod.foto_produk ? (
-                                    <img src={getImageUrl(prod.foto_produk) || ''} alt={prod.nama_produk} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <img src={getImageUrl(prod.foto_produk) || ''} alt={prod.nama_produk}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 ) : (
-                                    <div className="flex items-center justify-center w-full h-full text-zinc-600 bg-zinc-900/50">
-                                        <Package className="w-8 h-8 opacity-40" />
+                                    <div className="flex items-center justify-center w-full h-full text-zinc-700">
+                                        <Package className="w-7 h-7 opacity-40" />
                                     </div>
                                 )}
                             </div>
+
+                            {/* Product Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start mb-1">
-                                    <h4 className="font-bold text-zinc-100 truncate pr-2 group-hover:text-blue-200 transition-colors">{prod.nama_produk}</h4>
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border ${prod.status === 'Aktif' ? 'bg-blue-900/20 text-blue-400 border-blue-800/50' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
-                                            {prod.status}
-                                        </span>
-                                        <button onClick={() => handleEdit(prod)} className="p-1.5 text-zinc-500 hover:text-white hover:bg-blue-600/20 rounded-lg transition-colors">
-                                            <Edit2 className="w-4 h-4" />
+                                    <h4 className="font-bold text-zinc-100 truncate pr-2 group-hover:text-blue-200 transition-colors text-[15px]">
+                                        {prod.nama_produk}
+                                    </h4>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                        {/* Status standardized to StatusBadge */}
+                                        <StatusBadge status={prod.status as any} size="sm" />
+                                        <button onClick={() => handleEdit(prod)}
+                                            className="p-1.5 text-zinc-500 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">
+                                            <Edit2 className="w-3.5 h-3.5" />
                                         </button>
-                                        <button onClick={() => handleDelete(prod)} className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-600/10 rounded-lg transition-colors">
-                                            <Trash2 className="w-4 h-4" />
+                                        <button onClick={() => handleDelete(prod)}
+                                            className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                                            <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </div>
                                 {prod.categories && (
-                                    <p className="text-[11px] font-medium text-blue-400/80 drop-shadow-sm mb-2">{prod.categories.nama_kategori}</p>
+                                    <p className="text-xs font-medium text-blue-400/80 mb-1.5">{prod.categories.nama_kategori}</p>
                                 )}
-                                <div className="flex justify-between items-center mt-2.5 pt-2 border-t border-zinc-800/50 group-hover:border-blue-800/30 transition-colors">
-                                    <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Harga Base</span>
-                                    <span className="text-sm font-bold text-white group-hover:text-blue-100 transition-colors">
+                                <div className="flex justify-between items-center pt-2 border-t border-zinc-800/50 group-hover:border-blue-800/30 transition-colors">
+                                    <span className="section-label">Harga Base</span>
+                                    <span className="text-sm font-bold text-zinc-100 group-hover:text-blue-100 transition-colors">
                                         {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(prod.harga_default)}
                                     </span>
                                 </div>

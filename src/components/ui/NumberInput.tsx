@@ -16,7 +16,7 @@ export function NumberInput({ value, onChange, label, error, className = '', ...
 
     return (
         <div className={`space-y-1.5 ${className}`}>
-            {label && <label className="block text-sm font-medium text-zinc-300 ml-1">{label}</label>}
+            {label && <label className="form-label">{label}</label>}
             <div className="relative">
                 <input
                     type="text"

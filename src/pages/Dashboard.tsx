@@ -38,7 +38,7 @@ export function Dashboard() {
                                 <div className={`p-2 rounded-xl ${item.bg} group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 ease-out`}>
                                     <Icon className={`w-5 h-5 ${item.color}`} strokeWidth={2.5} />
                                 </div>
-                                <span className="text-[10px] font-bold text-center text-zinc-500 group-hover:text-zinc-200 transition-colors leading-tight uppercase tracking-tighter">
+                                <span className="text-[10px] font-bold text-center text-zinc-500 group-hover:text-zinc-200 transition-colors leading-tight uppercase tracking-wider">
                                     {item.label}
                                 </span>
                             </Card>

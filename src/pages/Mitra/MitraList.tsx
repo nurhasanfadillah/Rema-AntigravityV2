@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
 import { Plus, ArrowLeft, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export function MitraList() {
     const { mitras, fetchMitras, isLoading, addMitra, updateMitra, deleteMitra } = useMitraStore();
@@ -74,46 +75,56 @@ export function MitraList() {
 
     return (
         <div className="p-4 space-y-6">
+            {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-gradient-to-r hover:from-blue-800/40 hover:to-blue-700/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
-                    <h2 className="text-xl font-bold tracking-tight">Data Mitra</h2>
-                    <p className="text-zinc-400 text-xs mt-0.5">Kelola mitra penjualan B2B</p>
+                    <h2 className="page-title font-display">Data Mitra</h2>
+                    <p className="page-subtitle mt-0.5">Kelola mitra penjualan B2B</p>
                 </div>
                 {!showAddForm && (
-                    <Button variant="primary" className="!p-2" onClick={() => setShowAddForm(true)}>
+                    <Button variant="primary" className="!p-2.5" onClick={() => setShowAddForm(true)}>
                         <Plus className="w-5 h-5" />
                     </Button>
                 )}
             </div>
 
+            {/* Add / Edit Form */}
             {showAddForm && (
-                <Card className="border-blue-700/50 bg-gradient-to-b from-blue-950/30 to-blue-900/10">
+                <Card className="border-blue-700/40 bg-gradient-to-b from-blue-950/20 to-transparent">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-lg border-b border-zinc-800 pb-2">{editingId ? 'Edit Mitra' : 'Tambah Mitra Baru'}</h3>
+                        <h3 className="font-semibold border-b border-zinc-800 pb-2.5 text-zinc-100">
+                            {editingId ? 'Edit Mitra' : 'Tambah Mitra Baru'}
+                        </h3>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Nama Mitra</label>
-                                <input required type="text" value={formData.nama_mitra} onChange={e => setFormData({ ...formData, nama_mitra: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="PT. Mitra Sejahtera" />
+                                <label className="form-label">Nama Mitra</label>
+                                <input required type="text" value={formData.nama_mitra}
+                                    onChange={e => setFormData({ ...formData, nama_mitra: e.target.value })}
+                                    className="form-input" placeholder="PT. Mitra Sejahtera" />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Kontak (WhatsApp)</label>
-                                <input type="tel" value={formData.kontak} onChange={e => setFormData({ ...formData, kontak: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="08123456789" />
+                                <label className="form-label">Kontak (WhatsApp)</label>
+                                <input type="tel" value={formData.kontak}
+                                    onChange={e => setFormData({ ...formData, kontak: e.target.value })}
+                                    className="form-input" placeholder="08123456789" />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Alamat Lengkap</label>
-                                <textarea rows={2} value={formData.alamat} onChange={e => setFormData({ ...formData, alamat: e.target.value })} className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-600" placeholder="Jl. Raya Niaga No. 1..." />
+                                <label className="form-label">Alamat Lengkap</label>
+                                <textarea rows={2} value={formData.alamat}
+                                    onChange={e => setFormData({ ...formData, alamat: e.target.value })}
+                                    className="form-input" placeholder="Jl. Raya Niaga No. 1..." />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Status</label>
+                                <label className="form-label">Status</label>
                                 <select
-                                    className="w-full bg-zinc-900 border border-zinc-700 focus:border-blue-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                                    className="form-input"
                                     value={formData.status}
                                     onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
                                 >
@@ -123,7 +134,7 @@ export function MitraList() {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Limit (Rp)</label>
+                                <label className="form-label">Limit (Rp)</label>
                                 <NumberInput
                                     value={formData.limit_tagihan.toString()}
                                     onChange={(val) => setFormData({ ...formData, limit_tagihan: val })}
@@ -133,44 +144,53 @@ export function MitraList() {
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => { setShowAddForm(false); setEditingId(null); setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' }); }}>Batal</Button>
-                            <Button type="submit" variant="primary" fullWidth disabled={isLoading}>{isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Mitra')}</Button>
+                            <Button type="button" variant="ghost" fullWidth onClick={() => {
+                                setShowAddForm(false);
+                                setEditingId(null);
+                                setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
+                            }}>Batal</Button>
+                            <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
+                                {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Mitra')}
+                            </Button>
                         </div>
                     </form>
                 </Card>
             )}
 
+            {/* List */}
             <div className="space-y-3">
                 {isLoading && !showAddForm ? (
-                    <p className="text-center text-zinc-400 py-8">Memuat data mitra...</p>
+                    <p className="text-center text-zinc-500 py-8 text-sm">Memuat data mitra...</p>
                 ) : mitras.length === 0 ? (
                     <p className="text-center text-zinc-500 py-8 text-sm">Belum ada data mitra yang ditambahkan.</p>
                 ) : (
                     mitras.map(mitra => (
-                        <Card key={mitra.id} className="hover:border-blue-700/50 hover:bg-gradient-to-r hover:from-blue-900/40 hover:to-blue-800/40 transition-colors">
+                        <Card key={mitra.id} className="hover:border-blue-700/40 hover:bg-zinc-900/60 transition-all duration-200">
                             <div className="flex justify-between items-start">
-                                <div>
-                                    <h4 className="font-semibold text-zinc-100">{mitra.nama_mitra}</h4>
-                                    <p className="text-sm text-zinc-400 mt-1">{mitra.kontak || 'Tidak ada kontak'}</p>
+                                <div className="flex-1 min-w-0 pr-3">
+                                    <h4 className="font-semibold text-zinc-100 truncate">{mitra.nama_mitra}</h4>
+                                    <p className="text-xs text-zinc-500 mt-1">{mitra.kontak || 'Tidak ada kontak'}</p>
                                 </div>
-                                <div className="flex flex-col items-end gap-2">
-                                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${mitra.status === 'Aktif' ? 'bg-gradient-to-r from-blue-900/50 to-blue-800/50 text-blue-300 shadow-[0_0_10px_rgba(59,130,246,0.15)] text-white drop-shadow-sm border border-blue-700/50' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
-                                        {mitra.status}
-                                    </span>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <button onClick={() => handleEdit(mitra)} className="p-1.5 text-zinc-400 hover:text-blue-300 rounded-md hover:bg-gradient-to-r from-blue-900/40 to-blue-800/40 transition-colors">
+                                <div className="flex flex-col items-end gap-2.5 shrink-0">
+                                    {/* Status using standardized StatusBadge */}
+                                    <StatusBadge status={mitra.status as any} size="sm" />
+                                    <div className="flex items-center gap-1.5">
+                                        <button onClick={() => handleEdit(mitra)}
+                                            className="p-1.5 text-zinc-500 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
                                             <Edit2 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(mitra.id)} className="p-1.5 text-zinc-400 hover:text-red-400 rounded-md hover:bg-red-500/10 transition-colors">
+                                        <button onClick={() => handleDelete(mitra.id)}
+                                            className="p-1.5 text-zinc-500 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-3 pt-3 border-t border-zinc-800 flex justify-between items-center">
-                                <span className="text-xs text-zinc-500">Limit</span>
-                                <span className="text-sm font-medium text-zinc-300">
-                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(mitra.limit_tagihan)}
+                            {/* Limit info */}
+                            <div className="mt-3 pt-3 border-t border-zinc-800/60 flex justify-between items-center">
+                                <span className="section-label">Limit Tagihan</span>
+                                <span className="text-sm font-semibold text-zinc-300">
+                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(mitra.limit_tagihan)}
                                 </span>
                             </div>
                         </Card>

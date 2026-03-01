@@ -49,7 +49,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                         <div className={`p-2 rounded-lg ${isCritical ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
                             {isCritical ? <AlertTriangle className="w-5 h-5" /> : <Info className="w-5 h-5" />}
                         </div>
-                        <h3 className="text-xl font-bold text-white tracking-tight">Konfirmasi Perubahan</h3>
+                        <h3 className="text-lg font-bold text-white tracking-tight">Konfirmasi Perubahan</h3>
                     </div>
                     <button onClick={onClose} className="p-1 text-zinc-500 hover:text-white transition-colors">
                         <X className="w-5 h-5" />
@@ -60,7 +60,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                     {/* Status Transition Display */}
                     <div className="flex items-center justify-center gap-4 py-4 px-2 bg-zinc-900/50 rounded-xl border border-zinc-800/50">
                         <div className="text-center">
-                            <p className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider mb-1">Dari</p>
+                            <p className="section-label mb-1">Dari</p>
                             <span className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700">
                                 {currentStatus}
                             </span>
@@ -69,7 +69,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                             <div className="w-8 h-[1px] bg-zinc-700"></div>
                         </div>
                         <div className="text-center">
-                            <p className="text-[10px] uppercase font-bold text-blue-400 tracking-wider mb-1">Ke</p>
+                            <p className="section-label text-blue-400 mb-1">Ke</p>
                             <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-900 to-blue-800 text-blue-100 text-xs font-bold border border-blue-700 shadow-lg shadow-blue-500/10">
                                 {targetStatus}
                             </span>
@@ -88,7 +88,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                     ) : (
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <p className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider flex items-center gap-2">
+                                <p className="section-label flex items-center gap-2">
                                     Konsekuensi Perubahan
                                 </p>
                                 <ul className="space-y-2">
@@ -103,7 +103,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
 
                             {requiresReason && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">
+                                    <label className="section-label">
                                         Alasan Perubahan <span className="text-red-500 font-bold">*Wajib</span>
                                     </label>
                                     <textarea
