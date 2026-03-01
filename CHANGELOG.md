@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026-03-01] - Restrukturisasi Navigasi Bottom & Arsitektur Hub
+### Changed
+- **Penyederhanaan Bottom Navigation**: Menghapus menu "Lainnya" dan membatasi navigasi utama menjadi maksimal 3 menu: **Home (Dashboard)**, **Pesanan**, dan **Produksi**.
+- **Layout Bottom Bar Proposional**: Menggunakan `flex-1` pada setiap item navigasi untuk memastikan distribusi ruang yang seimbang, proporsional, dan memiliki area sentuh (touch target) yang lebih luas.
+- **Arsitektur Navigasi Terpusat**: 
+  - Meletakkan Dashboard sebagai hub utama untuk mengakses seluruh modul (Mitra, Kategori, Produk, Pesanan, Produksi, Lainnya).
+  - Reorganisasi item Dashboard dengan memprioritaskan alur kerja utama (Pesanan & Produksi) di posisi teratas.
+- **Akses Kontekstual Global**: Menambahkan tombol pengaturan/hub di Header `MobileLayout.tsx` sebagai akses cepat ke menu "Lainnya/Settings" dari halaman mana pun tanpa harus melalui bottom navigation.
+- **Konsistensi Visual**: Menjaga keselerasan ikon, label, dan state aktif pada seluruh elemen navigasi baru untuk pengalaman pengguna yang kohesif.
+
 ## [2026-03-01] - Eliminasi Sistem Sticky & Standarisasi Layout
 ### Changed
 - **Penyesuaian Menyeluruh UI**: Menghapus sistem `sticky` dan `fixed` pada seluruh elemen aplikasi kecuali Bottom Navigation (Home/Pesanan/Produksi/Lainnya).

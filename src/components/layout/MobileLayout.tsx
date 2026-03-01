@@ -1,5 +1,6 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Settings } from 'lucide-react';
 import { BottomNavigation } from './BottomNavigation';
 
 export function MobileLayout() {
@@ -14,6 +15,10 @@ export function MobileLayout() {
                     </div>
                     <h1 className="text-lg font-semibold tracking-tight text-white/90">REMA <span className="text-blue-500 font-bold">v2</span></h1>
                 </div>
+
+                <Link to="/lainnya" className="p-2 rounded-lg bg-zinc-900/50 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-all border border-zinc-800/60 active:scale-95">
+                    <Settings className="w-5 h-5" />
+                </Link>
             </header>
 
             {/* Main Content Area */}

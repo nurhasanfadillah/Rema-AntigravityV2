@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, Package, Users } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, PackageOpen } from 'lucide-react';
 
 export function BottomNavigation() {
     const location = useLocation();
@@ -7,8 +7,7 @@ export function BottomNavigation() {
     const navItems = [
         { label: 'Home', path: '/', icon: LayoutDashboard },
         { label: 'Pesanan', path: '/pesanan', icon: ShoppingCart },
-        { label: 'Produksi', path: '/produksi', icon: Package },
-        { label: 'Lainnya', path: '/lainnya', icon: Users },
+        { label: 'Produksi', path: '/produksi', icon: PackageOpen },
     ];
 
     // List of paths where the bottom navigation should be hidden
@@ -40,7 +39,7 @@ export function BottomNavigation() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center w-16 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-blue-500' : 'text-zinc-500 hover:text-zinc-300'}`}
+                            className={`flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-blue-500' : 'text-zinc-500 hover:text-zinc-300'}`}
                         >
                             <div className={`p-1.5 rounded-full transition-all duration-300 ${active ? 'bg-blue-900/40 text-blue-400' : 'bg-transparent'}`}>
                                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
