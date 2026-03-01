@@ -19,7 +19,7 @@ interface MitraState {
     deleteMitra: (id: string) => Promise<void>;
 }
 
-export const useMitraStore = create<MitraState>((set) => ({
+export const useMitraStore = create<MitraState>((set, get) => ({
     mitras: [],
     isLoading: false,
     fetchMitras: async () => {
@@ -49,9 +49,7 @@ export const useMitraStore = create<MitraState>((set) => ({
 
         const { error } = await supabase.from('mitra').insert([mitra]);
         if (!error) {
-            // Re-fetch
-            const { data } = await supabase.from('mitra').select('*').order('created_at', { ascending: false });
-            if (data) set({ mitras: data });
+            await get().fetchMitras();
         } else {
             console.error(error);
             set({ isLoading: false });
@@ -62,7 +60,7 @@ export const useMitraStore = create<MitraState>((set) => ({
     updateMitra: async (id, mitraUpdate) => {
         set({ isLoading: true });
 
-        // Check for duplicate name if name is updated
+        // Check for duplicate name if name is updated (Manual check for UX)
         if (mitraUpdate.nama_mitra) {
             const { data: existing } = await supabase
                 .from('mitra')
@@ -79,8 +77,7 @@ export const useMitraStore = create<MitraState>((set) => ({
 
         const { error } = await supabase.from('mitra').update(mitraUpdate).eq('id', id);
         if (!error) {
-            const { data } = await supabase.from('mitra').select('*').order('created_at', { ascending: false });
-            if (data) set({ mitras: data });
+            await get().fetchMitras();
         } else {
             console.error(error);
             set({ isLoading: false });
@@ -91,7 +88,8 @@ export const useMitraStore = create<MitraState>((set) => ({
     deleteMitra: async (id) => {
         set({ isLoading: true });
 
-        // Referential Integrity Check: Check if mitra has orders
+        // Procedural delete - Database constraint 23503 will catch it,
+        // but we keep the manual check for a cleaner error message.
         const { count, error: checkError } = await supabase
             .from('orders')
             .select('*', { count: 'exact', head: true })
@@ -100,20 +98,20 @@ export const useMitraStore = create<MitraState>((set) => ({
         if (checkError) {
             console.error(checkError);
             set({ isLoading: false });
-            throw new Error('Gagal memeriksa data pesanan mitra.');
+            throw new Error('Gagal memeriksa data pesanan terkait.');
         }
 
         if (count && count > 0) {
             set({ isLoading: false });
-            throw new Error('Mitra tidak dapat dihapus karena masih memiliki data pesanan terkait. Silakan hapus atau pindahkan pesanan terlebih dahulu.');
+            throw new Error('Mitra ini tidak dapat dihapus karena masih memiliki riwayat pesanan.');
         }
 
         const { error } = await supabase.from('mitra').delete().eq('id', id);
         if (!error) {
-            const { data } = await supabase.from('mitra').select('*').order('created_at', { ascending: false });
-            if (data) set({ mitras: data });
+            await get().fetchMitras();
         } else {
             console.error(error);
+            set({ isLoading: false });
             throw error;
         }
         set({ isLoading: false });

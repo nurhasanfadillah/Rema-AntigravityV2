@@ -241,11 +241,11 @@ export function MitraList() {
                                     <div className="flex-1 min-w-0 pr-4">
                                         <h4 className="font-extrabold text-text-primary text-[16px] truncate group-hover:text-brand-accent transition-colors font-display">{mitra.nama_mitra}</h4>
                                         <p className="text-[13px] text-text-tertiary font-bold mt-1.5 flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 bg-brand-accent/60 rounded-full" />
+                                            <span className="w-1.5 h-1.5 bg-brand-accent/40 rounded-full" />
                                             {mitra.kontak || 'Tanpa Kontak'}
                                         </p>
                                         {mitra.alamat && (
-                                            <p className="text-[12px] text-text-muted mt-1.5 line-clamp-1 font-medium italic">
+                                            <p className="text-[12px] text-text-secondary mt-2 line-clamp-1 font-medium bg-brand-bg/50 px-2.5 py-1 rounded-lg border border-brand-border/40 inline-block">
                                                 {mitra.alamat}
                                             </p>
                                         )}
@@ -254,12 +254,12 @@ export function MitraList() {
                                         <StatusBadge status={mitra.status as any} size="sm" />
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onClick={(e) => { e.preventDefault(); handleEdit(mitra); }}
-                                                className="p-2 text-text-tertiary hover:text-brand-accent rounded-xl hover:bg-brand-accent/10 transition-all border border-transparent hover:border-brand-accent/10"
+                                                className="p-2.5 text-text-tertiary hover:text-brand-accent rounded-xl hover:bg-brand-accent/10 transition-all border border-transparent hover:border-brand-accent/10 active:scale-90"
                                                 title="Edit Mitra">
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button onClick={(e) => { e.preventDefault(); handleDelete(mitra); }}
-                                                className="p-2 text-text-tertiary hover:text-status-error-text rounded-xl hover:bg-status-error-bg transition-all border border-transparent hover:border-status-error-border/20"
+                                                className="p-2.5 text-text-tertiary hover:text-status-error-text rounded-xl hover:bg-status-error-bg transition-all border border-transparent hover:border-status-error-border/20 active:scale-90"
                                                 title="Hapus Mitra">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>

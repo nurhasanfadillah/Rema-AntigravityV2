@@ -6,7 +6,6 @@
 
 import toast from 'react-hot-toast';
 import { CheckCircle, AlertTriangle, Info, XCircle } from 'lucide-react';
-import React from 'react';
 
 // ─── Deduplikasi: set ID toast yang sedang aktif ──────────────────────────────
 const _pendingIds = new Set<string>();
@@ -31,31 +30,31 @@ function _show(
 
     const configs = {
         success: {
-            bg: '#f0fdf4', // light emerald
-            border: '#dcfce7',
-            text: '#166534',
-            icon: <CheckCircle className="text-emerald-500 w-5 h-5" />,
+            bg: '#ecfdf5', // brand-status-success-bg
+            border: '#d1fae5', // brand-status-success-border
+            text: '#059669', // brand-status-success-text
+            icon: <CheckCircle className="text-emerald-600 w-5 h-5" />,
             duration: 3000,
         },
         error: {
-            bg: '#fef2f2', // light red
-            border: '#fee2e2',
-            text: '#991b1b',
-            icon: <XCircle className="text-red-500 w-5 h-5" />,
+            bg: '#fef2f2', // brand-status-error-bg
+            border: '#fee2e2', // brand-status-error-border
+            text: '#dc2626', // brand-status-error-text
+            icon: <XCircle className="text-red-600 w-5 h-5" />,
             duration: 5000,
         },
         warning: {
-            bg: '#fffbeb', // light amber
-            border: '#fef3c7',
-            text: '#92400e',
-            icon: <AlertTriangle className="text-amber-500 w-5 h-5" />,
+            bg: '#fffbeb', // brand-status-warning-bg
+            border: '#fef3c7', // brand-status-warning-border
+            text: '#b45309', // brand-status-warning-text
+            icon: <AlertTriangle className="text-amber-600 w-5 h-5" />,
             duration: 4000,
         },
         info: {
-            bg: '#eff6ff', // light blue
-            border: '#dbeafe',
-            text: '#1e40af',
-            icon: <Info className="text-blue-500 w-5 h-5" />,
+            bg: '#eff6ff', // brand-status-info-bg
+            border: '#dbeafe', // brand-status-info-border
+            text: '#2563eb', // brand-status-info-text
+            icon: <Info className="text-blue-600 w-5 h-5" />,
             duration: 3500,
         },
     };

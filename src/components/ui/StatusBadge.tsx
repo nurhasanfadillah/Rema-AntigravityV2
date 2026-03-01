@@ -132,7 +132,7 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
 
                 {/* Active Progress Line */}
                 <div
-                    className="absolute top-[18px] left-0 h-[2px] bg-brand-accent z-0 transition-all duration-700 ease-in-out shadow-[0_0_8px_rgba(37,99,235,0.3)]"
+                    className="absolute top-[18px] left-0 h-[2px] bg-brand-accent z-0 transition-all duration-700 ease-in-out shadow-[0_0_8px_rgba(var(--color-brand-accent),0.3)] shadow-brand-accent/20"
                     style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
                 ></div>
 
@@ -144,9 +144,9 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
                         <div key={step} className="relative z-10 flex flex-col items-center">
                             <div
                                 className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500 border-2 ${isCompleted
-                                    ? 'bg-brand-accent border-brand-accent text-white shadow-md shadow-blue-600/20'
+                                    ? 'bg-brand-accent border-brand-accent text-white shadow-md shadow-brand-accent/20'
                                     : isActive
-                                        ? 'bg-brand-surface border-brand-accent text-brand-accent shadow-[0_0_12px_rgba(37,99,235,0.2)] animate-pulse'
+                                        ? 'bg-brand-surface border-brand-accent text-brand-accent shadow-[0_0_12px_rgba(var(--color-brand-accent),0.2)] shadow-brand-accent/10 animate-pulse'
                                         : 'bg-brand-bg border-brand-border text-text-muted'
                                     }`}
                             >
@@ -154,7 +154,7 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
                             </div>
 
                             {/* State indicator dot */}
-                            <div className={`mt-2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${isCompleted ? 'bg-blue-500' : isActive ? 'bg-blue-400 animate-bounce' : 'bg-transparent'
+                            <div className={`mt-2 w-1.5 h-1.5 rounded-full transition-all duration-500 ${isCompleted ? 'bg-brand-accent' : isActive ? 'bg-brand-accent animate-bounce' : 'bg-transparent'
                                 }`} />
                         </div>
                     );

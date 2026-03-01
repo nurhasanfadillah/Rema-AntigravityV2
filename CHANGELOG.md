@@ -1,3 +1,21 @@
+## [2026-03-02] - Finalisasi Modul Mitra & Standarisasi UI Components
+### Added
+- **Migration Plan 5 (`plan5_mitra_uniqueness.sql`)**: 
+  - Penambahan constraint `UNIQUE` pada `nama_mitra` di level database untuk validasi absolut.
+  - Implementasi trigger `handle_updated_at` untuk pemeliharaan otomatis timestamp `updated_at` pada tabel mitra.
+### Changed
+- **Penguatan Logic `mitraStore.ts`**:
+  - Sinkronisasi manual check dengan backend constraint untuk menangani race conditions secara elegan.
+  - Integrasi `get().fetchMitras()` untuk memastikan state UI selalu selaras dengan database setelah operasi CRUD.
+- **Standarisasi Komponen Global (`Button`, `StatusBadge`, `Notify`)**:
+  - **Button**: Penambahan dukungan `size` prop ('sm', 'md', 'lg') dan penggunaan variabel brand theme (`brand-accent`) secara eksklusif.
+  - **StatusBadge & Stepper**: Migrasi dari hardcoded hex codes ke sistem variabel brand dan optimalisasi shadow menggunakan brand palette.
+  - **Notify (Toast)**: Penyelarasan palet warna notifikasi dengan standar Light Corporate Theme (WCAG AA Compliant).
+- **Refinement UI `MitraList.tsx`**: 
+  - Peningkatan kontras teks alamat dan metadata mitra.
+  - Penyesuaian spacing kartu dan tombol aksi untuk optimalisasi penggunaan pada perangkat mobile.
+
+
 ## [2026-03-02] - Optimasi Header & Visual Logo (Compact Mode)
 ### Changed
 - **Header Layout Optimization**: Mengurangi padding vertikal (`py-2.5`) dan horizontal (`px-4`) pada header untuk menciptakan tampilan yang lebih compact namun tetap ergonomis.
