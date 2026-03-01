@@ -26,10 +26,10 @@ export function parseBackendError(error: any, defaultMessage: string, context?: 
         return `${entity} dengan nilai yang sama sudah ada dalam sistem. Harap gunakan nama atau identitas yang berbeda.`;
     }
 
-    // Custom Error thrown from store manually
-    if (error instanceof Error && error.message) {
-        return error.message;
-    }
+    // Handle standard Error objects and literal strings
+    if (typeof error === 'string') return error;
+    if (error instanceof Error && error.message) return error.message;
+    if (error?.message) return error.message;
 
     return defaultMessage;
 }

@@ -6,8 +6,7 @@ import {
     Info,
     X,
     Loader2,
-    ShieldAlert,
-    Ban
+    ShieldAlert
 } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -63,43 +62,43 @@ const VARIANTS: Record<ConfirmVariant, {
 }> = {
     danger: {
         icon: <Trash2 className="w-5 h-5" />,
-        headerGradient: 'bg-gradient-to-r from-red-500/15 to-transparent',
-        iconBg: 'bg-red-500/20',
-        iconColor: 'text-red-400',
-        confirmBg: 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600',
-        confirmShadow: 'shadow-red-500/25',
-        doubleConfirmBorder: 'border-red-500/30',
-        doubleConfirmText: 'text-red-200',
+        headerGradient: 'bg-status-error-bg/30',
+        iconBg: 'bg-status-error-bg',
+        iconColor: 'text-status-error-text',
+        confirmBg: 'bg-status-error-text hover:bg-red-700',
+        confirmShadow: 'shadow-red-500/10',
+        doubleConfirmBorder: 'border-status-error-border',
+        doubleConfirmText: 'text-status-error-text',
     },
     warning: {
         icon: <AlertTriangle className="w-5 h-5" />,
-        headerGradient: 'bg-gradient-to-r from-amber-500/15 to-transparent',
-        iconBg: 'bg-amber-500/20',
-        iconColor: 'text-amber-400',
-        confirmBg: 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600',
-        confirmShadow: 'shadow-amber-500/25',
-        doubleConfirmBorder: 'border-amber-500/30',
-        doubleConfirmText: 'text-amber-200',
+        headerGradient: 'bg-status-warning-bg/30',
+        iconBg: 'bg-status-warning-bg',
+        iconColor: 'text-status-warning-text',
+        confirmBg: 'bg-status-warning-text hover:bg-amber-700',
+        confirmShadow: 'shadow-amber-500/10',
+        doubleConfirmBorder: 'border-status-warning-border',
+        doubleConfirmText: 'text-status-warning-text',
     },
     info: {
         icon: <Info className="w-5 h-5" />,
-        headerGradient: 'bg-gradient-to-r from-blue-500/15 to-transparent',
-        iconBg: 'bg-blue-500/20',
-        iconColor: 'text-blue-400',
-        confirmBg: 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600',
-        confirmShadow: 'shadow-blue-500/25',
-        doubleConfirmBorder: 'border-blue-500/30',
-        doubleConfirmText: 'text-blue-200',
+        headerGradient: 'bg-status-info-bg/30',
+        iconBg: 'bg-status-info-bg',
+        iconColor: 'text-status-info-text',
+        confirmBg: 'bg-status-info-text hover:bg-blue-700',
+        confirmShadow: 'shadow-blue-500/10',
+        doubleConfirmBorder: 'border-status-info-border',
+        doubleConfirmText: 'text-status-info-text',
     },
     success: {
         icon: <CheckCircle className="w-5 h-5" />,
-        headerGradient: 'bg-gradient-to-r from-emerald-500/15 to-transparent',
-        iconBg: 'bg-emerald-500/20',
-        iconColor: 'text-emerald-400',
-        confirmBg: 'bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600',
-        confirmShadow: 'shadow-emerald-500/25',
-        doubleConfirmBorder: 'border-emerald-500/30',
-        doubleConfirmText: 'text-emerald-200',
+        headerGradient: 'bg-status-success-bg/30',
+        iconBg: 'bg-status-success-bg',
+        iconColor: 'text-status-success-text',
+        confirmBg: 'bg-status-success-text hover:bg-emerald-700',
+        confirmShadow: 'shadow-emerald-500/10',
+        doubleConfirmBorder: 'border-status-success-border',
+        doubleConfirmText: 'text-status-success-text',
     },
 };
 
@@ -184,62 +183,62 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-[2px]"
             style={{ animation: 'fadeIn 0.18s ease' }}
             onClick={handleBackdropClick}
         >
             <div
-                className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+                className="w-full max-w-md bg-brand-surface border border-brand-border rounded-3xl shadow-2xl overflow-hidden"
                 style={{ animation: 'zoomIn 0.2s cubic-bezier(0.16,1,0.3,1)' }}
             >
                 {/* ── Header ── */}
-                <div className={`px-5 pt-5 pb-4 border-b border-zinc-900 flex items-center justify-between ${v.headerGradient}`}>
-                    <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-xl ${v.iconBg} ${v.iconColor} shrink-0`}>
+                <div className={`px-6 pt-6 pb-4 border-b border-brand-border flex items-center justify-between ${v.headerGradient}`}>
+                    <div className="flex items-center gap-3.5">
+                        <div className={`p-2.5 rounded-2xl ${v.iconBg} ${v.iconColor} shrink-0 shadow-sm shadow-black/[0.02]`}>
                             {v.icon}
                         </div>
-                        <h3 className="text-base font-bold text-white tracking-tight leading-tight">
+                        <h3 className="text-lg font-bold text-text-primary tracking-tight leading-tight font-display">
                             {title}
                         </h3>
                     </div>
                     {!loading && (
                         <button
                             onClick={onClose}
-                            className="p-1.5 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors shrink-0 ml-2"
+                            className="p-2 text-text-tertiary hover:text-text-primary hover:bg-brand-bg rounded-xl transition-colors shrink-0 ml-2"
                             aria-label="Tutup"
                         >
-                            <X className="w-4 h-4" />
+                            <X className="w-5 h-5" />
                         </button>
                     )}
                 </div>
 
                 {/* ── Body ── */}
-                <div className="px-5 py-5 space-y-5">
+                <div className="px-6 py-6 space-y-5">
 
                     {/* Subject (data identity) */}
                     {subject && (
-                        <div className="px-4 py-3 bg-zinc-900/60 rounded-xl border border-zinc-800/60 flex items-center gap-2">
-                            <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${variant === 'danger' ? 'bg-red-500' : variant === 'warning' ? 'bg-amber-500' : variant === 'success' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
-                            <span className="text-sm font-semibold text-zinc-200 truncate">{subject}</span>
+                        <div className="px-4 py-3 bg-brand-bg rounded-2xl border border-brand-border flex items-center gap-2.5">
+                            <div className={`w-2 h-2 rounded-full shrink-0 ${variant === 'danger' ? 'bg-status-error-text' : variant === 'warning' ? 'bg-status-warning-text' : variant === 'success' ? 'bg-status-success-text' : 'bg-status-info-text'}`} />
+                            <span className="text-[15px] font-bold text-text-primary truncate">{subject}</span>
                         </div>
                     )}
 
                     {/* Description */}
                     {description && (
-                        <p className="text-sm text-zinc-400 leading-relaxed">
+                        <p className="text-[14px] text-text-secondary leading-relaxed font-medium">
                             {description}
                         </p>
                     )}
 
                     {/* Consequences */}
                     {consequences.length > 0 && (
-                        <div className="space-y-2">
-                            <p className="section-label">Dampak Aksi</p>
+                        <div className="space-y-2.5">
+                            <p className="section-label text-[10px]">Dampak Aksi</p>
                             <ul className="space-y-2">
                                 {consequences.map((c, i) => (
-                                    <li key={i} className="flex gap-2.5 text-xs text-zinc-400">
-                                        <div className={`mt-1.5 w-1 h-1 rounded-full shrink-0 ${variant === 'danger' ? 'bg-red-500' : variant === 'warning' ? 'bg-amber-500' : 'bg-blue-500'}`} />
-                                        {c}
+                                    <li key={i} className="flex gap-2.5 text-[13px] text-text-tertiary">
+                                        <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${variant === 'danger' ? 'bg-status-error-text' : variant === 'warning' ? 'bg-status-warning-text' : 'bg-status-info-text'}`} />
+                                        <span className="leading-tight">{c}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -249,12 +248,12 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     {/* Reason textarea */}
                     {requiresReason && (
                         <div className="space-y-2">
-                            <label className="section-label">
+                            <label className="section-label text-[10px]">
                                 {reasonLabel} <span className="text-red-500 normal-case font-bold">*</span>
                             </label>
                             <textarea
                                 ref={reasonRef}
-                                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all resize-none"
+                                className="w-full bg-brand-bg border border-brand-border rounded-xl p-3.5 text-sm text-text-primary placeholder-text-muted transition-all resize-none focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent/20"
                                 rows={3}
                                 placeholder={reasonPlaceholder}
                                 value={reason}
@@ -266,14 +265,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
                     {/* Double-confirm warning */}
                     {showDoubleConfirm && (
-                        <div className={`flex gap-3 p-4 rounded-xl bg-zinc-900/60 border ${v.doubleConfirmBorder}`}
+                        <div className={`flex gap-3.5 p-4 rounded-2xl bg-brand-bg border ${v.doubleConfirmBorder}`}
                             style={{ animation: 'slideDown 0.2s ease' }}>
                             <ShieldAlert className={`w-5 h-5 shrink-0 mt-0.5 ${v.iconColor}`} />
                             <div>
-                                <p className="text-sm font-bold text-white mb-0.5">
+                                <p className="text-sm font-bold text-text-primary mb-0.5">
                                     Konfirmasi Sekali Lagi
                                 </p>
-                                <p className={`text-xs leading-relaxed ${v.doubleConfirmText}`}>
+                                <p className={`text-[12px] leading-relaxed font-medium ${v.doubleConfirmText}`}>
                                     Tindakan ini tidak dapat dibatalkan. Klik "{confirmLabel}" untuk melanjutkan.
                                 </p>
                             </div>
@@ -282,24 +281,24 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 </div>
 
                 {/* ── Footer ── */}
-                <div className="px-5 pb-5 pt-3 border-t border-zinc-900 flex gap-3">
+                <div className="px-6 pb-6 pt-3 border-t border-brand-border flex gap-3">
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="flex-1 px-4 py-2.5 rounded-xl text-sm text-zinc-400 font-semibold hover:bg-zinc-800 hover:text-white transition-all disabled:opacity-40"
+                        className="flex-1 px-4 py-3 rounded-2xl text-sm text-text-secondary font-bold hover:bg-brand-bg transition-all disabled:opacity-40"
                     >
                         {cancelLabel}
                     </button>
                     <button
                         onClick={handleConfirm}
                         disabled={!canConfirm}
-                        className={`flex-1 px-4 py-2.5 rounded-xl text-sm text-white font-bold transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95
-                            ${canConfirm ? `${v.confirmBg} ${v.confirmShadow}` : 'bg-zinc-800 cursor-not-allowed'}`}
+                        className={`flex-1 px-4 py-3 rounded-2xl text-[14px] text-white font-bold transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95
+                            ${canConfirm ? `${v.confirmBg} ${v.confirmShadow}` : 'bg-brand-border cursor-not-allowed'}`}
                     >
                         {loading ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
                         ) : variant === 'danger' ? (
-                            <Ban className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                         ) : (
                             <CheckCircle className="w-4 h-4" />
                         )}
@@ -314,11 +313,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     to   { opacity: 1; }
                 }
                 @keyframes zoomIn {
-                    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+                    from { opacity: 0; transform: scale(0.95) translateY(10px); }
                     to   { opacity: 1; transform: scale(1)    translateY(0); }
                 }
                 @keyframes slideDown {
-                    from { opacity: 0; transform: translateY(-6px); }
+                    from { opacity: 0; transform: translateY(-8px); }
                     to   { opacity: 1; transform: translateY(0); }
                 }
             `}</style>

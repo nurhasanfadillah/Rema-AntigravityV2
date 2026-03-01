@@ -34,6 +34,19 @@ export const useMitraStore = create<MitraState>((set) => ({
     },
     addMitra: async (mitra) => {
         set({ isLoading: true });
+
+        // Check for duplicate name
+        const { data: existing } = await supabase
+            .from('mitra')
+            .select('id')
+            .eq('nama_mitra', mitra.nama_mitra)
+            .maybeSingle();
+
+        if (existing) {
+            set({ isLoading: false });
+            throw new Error(`Mitra dengan nama "${mitra.nama_mitra}" sudah terdaftar.`);
+        }
+
         const { error } = await supabase.from('mitra').insert([mitra]);
         if (!error) {
             // Re-fetch
@@ -48,6 +61,22 @@ export const useMitraStore = create<MitraState>((set) => ({
     },
     updateMitra: async (id, mitraUpdate) => {
         set({ isLoading: true });
+
+        // Check for duplicate name if name is updated
+        if (mitraUpdate.nama_mitra) {
+            const { data: existing } = await supabase
+                .from('mitra')
+                .select('id')
+                .eq('nama_mitra', mitraUpdate.nama_mitra)
+                .neq('id', id)
+                .maybeSingle();
+
+            if (existing) {
+                set({ isLoading: false });
+                throw new Error(`Mitra dengan nama "${mitraUpdate.nama_mitra}" sudah terdaftar.`);
+            }
+        }
+
         const { error } = await supabase.from('mitra').update(mitraUpdate).eq('id', id);
         if (!error) {
             const { data } = await supabase.from('mitra').select('*').order('created_at', { ascending: false });

@@ -12,12 +12,12 @@ export function Button({
     className = '',
     ...props
 }: ButtonProps) {
-    const baseStyle = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
+    const baseStyle = "inline-flex items-center justify-center font-bold rounded-lg transition-all duration-200 cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-accent/50 focus:ring-offset-2 focus:ring-offset-brand-bg disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
     const variants = {
-        primary: "bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 active:from-blue-700 active:to-blue-950 text-white shadow-md shadow-blue-900/30 border border-blue-700/50",
-        secondary: "bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-900 text-white border border-zinc-700/50 shadow-sm",
-        outline: "bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900",
-        ghost: "bg-transparent text-blue-300 hover:text-blue-300 hover:bg-gradient-to-r hover:from-blue-900/30 hover:to-blue-800/30 active:from-blue-900/50 active:to-blue-800/50"
+        primary: "bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md shadow-blue-600/20 border border-blue-600/10",
+        secondary: "bg-brand-bg hover:bg-brand-border active:bg-brand-bg text-text-primary border border-brand-border shadow-sm",
+        outline: "bg-transparent border border-brand-border text-text-secondary hover:bg-brand-bg hover:text-text-primary active:bg-brand-border/20",
+        ghost: "bg-transparent text-brand-accent hover:bg-brand-accent-light active:bg-brand-accent/10"
     };
 
     const spacingStyle = "px-4 py-3 text-sm"; // Mobile optimized touch target sizes

@@ -4,7 +4,7 @@
 -- 1. Tabel: mitra (Data Mitra)
 CREATE TABLE IF NOT EXISTS public.mitra (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    nama_mitra VARCHAR(255) NOT NULL,
+    nama_mitra VARCHAR(255) NOT NULL UNIQUE,
     kontak VARCHAR(50),
     alamat TEXT,
     status VARCHAR(20) CHECK (status IN ('Aktif', 'Tidak Aktif')) DEFAULT 'Aktif',

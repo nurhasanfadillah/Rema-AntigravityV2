@@ -136,12 +136,12 @@ export function FinanceDetail() {
     ).reverse(); // Balik lagi ke descending
 
     return (
-        <div className="p-4 space-y-5 pb-24">
+        <div className="p-4 space-y-5 pb-24 max-w-2xl mx-auto w-full">
             <ConfirmDialog />
 
             {/* Header */}
             <div className="flex items-center gap-3">
-                <Link to="/keuangan" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
+                <Link to="/keuangan" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1 min-w-0">
@@ -154,12 +154,12 @@ export function FinanceDetail() {
                     <button
                         onClick={doFetch}
                         disabled={isLoading}
-                        className="p-2 text-zinc-500 hover:text-zinc-300 transition-colors rounded-xl hover:bg-zinc-800/50 disabled:opacity-40"
+                        className="p-2 text-text-tertiary hover:text-text-primary transition-colors rounded-xl hover:bg-brand-border/40 disabled:opacity-40"
                     >
                         <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                     {!showForm && (
-                        <Button variant="primary" className="!p-2.5" onClick={() => {
+                        <Button variant="primary" className="!p-2.5 shadow-md shadow-blue-600/20" onClick={() => {
                             setFormData({ deskripsi: '', amount: '' });
                             setEditingId(null);
                             setShowForm(true);
@@ -173,53 +173,58 @@ export function FinanceDetail() {
             {/* Summary Cards */}
             {summary && (
                 <div className="grid grid-cols-2 gap-2.5">
-                    <div className="col-span-2 bg-gradient-to-r from-emerald-950/50 via-emerald-900/20 to-transparent px-4 py-3 rounded-2xl border border-emerald-900/40 flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-emerald-500">
+                    <div className="col-span-2 bg-gradient-to-r from-emerald-50 via-brand-surface to-brand-surface px-4 py-3 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
+                        <div className="flex items-center gap-2 text-emerald-600">
                             <Wallet className="w-5 h-5" />
-                            <span className="font-bold uppercase tracking-wider text-[11px]">Saldo Kas</span>
+                            <span className="font-extrabold uppercase tracking-wider text-[11px]">Saldo Kas</span>
                         </div>
-                        <span className={`font-display font-bold text-xl ${summary.saldo >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <span className={`font-display font-extrabold text-xl ${summary.saldo >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                             {formatRupiah(summary.saldo)}
                         </span>
                     </div>
-                    <div className="bg-blue-950/20 p-3 rounded-xl border border-blue-900/30">
-                        <div className="flex items-center gap-1.5 text-blue-400 mb-1">
+                    <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                        <div className="flex items-center gap-1.5 text-blue-600 mb-1">
                             <TrendingUp className="w-3.5 h-3.5" />
                             <span className="text-[10px] font-bold uppercase tracking-wider">Total Masuk</span>
                         </div>
-                        <p className="text-sm font-bold text-zinc-200">{formatRupiah(summary.total_masuk)}</p>
+                        <p className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_masuk)}</p>
                     </div>
-                    <div className="bg-rose-950/20 p-3 rounded-xl border border-rose-900/30">
-                        <div className="flex items-center gap-1.5 text-rose-400 mb-1">
+                    <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100">
+                        <div className="flex items-center gap-1.5 text-rose-600 mb-1">
                             <TrendingDown className="w-3.5 h-3.5" />
                             <span className="text-[10px] font-bold uppercase tracking-wider">Total Keluar</span>
                         </div>
-                        <p className="text-sm font-bold text-zinc-200">{formatRupiah(summary.total_keluar)}</p>
+                        <p className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_keluar)}</p>
                     </div>
                 </div>
             )}
 
             {/* Form Tambah / Edit Kas Keluar */}
             {showForm && (
-                <Card className="border-rose-900/30 bg-rose-950/10">
+                <Card className="border-rose-100 bg-brand-surface shadow-md">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold text-zinc-100 border-b border-zinc-800/60 pb-2.5">
-                            {editingId ? '✏️ Edit Transaksi Keluar' : '➕ Catat Kas Keluar Manual'}
-                        </h3>
+                        <div className="flex items-center justify-between border-b border-brand-border pb-2.5">
+                            <h3 className="font-bold text-text-primary">
+                                {editingId ? '✏️ Edit Transaksi' : '➕ Tambah Kas Keluar'}
+                            </h3>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                                Manual Input
+                            </span>
+                        </div>
                         <div className="space-y-3">
                             <div>
-                                <label className="form-label">Deskripsi</label>
+                                <label className="form-label font-bold text-text-secondary">Deskripsi</label>
                                 <input
                                     required
                                     type="text"
-                                    className="form-input"
+                                    className="form-input bg-brand-bg border-brand-border"
                                     placeholder={`Pembayaran Mitra ${summary?.nama_mitra || ''}`}
                                     value={formData.deskripsi}
                                     onChange={e => setFormData(f => ({ ...f, deskripsi: e.target.value }))}
                                 />
                             </div>
                             <div>
-                                <label className="form-label">Nominal Keluar (Rp)</label>
+                                <label className="form-label font-bold text-text-secondary">Nominal Keluar (Rp)</label>
                                 <NumberInput
                                     placeholder="Contoh: 500000"
                                     value={formData.amount}
@@ -228,17 +233,17 @@ export function FinanceDetail() {
                             </div>
                         </div>
                         <div className="flex gap-2.5 pt-1">
-                            <Button type="button" variant="ghost" fullWidth onClick={resetForm}>
+                            <Button type="button" variant="outline" fullWidth onClick={resetForm} className="font-bold">
                                 Batal
                             </Button>
                             <Button
                                 type="submit"
                                 variant="primary"
                                 fullWidth
-                                className="!bg-rose-600 hover:!bg-rose-500"
+                                className="!bg-rose-600 hover:!bg-rose-700 !shadow-rose-600/20 font-bold"
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Menyimpan...' : 'Simpan Transaksi'}
+                                {isLoading ? 'Menyimpan...' : 'Simpan'}
                             </Button>
                         </div>
                     </form>
@@ -248,31 +253,31 @@ export function FinanceDetail() {
             {/* Daftar Transaksi */}
             <div>
                 <div className="flex items-center justify-between mb-3 px-1">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-text-muted">
                         Riwayat Transaksi
                     </h3>
                     {transactions.length > 0 && (
-                        <span className="text-xs text-zinc-600 font-medium">{transactions.length} transaksi</span>
+                        <span className="text-xs text-text-tertiary font-bold">{transactions.length} transaksi</span>
                     )}
                 </div>
 
                 {/* Loading */}
                 {isLoading && transactions.length === 0 && !showForm && (
                     <div className="flex flex-col items-center py-12 gap-3">
-                        <RefreshCw className="w-7 h-7 text-zinc-600 animate-spin" />
-                        <p className="text-zinc-500 text-sm">Memuat transaksi...</p>
+                        <RefreshCw className="w-7 h-7 text-text-tertiary animate-spin" />
+                        <p className="text-text-tertiary text-sm">Memuat transaksi...</p>
                     </div>
                 )}
 
                 {/* Fetch Error */}
                 {!isLoading && fetchError && (
-                    <div className="flex flex-col items-center gap-3 py-10 px-4 rounded-2xl border border-red-900/30 bg-red-950/10">
+                    <div className="flex flex-col items-center gap-3 py-10 px-4 rounded-2xl border border-red-100 bg-red-50">
                         <AlertCircle className="w-9 h-9 text-red-500/60" />
                         <div className="text-center">
-                            <p className="text-red-400 font-medium text-sm">Gagal Memuat Data</p>
-                            <p className="text-zinc-500 text-xs mt-1">{fetchError}</p>
+                            <p className="text-red-700 font-bold text-sm">Gagal Memuat Data</p>
+                            <p className="text-text-tertiary text-xs mt-1">{fetchError}</p>
                         </div>
-                        <button onClick={doFetch} className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-zinc-300 bg-zinc-800/60 rounded-xl border border-zinc-700/50 hover:bg-zinc-700/60 transition-colors">
+                        <button onClick={doFetch} className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl border border-brand-border shadow-sm hover:bg-brand-bg transition-colors">
                             <RefreshCw className="w-3.5 h-3.5" />
                             Coba Lagi
                         </button>
@@ -281,10 +286,10 @@ export function FinanceDetail() {
 
                 {/* Empty state */}
                 {!isLoading && !fetchError && transactions.length === 0 && (
-                    <div className="text-center py-12 rounded-2xl border border-zinc-800/40 bg-zinc-900/20">
-                        <Wallet className="w-9 h-9 text-zinc-700 mx-auto mb-3" />
-                        <p className="text-zinc-500 text-sm font-medium">Belum ada transaksi</p>
-                        <p className="text-zinc-600 text-xs mt-1">
+                    <div className="text-center py-12 rounded-2xl border border-brand-border border-dashed bg-brand-surface/50">
+                        <Wallet className="w-9 h-9 text-brand-border mx-auto mb-3" />
+                        <p className="text-text-secondary text-sm font-bold">Belum ada transaksi</p>
+                        <p className="text-text-tertiary text-xs mt-1">
                             Transaksi masuk muncul otomatis saat item produksi selesai
                         </p>
                     </div>
@@ -292,7 +297,7 @@ export function FinanceDetail() {
 
                 {/* Transaction List */}
                 {txWithBalance.length > 0 && (
-                    <div className="space-y-2.5">
+                    <div className="space-y-3">
                         {txWithBalance.map((tx) => {
                             const isMasuk = Number(tx.masuk) > 0;
                             const amount = isMasuk ? Number(tx.masuk) : Number(tx.keluar);
@@ -301,17 +306,17 @@ export function FinanceDetail() {
                             return (
                                 <div
                                     key={tx.id_transaksi}
-                                    className={`rounded-2xl border transition-colors ${isMasuk
-                                        ? 'bg-zinc-900/30 border-blue-900/20 hover:border-blue-800/30'
-                                        : 'bg-rose-950/10 border-rose-900/20 hover:border-rose-800/30'
+                                    className={`rounded-2xl border transition-all duration-300 shadow-sm ${isMasuk
+                                        ? 'bg-brand-surface border-blue-100 hover:border-blue-300'
+                                        : 'bg-brand-surface border-rose-100 hover:border-rose-300'
                                         }`}
                                 >
                                     <div className="p-3.5 flex items-start gap-3.5">
                                         {/* Icon */}
-                                        <div className={`p-2.5 rounded-xl shrink-0 mt-0.5 ${isMasuk ? 'bg-blue-500/10' : 'bg-rose-500/10'}`}>
+                                        <div className={`p-2.5 rounded-xl shrink-0 mt-0.5 ${isMasuk ? 'bg-blue-50' : 'bg-rose-50'}`}>
                                             {isMasuk
-                                                ? <TrendingUp className="w-4.5 h-4.5 text-blue-400 w-5 h-5" />
-                                                : <TrendingDown className="w-4.5 h-4.5 text-rose-400 w-5 h-5" />
+                                                ? <TrendingUp className="w-5 h-5 text-blue-600" />
+                                                : <TrendingDown className="w-5 h-5 text-rose-600" />
                                             }
                                         </div>
 
@@ -319,48 +324,48 @@ export function FinanceDetail() {
                                         <div className="flex-1 min-w-0">
                                             {/* Row 1: Deskripsi + Nominal */}
                                             <div className="flex items-start justify-between gap-2">
-                                                <p className="font-semibold text-zinc-100 text-[13px] leading-snug flex-1 min-w-0 break-words">
+                                                <p className="font-bold text-text-primary text-[13px] leading-snug flex-1 min-w-0 break-words">
                                                     {tx.deskripsi}
                                                 </p>
-                                                <p className={`font-bold font-display text-sm shrink-0 ${isMasuk ? 'text-blue-400' : 'text-rose-400'}`}>
+                                                <p className={`font-extrabold font-display text-sm shrink-0 ${isMasuk ? 'text-blue-600' : 'text-rose-600'}`}>
                                                     {isMasuk ? '+' : '−'}{formatRupiah(amount)}
                                                 </p>
                                             </div>
 
                                             {/* Row 2: Tanggal + Badge + Saldo Berjalan */}
                                             <div className="flex items-center gap-2 mt-2 flex-wrap">
-                                                <span className="text-[10px] text-zinc-500 font-medium tabular-nums">
+                                                <span className="text-[10px] text-text-tertiary font-bold tabular-nums">
                                                     {formatTanggal(tx.tanggal)}
                                                 </span>
 
                                                 {isAuto ? (
-                                                    <span className="text-[9px] bg-blue-500/10 text-blue-400/80 px-1.5 py-0.5 rounded border border-blue-500/20 font-bold uppercase tracking-widest">
+                                                    <span className="text-[9px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-100 font-extrabold uppercase tracking-widest">
                                                         Auto
                                                     </span>
                                                 ) : (
-                                                    <span className="text-[9px] bg-rose-500/10 text-rose-400/80 px-1.5 py-0.5 rounded border border-rose-500/20 font-bold uppercase tracking-widest">
+                                                    <span className="text-[9px] bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded border border-rose-100 font-extrabold uppercase tracking-widest">
                                                         Manual
                                                     </span>
                                                 )}
 
-                                                <span className="text-[10px] text-zinc-600 tabular-nums ml-auto">
+                                                <span className="text-[10px] text-text-muted font-bold tabular-nums ml-auto bg-brand-bg px-2 py-0.5 rounded-lg border border-brand-border/40">
                                                     Saldo: {formatRupiah(tx.balance)}
                                                 </span>
                                             </div>
 
                                             {/* Row 3: Edit / Delete actions (hanya untuk transaksi manual) */}
                                             {!isAuto && (
-                                                <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/5">
+                                                <div className="flex items-center gap-1 mt-2.5 pt-2.5 border-t border-brand-border">
                                                     <button
                                                         onClick={() => handleEdit(tx)}
-                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors border border-transparent hover:border-amber-500/20"
+                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors border border-brand-border/60 hover:border-amber-200"
                                                     >
                                                         <Edit2 className="w-3 h-3" />
                                                         Edit
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(tx)}
-                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-semibold text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-brand-border/60 hover:border-red-200"
                                                     >
                                                         <Trash2 className="w-3 h-3" />
                                                         Hapus

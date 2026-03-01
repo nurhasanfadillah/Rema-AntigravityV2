@@ -67,11 +67,11 @@ export function KategoriList() {
     };
 
     return (
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 max-w-2xl mx-auto w-full">
             <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -79,7 +79,7 @@ export function KategoriList() {
                     <p className="page-subtitle mt-0.5">Kelola tipe dan jenis produk</p>
                 </div>
                 {!showAddForm && (
-                    <Button variant="primary" className="!p-2.5" onClick={() => setShowAddForm(true)}>
+                    <Button variant="primary" className="!p-2.5 shadow-md shadow-blue-600/20" onClick={() => setShowAddForm(true)}>
                         <Plus className="w-5 h-5" />
                     </Button>
                 )}
@@ -87,32 +87,32 @@ export function KategoriList() {
 
             {/* Add / Edit Form */}
             {showAddForm && (
-                <Card className="border-blue-700/40 shadow-lg shadow-blue-900/20 bg-gradient-to-b from-blue-950/20 to-transparent">
+                <Card className="border-brand-accent/20 shadow-lg shadow-black/[0.04] bg-brand-surface">
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold border-b border-zinc-800 pb-2.5 text-zinc-100">
-                            {editingId ? 'Edit Kategori' : 'Tambah Kategori'}
+                        <h3 className="font-bold border-b border-brand-border pb-2.5 text-text-primary">
+                            {editingId ? 'Edit Kategori' : 'Tambah Kategori Baru'}
                         </h3>
 
                         <div className="space-y-1.5">
-                            <label className="form-label">Nama Kategori</label>
+                            <label className="form-label font-bold text-text-secondary">Nama Kategori</label>
                             <input
                                 required
                                 type="text"
                                 value={namaKategori}
                                 onChange={e => setNamaKategori(e.target.value)}
-                                className="form-input"
+                                className="form-input bg-brand-bg border-brand-border"
                                 placeholder="Misal: Pouch, Handbag, Tas Ransel"
                             />
                         </div>
 
                         <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => {
+                            <Button type="button" variant="outline" fullWidth onClick={() => {
                                 setShowAddForm(false);
                                 setEditingId(null);
                                 setNamaKategori('');
-                            }}>Batal</Button>
-                            <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
-                                {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan')}
+                            }} className="font-bold">Batal</Button>
+                            <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="font-bold">
+                                {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Kategori')}
                             </Button>
                         </div>
                     </form>
@@ -122,25 +122,32 @@ export function KategoriList() {
             {/* List */}
             <div className="space-y-3">
                 {isLoading && !showAddForm ? (
-                    <p className="text-center text-zinc-500 py-8 text-sm">Memuat kategori...</p>
+                    <div className="flex flex-col items-center py-12 gap-3">
+                        <div className="w-8 h-8 border-4 border-brand-accent/20 border-t-brand-accent rounded-full animate-spin" />
+                        <p className="text-center text-text-tertiary text-sm font-medium">Memuat kategori...</p>
+                    </div>
                 ) : categories.length === 0 ? (
-                    <p className="text-center text-zinc-500 py-8 text-sm">Belum ada kategori yang ditambahkan.</p>
+                    <div className="text-center py-12 px-4 rounded-3xl border border-dashed border-brand-border bg-brand-surface/50">
+                        <LayoutDashboard className="w-12 h-12 text-brand-border mx-auto mb-3" />
+                        <p className="text-text-tertiary font-bold">Belum ada kategori</p>
+                        <p className="text-text-muted text-xs mt-1">Gunakan tombol (+) di pojok kanan atas untuk menambah</p>
+                    </div>
                 ) : (
                     categories.map(cat => (
-                        <Card key={cat.id} className="hover:border-blue-700/40 hover:bg-zinc-900/60 transition-all duration-200 flex items-center gap-4">
-                            <div className="p-2.5 bg-blue-900/30 text-blue-400 rounded-xl border border-blue-500/20 shrink-0">
-                                <LayoutDashboard className="w-5 h-5 text-blue-400" />
+                        <Card key={cat.id} className="hover:border-brand-accent/40 hover:bg-brand-bg/40 transition-all duration-200 flex items-center gap-4 bg-brand-surface shadow-sm border-brand-border">
+                            <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shrink-0">
+                                <LayoutDashboard className="w-5 h-5" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-zinc-100 text-[15px] truncate">{cat.nama_kategori}</h4>
+                                <h4 className="font-bold text-text-primary text-[15px] truncate">{cat.nama_kategori}</h4>
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
                                 <button onClick={() => handleEdit(cat)}
-                                    className="p-1.5 text-zinc-500 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
+                                    className="p-1.5 text-text-tertiary hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
                                     <Edit2 className="w-4 h-4" />
                                 </button>
                                 <button onClick={() => handleDelete(cat)}
-                                    className="p-1.5 text-zinc-500 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
+                                    className="p-1.5 text-text-tertiary hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors border border-transparent hover:border-red-100">
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </div>

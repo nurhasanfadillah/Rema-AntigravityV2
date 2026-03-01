@@ -30,7 +30,7 @@ export function BottomNavigation() {
     };
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800/80 pb-safe z-50">
+        <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-brand-surface/95 backdrop-blur-md border-t border-brand-border/60 pb-safe z-50 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
             <div className="flex justify-around items-center px-2 py-3">
                 {navItems.map((item) => {
                     const active = isActive(item.path);
@@ -39,12 +39,12 @@ export function BottomNavigation() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-blue-500' : 'text-zinc-500 hover:text-zinc-300'}`}
+                            className={`flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-brand-accent' : 'text-text-tertiary hover:text-text-primary'}`}
                         >
-                            <div className={`p-1.5 rounded-full transition-all duration-300 ${active ? 'bg-blue-900/40 text-blue-400' : 'bg-transparent'}`}>
+                            <div className={`p-1.5 rounded-full transition-all duration-300 ${active ? 'bg-brand-accent-light text-brand-accent' : 'bg-transparent'}`}>
                                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
                             </div>
-                            <span className={`text-[10px] font-medium leading-none ${active ? 'text-blue-400' : ''}`}>
+                            <span className={`text-[10px] font-bold leading-none ${active ? 'text-brand-accent' : ''}`}>
                                 {item.label}
                             </span>
                         </Link>

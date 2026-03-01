@@ -39,15 +39,15 @@ const menuGroups: MenuGroup[] = [
                 label: 'Pesanan',
                 path: '/pesanan',
                 icon: ShoppingCart,
-                iconColor: 'text-emerald-400',
-                iconBgStyle: { backgroundColor: 'rgba(16, 185, 129, 0.12)' },
+                iconColor: 'text-emerald-600',
+                iconBgStyle: { backgroundColor: 'rgba(16, 185, 129, 0.1)' },
             },
             {
                 label: 'Produksi',
                 path: '/produksi',
                 icon: PackageOpen,
-                iconColor: 'text-orange-400',
-                iconBgStyle: { backgroundColor: 'rgba(249, 115, 22, 0.12)' },
+                iconColor: 'text-orange-600',
+                iconBgStyle: { backgroundColor: 'rgba(249, 115, 22, 0.1)' },
             },
         ],
     },
@@ -58,22 +58,22 @@ const menuGroups: MenuGroup[] = [
                 label: 'Mitra',
                 path: '/mitra',
                 icon: Users,
-                iconColor: 'text-blue-400',
-                iconBgStyle: { backgroundColor: 'rgba(59, 130, 246, 0.12)' },
+                iconColor: 'text-blue-600',
+                iconBgStyle: { backgroundColor: 'rgba(59, 130, 246, 0.1)' },
             },
             {
                 label: 'Kategori',
                 path: '/kategori',
                 icon: LayoutGrid,
-                iconColor: 'text-indigo-400',
-                iconBgStyle: { backgroundColor: 'rgba(99, 102, 241, 0.12)' },
+                iconColor: 'text-indigo-600',
+                iconBgStyle: { backgroundColor: 'rgba(99, 102, 241, 0.1)' },
             },
             {
                 label: 'Produk',
                 path: '/produk',
                 icon: Package,
-                iconColor: 'text-purple-400',
-                iconBgStyle: { backgroundColor: 'rgba(168, 85, 247, 0.12)' },
+                iconColor: 'text-purple-600',
+                iconBgStyle: { backgroundColor: 'rgba(168, 85, 247, 0.1)' },
             },
         ],
     },
@@ -84,8 +84,8 @@ const menuGroups: MenuGroup[] = [
                 label: 'Keuangan',
                 path: '/keuangan',
                 icon: Wallet,
-                iconColor: 'text-sky-400',
-                iconBgStyle: { backgroundColor: 'rgba(14, 165, 233, 0.12)' },
+                iconColor: 'text-sky-600',
+                iconBgStyle: { backgroundColor: 'rgba(14, 165, 233, 0.1)' },
             },
         ],
     },
@@ -94,7 +94,7 @@ const menuGroups: MenuGroup[] = [
 /* ──────────────────────────────────────────────
    MenuCell — Atomic unit: IconContainer + Label
    Fixed 68×68 icon, label max 1 baris truncate
-────────────────────────────────────────────── */
+ ────────────────────────────────────────────── */
 function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
     const Icon = item.icon;
     return (
@@ -114,8 +114,8 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
             <div
                 className="
                     relative flex-shrink-0 flex items-center justify-center
-                    border border-white/5
-                    group-hover:border-white/10
+                    border border-black/5
+                    group-hover:border-brand-accent/20
                     group-active:scale-[0.93]
                     group-hover:scale-[1.06]
                     transition-all duration-300 ease-out
@@ -124,28 +124,28 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
                     width: '58px',
                     height: '58px',
                     borderRadius: '16px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.28)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
                     ...item.iconBgStyle,
                 }}
             >
                 <Icon
                     className={`${item.iconColor} relative z-10`}
                     style={{ width: '22px', height: '22px' }}
-                    strokeWidth={1.9}
+                    strokeWidth={2}
                 />
             </div>
 
             {/* ── Label: center, 12px, max 1 baris, truncate ── */}
             <span
                 className="
-                    text-center text-zinc-400
-                    group-hover:text-zinc-200
+                    text-center text-text-secondary
+                    group-hover:text-brand-accent
                     transition-colors duration-200
                     truncate w-full
                 "
                 style={{
                     fontSize: '12px',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     lineHeight: '16px',
                     maxWidth: '72px',
                 }}
@@ -159,19 +159,19 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
 /* ──────────────────────────────────────────────
    MenuGroupCard — Grouping card per kategori
    4-column fixed grid, merata, no H-scroll
-────────────────────────────────────────────── */
+ ────────────────────────────────────────────── */
 function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: number }) {
     return (
         <div
             className="
                 animate-slide-up
                 rounded-2xl overflow-hidden
-                border border-zinc-800/50
-                shadow-md shadow-black/20
+                border border-brand-border/60
+                shadow-[0_8px_24px_rgba(0,0,0,0.04)]
             "
             style={{
                 margin: '0 16px',
-                backgroundColor: 'rgba(24, 24, 27, 0.6)',
+                backgroundColor: 'var(--color-brand-surface)',
                 animationDelay: `${baseDelay}ms`,
                 animationFillMode: 'both',
             }}
@@ -179,18 +179,18 @@ function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: numb
             {/* ── Group Header ── */}
             <div style={{ padding: '12px 16px 10px' }}>
                 <span
-                    className="text-zinc-600 uppercase tracking-widest font-bold"
+                    className="text-text-tertiary uppercase tracking-widest font-bold"
                     style={{ fontSize: '9.5px', letterSpacing: '0.12em' }}
                 >
                     {group.groupLabel}
                 </span>
             </div>
             {/* Divider */}
-            <div className="bg-zinc-800/60" style={{ height: '1px', marginLeft: '16px', marginRight: '16px' }} />
+            <div className="bg-brand-border/40" style={{ height: '1px', marginLeft: '16px', marginRight: '16px' }} />
 
             {/* ── 4-Column Fixed Grid ──
                 Selalu 4 slot kolom. justifyItems center = setiap item
-                center di kolom masing-masing. Slot kosong jika items < 4.
+                center di kolom masing-masing. Slot kolom tetap ada meski items < 4.
             ── */}
             <div
                 style={{
@@ -214,7 +214,7 @@ function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: numb
 
 /* ──────────────────────────────────────────────
    Dashboard Page
-────────────────────────────────────────────── */
+ ────────────────────────────────────────────── */
 export function Dashboard() {
     let cumulativeDelay = 60;
 
@@ -230,42 +230,42 @@ export function Dashboard() {
                 style={{ margin: '16px 16px 16px', animationFillMode: 'both' }}
             >
                 {/* Background layers */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-700/25 via-blue-900/20 to-zinc-950" />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 <div
-                    className="absolute inset-0 opacity-[0.05]"
+                    className="absolute inset-0 opacity-[0.1]"
                     style={{
                         backgroundImage:
-                            'linear-gradient(rgba(147,197,253,0.6) 1px, transparent 1px),' +
-                            'linear-gradient(90deg, rgba(147,197,253,0.6) 1px, transparent 1px)',
+                            'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),' +
+                            'linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)',
                         backgroundSize: '22px 22px',
                     }}
                 />
-                <div className="absolute -top-8 -right-8 w-36 h-36 bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-blue-800/15 rounded-full blur-2xl pointer-events-none" />
-                <div className="absolute inset-0 rounded-2xl border border-blue-800/25" />
+                <div className="absolute -top-8 -right-8 w-36 h-36 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute inset-0 rounded-2xl border border-white/10" />
 
                 {/* Content */}
-                <div className="relative z-10 flex items-center justify-between gap-3 px-4 py-[14px]">
+                <div className="relative z-10 flex items-center justify-between gap-3 px-4 py-[16px]">
                     <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-[7px]">
-                            <Building2 className="w-[10px] h-[10px] text-blue-400/70 flex-shrink-0" strokeWidth={2} />
-                            <span className="text-[9.5px] font-extrabold tracking-[0.12em] uppercase text-blue-400/70 font-sans">
+                        <div className="flex items-center gap-1.5 mb-[8px]">
+                            <Building2 className="w-[10px] h-[10px] text-blue-100/70 flex-shrink-0" strokeWidth={2.5} />
+                            <span className="text-[9.5px] font-extrabold tracking-[0.12em] uppercase text-blue-100/70 font-sans">
                                 PT. Redone Berkah Mandiri Utama
                             </span>
                         </div>
-                        <h2 className="font-display text-[17px] font-extrabold leading-snug tracking-tight text-white mb-[5px]">
+                        <h2 className="font-display text-[18px] font-extrabold leading-snug tracking-tight text-white mb-[5px]">
                             Selamat Datang 👋
                         </h2>
-                        <p className="text-[11px] leading-[1.55] text-zinc-400/90 font-normal max-w-[220px]">
+                        <p className="text-[11.5px] leading-[1.55] text-blue-50/90 font-medium max-w-[220px]">
                             Platform manajemen pesanan, produksi &amp; keuangan bisnis Anda.
                         </p>
                     </div>
                     <div
-                        className="flex-shrink-0 flex items-center justify-center rounded-xl border border-blue-500/20 shadow-md shadow-blue-900/20"
-                        style={{ width: '44px', height: '44px', backgroundColor: 'rgba(59, 130, 246, 0.12)' }}
+                        className="flex-shrink-0 flex items-center justify-center rounded-xl border border-white/20 shadow-lg shadow-blue-900/10"
+                        style={{ width: '46px', height: '46px', backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                     >
-                        <Sparkles className="w-[18px] h-[18px] text-blue-400" strokeWidth={1.8} />
+                        <Sparkles className="w-[20px] h-[20px] text-white" strokeWidth={1.8} />
                     </div>
                 </div>
             </div>

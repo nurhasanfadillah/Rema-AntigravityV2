@@ -3,7 +3,7 @@ import { useMitraStore } from '../../store/mitraStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
-import { Plus, ArrowLeft, Edit2, Trash2 } from 'lucide-react';
+import { Plus, ArrowLeft, Edit2, Trash2, X, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useConfirmation } from '../../hooks/useConfirmation';
@@ -27,10 +27,30 @@ export function MitraList() {
         fetchMitras();
     }, [fetchMitras]);
 
+    const handleCancel = () => {
+        setShowAddForm(false);
+        setEditingId(null);
+        setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
+    };
+
+    const validateForm = () => {
+        if (!formData.nama_mitra.trim()) {
+            notify.warning('Nama mitra wajib diisi');
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
+
         const payload = {
-            ...formData,
+            nama_mitra: formData.nama_mitra.trim(),
+            kontak: formData.kontak.trim(),
+            alamat: formData.alamat.trim(),
+            status: formData.status,
             limit_tagihan: formData.limit_tagihan ? parseInt(formData.limit_tagihan.toString(), 10) : 0
         };
 
@@ -44,9 +64,7 @@ export function MitraList() {
                 notify.success('Mitra berhasil ditambahkan', toastId);
             }
 
-            setShowAddForm(false);
-            setEditingId(null);
-            setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
+            handleCancel();
         } catch (error) {
             handleBackendError(error, 'Gagal menyimpan data mitra', toastId, 'Mitra');
         }
@@ -62,21 +80,25 @@ export function MitraList() {
         });
         setEditingId(mitra.id);
         setShowAddForm(true);
+        // Scroll to form if needed
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleDelete = async (mitra: any) => {
         const { confirmed } = await confirm({
-            title: 'Hapus Mitra?',
-            description: 'Data mitra ini akan dihapus secara permanen dan tidak dapat dipulihkan kembali.',
+            title: 'Hapus Mitra B2B?',
+            description: 'Tindakan ini bersifat destruktif dan akan menghapus identitas mitra secara permanen.',
             subject: mitra.nama_mitra,
             variant: 'danger',
-            confirmLabel: 'Hapus Mitra',
-            requiresDoubleConfirm: false,
+            confirmLabel: 'Hapus Permanen',
+            requiresDoubleConfirm: true,
             consequences: [
-                'Semua riwayat pesanan terkait mitra ini tetap tersimpan.',
-                'Mitra tidak dapat digunakan untuk transaksi baru.',
+                'Data mitra tidak akan muncul lagi di pilihan transaksi baru.',
+                'Sistem akan mencegah penghapusan jika masih ada pesanan aktif.',
+                'Seluruh riwayat keuangan mitra ini akan tetap disimpan untuk audit.',
             ],
         });
+
         if (!confirmed) return;
 
         const toastId = notify.loading('Menghapus mitra...');
@@ -89,19 +111,20 @@ export function MitraList() {
     };
 
     return (
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 max-w-2xl mx-auto w-full min-h-screen pb-24">
             <ConfirmDialog />
+
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-xl hover:bg-brand-border/40 transition-all active:scale-95">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
-                    <h2 className="page-title font-display">Data Mitra</h2>
-                    <p className="page-subtitle mt-0.5">Kelola mitra penjualan B2B</p>
+                    <h2 className="page-title font-display tracking-tight">Data Mitra</h2>
+                    <p className="page-subtitle mt-0.5">Kelola mitra penjualan B2B profesional</p>
                 </div>
                 {!showAddForm && (
-                    <Button variant="primary" className="!p-2.5" onClick={() => setShowAddForm(true)}>
+                    <Button variant="primary" className="!p-2.5 shadow-lg shadow-blue-600/20 active:scale-95" onClick={() => setShowAddForm(true)}>
                         <Plus className="w-5 h-5" />
                     </Button>
                 )}
@@ -109,63 +132,82 @@ export function MitraList() {
 
             {/* Add / Edit Form */}
             {showAddForm && (
-                <Card className="border-blue-700/40 bg-gradient-to-b from-blue-950/20 to-transparent">
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <h3 className="font-semibold border-b border-zinc-800 pb-2.5 text-zinc-100">
-                            {editingId ? 'Edit Mitra' : 'Tambah Mitra Baru'}
-                        </h3>
+                <Card className="border-brand-accent/20 shadow-xl shadow-black/[0.04] bg-brand-surface animate-slide-up relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-brand-accent" />
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="flex items-center justify-between border-b border-brand-border pb-3.5">
+                            <h3 className="font-bold text-text-primary text-[17px] font-display">
+                                {editingId ? 'Edit Data Mitra' : 'Tambah Mitra Baru'}
+                            </h3>
+                            <button type="button" onClick={handleCancel} className="text-text-tertiary hover:text-text-primary p-1">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
 
                         <div className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="form-label">Nama Mitra</label>
-                                <input required type="text" value={formData.nama_mitra}
+                                <label className="form-label font-bold text-text-secondary flex items-center gap-1.5">
+                                    Nama Mitra <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    required
+                                    type="text"
+                                    value={formData.nama_mitra}
                                     onChange={e => setFormData({ ...formData, nama_mitra: e.target.value })}
-                                    className="form-input" placeholder="PT. Mitra Sejahtera" />
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="form-label">Kontak (WhatsApp)</label>
-                                <input type="tel" value={formData.kontak}
-                                    onChange={e => setFormData({ ...formData, kontak: e.target.value })}
-                                    className="form-input" placeholder="08123456789" />
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="form-label">Alamat Lengkap</label>
-                                <textarea rows={2} value={formData.alamat}
-                                    onChange={e => setFormData({ ...formData, alamat: e.target.value })}
-                                    className="form-input" placeholder="Jl. Raya Niaga No. 1..." />
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="form-label">Status</label>
-                                <select
-                                    className="form-input"
-                                    value={formData.status}
-                                    onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
-                                >
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Tidak Aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="form-label">Limit (Rp)</label>
-                                <NumberInput
-                                    value={formData.limit_tagihan.toString()}
-                                    onChange={(val) => setFormData({ ...formData, limit_tagihan: val })}
-                                    placeholder="10000000"
+                                    className="form-input bg-brand-bg/50 border-brand-border focus:bg-brand-surface transition-all"
+                                    placeholder="Masukkan nama resmi perusahaan/individu"
                                 />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="form-label font-bold text-text-secondary">Kontak (WhatsApp/Telp)</label>
+                                <input
+                                    type="tel"
+                                    value={formData.kontak}
+                                    onChange={e => setFormData({ ...formData, kontak: e.target.value })}
+                                    className="form-input bg-brand-bg/50 border-brand-border focus:bg-brand-surface transition-all"
+                                    placeholder="Contoh: 08123456789"
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="form-label font-bold text-text-secondary">Alamat Lengkap</label>
+                                <textarea
+                                    rows={3}
+                                    value={formData.alamat}
+                                    onChange={e => setFormData({ ...formData, alamat: e.target.value })}
+                                    className="form-input bg-brand-bg/50 border-brand-border focus:bg-brand-surface transition-all resize-none"
+                                    placeholder="Jl. Raya Niaga No. 1, Jakarta Selatan..."
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="form-label font-bold text-text-secondary">Status Kerjasama</label>
+                                    <select
+                                        className="form-input bg-brand-bg/50 border-brand-border font-bold focus:bg-brand-surface transition-all"
+                                        value={formData.status}
+                                        onChange={e => setFormData({ ...formData, status: e.target.value as 'Aktif' | 'Tidak Aktif' })}
+                                    >
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Tidak Aktif">Tidak Aktif</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="form-label font-bold text-text-secondary">Limit Tagihan (Rp)</label>
+                                    <NumberInput
+                                        value={formData.limit_tagihan.toString()}
+                                        onChange={(val) => setFormData({ ...formData, limit_tagihan: val })}
+                                        placeholder="Saran: 10.000.000"
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 pt-2">
-                            <Button type="button" variant="ghost" fullWidth onClick={() => {
-                                setShowAddForm(false);
-                                setEditingId(null);
-                                setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
-                            }}>Batal</Button>
-                            <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
+                        <div className="flex gap-3 pt-3">
+                            <Button type="button" variant="outline" fullWidth onClick={handleCancel} className="font-bold py-3">Batal</Button>
+                            <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="font-bold py-3">
                                 {isLoading ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Simpan Mitra')}
                             </Button>
                         </div>
@@ -174,43 +216,72 @@ export function MitraList() {
             )}
 
             {/* List */}
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {isLoading && !showAddForm ? (
-                    <p className="text-center text-zinc-500 py-8 text-sm">Memuat data mitra...</p>
+                    <div className="flex flex-col items-center py-16 gap-4">
+                        <div className="w-10 h-10 border-[3px] border-brand-accent/10 border-t-brand-accent rounded-full animate-spin" />
+                        <p className="text-center text-text-tertiary text-sm font-bold tracking-wide">Menyelaraskan data mitra...</p>
+                    </div>
                 ) : mitras.length === 0 ? (
-                    <p className="text-center text-zinc-500 py-8 text-sm">Belum ada data mitra yang ditambahkan.</p>
+                    <div className="text-center py-20 px-6 rounded-[32px] border-2 border-dashed border-brand-border bg-brand-surface/30">
+                        <div className="bg-brand-bg w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                            <AlertCircle className="w-8 h-8 text-text-tertiary/40" />
+                        </div>
+                        <h4 className="text-text-primary font-bold text-lg font-display">Belum ada data mitra</h4>
+                        <p className="text-text-tertiary text-sm mt-1.5 max-w-[240px] mx-auto leading-relaxed">Daftarkan mitra bisnis baru Anda untuk mulai pencatatan transaksi B2B.</p>
+                        <Button variant="outline" size="sm" className="mt-6 font-bold border-brand-accent/20 text-brand-accent" onClick={() => setShowAddForm(true)}>
+                            Tambah Sekarang
+                        </Button>
+                    </div>
                 ) : (
-                    mitras.map(mitra => (
-                        <Card key={mitra.id} className="hover:border-blue-700/40 hover:bg-zinc-900/60 transition-all duration-200">
-                            <div className="flex justify-between items-start">
-                                <div className="flex-1 min-w-0 pr-3">
-                                    <h4 className="font-semibold text-zinc-100 truncate">{mitra.nama_mitra}</h4>
-                                    <p className="text-xs text-zinc-500 mt-1">{mitra.kontak || 'Tidak ada kontak'}</p>
-                                </div>
-                                <div className="flex flex-col items-end gap-2.5 shrink-0">
-                                    {/* Status using standardized StatusBadge */}
-                                    <StatusBadge status={mitra.status as any} size="sm" />
-                                    <div className="flex items-center gap-1.5">
-                                        <button onClick={() => handleEdit(mitra)}
-                                            className="p-1.5 text-zinc-500 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => handleDelete(mitra)}
-                                            className="p-1.5 text-zinc-500 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                    <div className="grid gap-4">
+                        {mitras.map(mitra => (
+                            <Card key={mitra.id} className="group hover:border-brand-accent/30 hover:shadow-xl hover:shadow-black/[0.02] transition-all duration-300 bg-brand-surface shadow-sm border-brand-border px-5 py-5 overflow-hidden active:scale-[0.99] relative">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex-1 min-w-0 pr-4">
+                                        <h4 className="font-extrabold text-text-primary text-[16px] truncate group-hover:text-brand-accent transition-colors font-display">{mitra.nama_mitra}</h4>
+                                        <p className="text-[13px] text-text-tertiary font-bold mt-1.5 flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 bg-brand-accent/60 rounded-full" />
+                                            {mitra.kontak || 'Tanpa Kontak'}
+                                        </p>
+                                        {mitra.alamat && (
+                                            <p className="text-[12px] text-text-muted mt-1.5 line-clamp-1 font-medium italic">
+                                                {mitra.alamat}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="flex flex-col items-end gap-3 shrink-0">
+                                        <StatusBadge status={mitra.status as any} size="sm" />
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button onClick={(e) => { e.preventDefault(); handleEdit(mitra); }}
+                                                className="p-2 text-text-tertiary hover:text-brand-accent rounded-xl hover:bg-brand-accent/10 transition-all border border-transparent hover:border-brand-accent/10"
+                                                title="Edit Mitra">
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button onClick={(e) => { e.preventDefault(); handleDelete(mitra); }}
+                                                className="p-2 text-text-tertiary hover:text-status-error-text rounded-xl hover:bg-status-error-bg transition-all border border-transparent hover:border-status-error-border/20"
+                                                title="Hapus Mitra">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            {/* Limit info */}
-                            <div className="mt-3 pt-3 border-t border-zinc-800/60 flex justify-between items-center">
-                                <span className="section-label">Limit Tagihan</span>
-                                <span className="text-sm font-semibold text-zinc-300">
-                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(mitra.limit_tagihan)}
-                                </span>
-                            </div>
-                        </Card>
-                    ))
+
+                                {/* Status Footer */}
+                                <div className="mt-5 pt-4 border-t border-brand-border/60 flex justify-between items-center bg-brand-bg/30 -mx-5 px-5 -mb-5 py-3.5 group-hover:bg-brand-accent/[0.02] transition-colors">
+                                    <div className="flex flex-col">
+                                        <span className="section-label font-bold text-text-tertiary uppercase tracking-[0.15em] text-[9px]">Limit Tagihan</span>
+                                        <span className="text-[15px] font-extrabold text-text-secondary mt-0.5 font-display">
+                                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(mitra.limit_tagihan)}
+                                        </span>
+                                    </div>
+                                    <div className="text-[10px] text-text-muted font-bold text-right">
+                                        ID: {mitra.id.split('-')[0].toUpperCase()}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

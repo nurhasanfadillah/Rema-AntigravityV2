@@ -99,9 +99,9 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
 
     if (currentStatus === 'Dibatalkan') {
         return (
-            <div className="flex items-center gap-2 p-2.5 bg-red-500/10 rounded-xl border border-red-500/20 w-full mb-4">
-                <XCircle className="w-4 h-4 text-red-400" />
-                <span className="text-xs font-semibold text-red-400">Pesanan Dibatalkan</span>
+            <div className="flex items-center gap-2 p-2.5 bg-red-50 rounded-xl border border-red-100 w-full mb-4">
+                <XCircle className="w-4 h-4 text-red-600" />
+                <span className="text-xs font-bold text-red-600">Pesanan Dibatalkan</span>
             </div>
         );
     }
@@ -128,11 +128,11 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
         <div className="w-full py-4">
             <div className="flex items-center justify-between relative px-2">
                 {/* Progress Line Background */}
-                <div className="absolute top-[18px] left-0 w-full h-[2px] bg-zinc-800 z-0"></div>
+                <div className="absolute top-[18px] left-0 w-full h-[2px] bg-brand-border z-0"></div>
 
                 {/* Active Progress Line */}
                 <div
-                    className="absolute top-[18px] left-0 h-[2px] bg-blue-500 z-0 transition-all duration-700 ease-in-out shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                    className="absolute top-[18px] left-0 h-[2px] bg-brand-accent z-0 transition-all duration-700 ease-in-out shadow-[0_0_8px_rgba(37,99,235,0.3)]"
                     style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
                 ></div>
 
@@ -144,10 +144,10 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
                         <div key={step} className="relative z-10 flex flex-col items-center">
                             <div
                                 className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-500 border-2 ${isCompleted
-                                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-900/40'
-                                        : isActive
-                                            ? 'bg-zinc-950 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)] animate-pulse'
-                                            : 'bg-zinc-950 border-zinc-800 text-zinc-600'
+                                    ? 'bg-brand-accent border-brand-accent text-white shadow-md shadow-blue-600/20'
+                                    : isActive
+                                        ? 'bg-brand-surface border-brand-accent text-brand-accent shadow-[0_0_12px_rgba(37,99,235,0.2)] animate-pulse'
+                                        : 'bg-brand-bg border-brand-border text-text-muted'
                                     }`}
                             >
                                 {getStepIcon(step)}

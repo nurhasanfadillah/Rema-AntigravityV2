@@ -32,17 +32,17 @@ export function PesananDetailItem() {
 
     if (isLoading && orders.length === 0) {
         return (
-            <div className="flex flex-col min-h-screen bg-zinc-950 items-center justify-center">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+            <div className="flex flex-col min-h-screen bg-brand-bg items-center justify-center">
+                <Loader2 className="w-8 h-8 text-brand-accent animate-spin" />
             </div>
         );
     }
 
     if (!item || !parentOrder) {
         return (
-            <div className="flex flex-col min-h-screen bg-zinc-950 items-center justify-center p-4">
-                <p className="text-zinc-500 text-sm mb-4">Item pesanan tidak ditemukan atau sedang dimuat.</p>
-                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-zinc-800 text-zinc-200 text-sm rounded-xl hover:bg-zinc-700 transition-colors">
+            <div className="flex flex-col min-h-screen bg-brand-bg items-center justify-center p-4">
+                <p className="text-text-tertiary text-sm mb-4">Item pesanan tidak ditemukan atau sedang dimuat.</p>
+                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-brand-surface text-text-primary text-sm font-bold rounded-xl hover:bg-brand-border transition-colors border border-brand-border shadow-sm">
                     Kembali
                 </button>
             </div>
@@ -89,7 +89,7 @@ export function PesananDetailItem() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 animate-in slide-in-from-right-4 duration-300 pb-12">
+        <div className="flex flex-col min-h-screen bg-brand-bg text-text-primary animate-in slide-in-from-right-4 duration-300 pb-12 max-w-2xl mx-auto w-full">
             <StatusConfirmationModal
                 isOpen={isStatusModalOpen}
                 onClose={() => setIsStatusModalOpen(false)}
@@ -102,45 +102,45 @@ export function PesananDetailItem() {
             />
 
             {/* Page Header */}
-            <div className="bg-zinc-950 border-b border-zinc-900 p-4 flex items-center gap-3">
+            <div className="bg-brand-surface border-b border-brand-border p-4 flex items-center gap-3 sticky top-0 z-10 shadow-sm">
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors"
+                    className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors"
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div className="flex-1 min-w-0">
                     <h2 className="page-title font-display truncate">Detail Item</h2>
-                    <p className="page-subtitle truncate">{item.products?.nama_produk || 'Produk'}</p>
+                    <p className="page-subtitle truncate font-bold text-brand-accent">{item.products?.nama_produk || 'Produk'}</p>
                 </div>
                 <StatusBadge status={item.status} size="sm" />
             </div>
 
             <div className="p-5 space-y-8 no-scrollbar">
                 {/* Status Stepper Flow */}
-                <div className="bg-zinc-900/20 p-5 rounded-3xl border border-zinc-900/50">
+                <div className="bg-brand-surface p-5 rounded-3xl border border-brand-border shadow-sm">
                     <div className="mb-3 px-1">
-                        <span className="section-label">Tahapan Produksi</span>
+                        <span className="section-label font-bold text-text-tertiary uppercase tracking-widest text-[10px]">Tahapan Produksi</span>
                     </div>
                     <StatusStepper currentStatus={item.status as any} type="detail" />
                 </div>
 
                 {/* Section: Design Description */}
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-blue-400">
+                    <div className="flex items-center gap-2 text-brand-accent">
                         <Tag className="w-3.5 h-3.5" />
-                        <span className="section-label text-blue-400">Deskripsi Desain</span>
+                        <span className="section-label font-bold uppercase tracking-widest text-[10px]">Deskripsi Desain</span>
                     </div>
-                    <div className="p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800/50 leading-relaxed italic text-zinc-300 text-sm">
+                    <div className="p-4 bg-brand-surface rounded-2xl border border-brand-border leading-relaxed italic text-text-secondary text-sm shadow-sm ring-1 ring-black/[0.02]">
                         "{item.deskripsi_desain || 'Tidak ada deskripsi'}"
                     </div>
                 </div>
 
                 {/* Section: Design Files */}
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-indigo-400">
+                    <div className="flex items-center gap-2 text-indigo-600">
                         <FileText className="w-3.5 h-3.5" />
-                        <span className="section-label text-indigo-400">Aset File Desain</span>
+                        <span className="section-label font-bold uppercase tracking-widest text-[10px]">Aset File Desain</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         {item.design_file && item.design_file.length > 0 ? (
@@ -148,24 +148,24 @@ export function PesananDetailItem() {
                                 const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(file.split('.').pop()?.toLowerCase() || '');
                                 return (
                                     <a key={idx} href={getOrderFileUrl(file) || '#'} target="_blank" rel="noreferrer"
-                                        className="group relative aspect-video rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 transition-all">
+                                        className="group relative aspect-video rounded-xl overflow-hidden bg-brand-surface border border-brand-border hover:border-indigo-500/50 transition-all shadow-sm">
                                         {isImg ? (
-                                            <img src={getOrderFileUrl(file) || ''} alt="Design" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+                                            <img src={getOrderFileUrl(file) || ''} alt="Design" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                                         ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-                                                <FileText className="w-6 h-6 text-zinc-700" />
-                                                <span className="text-[10px] font-semibold text-zinc-600 uppercase">Dokumen</span>
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-brand-bg">
+                                                <FileText className="w-6 h-6 text-text-muted" />
+                                                <span className="text-[10px] font-bold text-text-tertiary uppercase">Dokumen</span>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <ExternalLink className="w-5 h-5 text-white" />
+                                        <div className="absolute inset-0 bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <ExternalLink className="w-5 h-5 text-indigo-600" />
                                         </div>
                                     </a>
                                 );
                             })
                         ) : (
-                            <div className="col-span-2 py-8 text-center bg-zinc-900/30 rounded-2xl border border-dashed border-zinc-800">
-                                <p className="text-xs text-zinc-600 italic">Belum ada file desain yang diunggah</p>
+                            <div className="col-span-2 py-8 text-center bg-brand-surface/50 rounded-2xl border border-dashed border-brand-border">
+                                <p className="text-xs text-text-tertiary italic font-medium">Belum ada file desain yang diunggah</p>
                             </div>
                         )}
                     </div>
@@ -173,9 +173,9 @@ export function PesananDetailItem() {
 
                 {/* Section: Fulfillment Info */}
                 <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-emerald-400">
+                    <div className="flex items-center gap-2 text-emerald-600">
                         <Globe className="w-3.5 h-3.5" />
-                        <span className="section-label text-emerald-400">
+                        <span className="section-label font-bold uppercase tracking-widest text-[10px]">
                             {parentOrder.sumber_pesanan === 'Online' ? 'File Resi (Online)' : 'Detail Pengiriman (Offline)'}
                         </span>
                     </div>
@@ -183,29 +183,29 @@ export function PesananDetailItem() {
                     {parentOrder.sumber_pesanan === 'Online' ? (
                         parentOrder.file_resi ? (
                             <a href={getOrderFileUrl(parentOrder.file_resi) || '#'} target="_blank" rel="noreferrer"
-                                className="flex items-center gap-3 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800 text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors">
-                                <FileText className="w-5 h-5 text-blue-400" />
+                                className="flex items-center gap-3 p-4 bg-brand-surface rounded-2xl border border-brand-border text-sm font-bold text-text-secondary hover:bg-brand-bg transition-colors shadow-sm">
+                                <FileText className="w-5 h-5 text-blue-600" />
                                 <span>Lihat Dokumen Resi Pengiriman</span>
-                                <ExternalLink className="w-4 h-4 ml-auto text-zinc-600" />
+                                <ExternalLink className="w-4 h-4 ml-auto text-text-tertiary" />
                             </a>
                         ) : (
-                            <div className="p-4 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl">
-                                <p className="text-xs text-zinc-600 italic">Resi belum tersedia</p>
+                            <div className="p-4 bg-brand-surface/50 border border-dashed border-brand-border rounded-2xl">
+                                <p className="text-xs text-text-tertiary italic font-medium">Resi belum tersedia</p>
                             </div>
                         )
                     ) : (
-                        <div className="space-y-3 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800">
+                        <div className="space-y-3 p-4 bg-brand-surface rounded-2xl border border-brand-border shadow-sm">
                             <div className="flex items-center gap-3">
-                                <User className="w-4 h-4 text-zinc-500 shrink-0" />
-                                <span className="text-sm font-semibold text-zinc-200">{parentOrder.nama_penerima || '-'}</span>
+                                <User className="w-4 h-4 text-text-tertiary shrink-0" />
+                                <span className="text-sm font-extrabold text-text-primary">{parentOrder.nama_penerima || '-'}</span>
                             </div>
                             <div className="flex items-center gap-3 pl-7">
-                                <span className="text-xs text-zinc-500">{parentOrder.kontak_penerima || '-'}</span>
+                                <span className="text-xs text-text-tertiary font-bold">{parentOrder.kontak_penerima || '-'}</span>
                             </div>
                             {parentOrder.alamat_penerima && (
-                                <div className="flex items-start gap-3 pt-2 border-t border-zinc-900">
-                                    <MapPin className="w-4 h-4 text-zinc-500 shrink-0 mt-0.5" />
-                                    <span className="text-xs text-zinc-400 leading-relaxed italic">{parentOrder.alamat_penerima}</span>
+                                <div className="flex items-start gap-3 pt-2 border-t border-brand-border">
+                                    <MapPin className="w-4 h-4 text-text-muted shrink-0 mt-0.5" />
+                                    <span className="text-xs text-text-tertiary font-medium leading-relaxed italic">{parentOrder.alamat_penerima}</span>
                                 </div>
                             )}
                         </div>
@@ -213,10 +213,10 @@ export function PesananDetailItem() {
                 </div>
 
                 {/* Section: Related Items */}
-                <div className="pt-6 border-t border-zinc-900 pb-10">
-                    <div className="flex items-center gap-2 mb-4 text-zinc-500">
+                <div className="pt-6 border-t border-brand-border pb-10">
+                    <div className="flex items-center gap-2 mb-4 text-text-tertiary">
                         <Search className="w-3.5 h-3.5" />
-                        <span className="section-label">Item Lain dalam Pesanan Ini</span>
+                        <span className="section-label font-bold uppercase tracking-widest text-[10px]">Item Lain dalam Pesanan Ini</span>
                     </div>
                     <div className="space-y-2">
                         {otherItems.length > 0 ? (
@@ -224,24 +224,24 @@ export function PesananDetailItem() {
                                 <button
                                     key={other.id}
                                     onClick={() => navigate(`/pesanan/detail-item/${other.id}`)}
-                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-zinc-900/20 hover:bg-zinc-900/80 transition-all border border-zinc-800/50 text-left group"
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-brand-surface hover:bg-brand-bg transition-all border border-brand-border text-left group shadow-sm"
                                 >
                                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                                        <span className="text-xs font-semibold text-zinc-300 truncate">{other.products?.nama_produk}</span>
-                                        <span className="text-zinc-700 text-xs">–</span>
-                                        <span className="text-[10px] text-zinc-500 truncate max-w-[80px] italic">
+                                        <span className="text-xs font-bold text-text-primary truncate">{other.products?.nama_produk}</span>
+                                        <span className="text-brand-border text-xs">–</span>
+                                        <span className="text-[10px] text-text-tertiary truncate max-w-[80px] italic font-medium">
                                             {other.deskripsi_desain || 'Tanpa deskripsi'}
                                         </span>
-                                        <span className="text-zinc-700 text-xs">–</span>
-                                        <span className="text-[10px] font-bold text-zinc-600 shrink-0">{other.qty} Pcs</span>
-                                        <span className="text-zinc-700 text-xs">–</span>
+                                        <span className="text-brand-border text-xs">–</span>
+                                        <span className="text-[10px] font-extrabold text-text-muted shrink-0">{other.qty} Pcs</span>
+                                        <span className="text-brand-border text-xs">–</span>
                                         <StatusBadge status={other.status} size="sm" className="shrink-0 scale-90 origin-left" />
                                     </div>
-                                    <ArrowRight className="w-3.5 h-3.5 text-zinc-700 group-hover:text-blue-400 group-hover:translate-x-1 transition-all ml-1 shrink-0" />
+                                    <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-accent group-hover:translate-x-1 transition-all ml-1 shrink-0" />
                                 </button>
                             ))
                         ) : (
-                            <p className="text-xs text-zinc-600 italic pl-1">Tidak ada item lain</p>
+                            <p className="text-xs text-text-muted italic pl-1 font-medium">Tidak ada item lain</p>
                         )}
                     </div>
                 </div>
@@ -252,7 +252,7 @@ export function PesananDetailItem() {
                 <div className="px-5 pb-10">
                     <button
                         onClick={() => handleOpenStatusModal(nextState)}
-                        className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-900/30 active:scale-95 border border-blue-400/20"
+                        className="w-full py-4 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 border border-blue-600/10"
                     >
                         Lanjut ke {nextState}
                     </button>
