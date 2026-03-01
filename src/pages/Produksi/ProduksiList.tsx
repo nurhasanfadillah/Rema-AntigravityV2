@@ -60,7 +60,7 @@ export function ProduksiList() {
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`flex-1 flex flex-col items-center justify-center py-2 rounded-lg transition-all duration-300 relative ${isActive
                                         ? 'bg-brand-surface text-text-primary shadow-sm ring-1 ring-black/5'
-                                        : 'text-text-tertiary hover:text-text-secondary'
+                                        : 'text-text-tertiary active:text-text-secondary'
                                         }`}
                                 >
                                     {/* Count badge */}
@@ -98,12 +98,12 @@ export function ProduksiList() {
                             const relativeTime = getRelativeTimeString(item.created_at);
 
                             return (
-                                <Card key={item.id} className="p-4 bg-brand-surface border-brand-border/60 hover:border-brand-accent/30 transition-colors cursor-pointer group shadow-sm" onClick={() => handleOpenDetail(item)}>
+                                <Card key={item.id} className="p-4 bg-brand-surface border-brand-border/60 active:border-brand-accent/30 transition-colors cursor-pointer group shadow-sm active:scale-[0.99]" onClick={() => handleOpenDetail(item)}>
                                     {/* Primary Info */}
                                     <div className="flex flex-col">
                                         <div className="flex justify-between items-start gap-4">
                                             {/* Mitra name — primary info level 1 */}
-                                            <h4 className="font-bold text-text-primary leading-tight truncate group-hover:text-brand-accent transition-colors">
+                                            <h4 className="font-bold text-text-primary leading-tight truncate transition-colors">
                                                 {item.orders?.mitra?.nama_mitra || 'Tamu'}
                                             </h4>
                                             {/* Produk x Qty — primary info level 1, right aligned */}

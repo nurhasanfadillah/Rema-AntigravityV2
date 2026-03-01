@@ -42,7 +42,7 @@ export function PesananDetailItem() {
         return (
             <div className="flex flex-col min-h-screen bg-brand-bg items-center justify-center p-4">
                 <p className="text-text-tertiary text-sm mb-4">Item pesanan tidak ditemukan atau sedang dimuat.</p>
-                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-brand-surface text-text-primary text-sm font-bold rounded-xl hover:bg-brand-border transition-colors border border-brand-border shadow-sm">
+                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-brand-surface text-text-primary text-sm font-bold rounded-xl active:bg-brand-border transition-colors border border-brand-border shadow-sm">
                     Kembali
                 </button>
             </div>
@@ -105,7 +105,7 @@ export function PesananDetailItem() {
             <div className="bg-brand-surface border-b border-brand-border p-4 flex items-center gap-3 sticky top-0 z-10 shadow-sm">
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors"
+                    className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors"
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </button>
@@ -148,18 +148,16 @@ export function PesananDetailItem() {
                                 const isImg = ['jpg', 'jpeg', 'png', 'webp'].includes(file.split('.').pop()?.toLowerCase() || '');
                                 return (
                                     <a key={idx} href={getOrderFileUrl(file) || '#'} target="_blank" rel="noreferrer"
-                                        className="group relative aspect-video rounded-xl overflow-hidden bg-brand-surface border border-brand-border hover:border-indigo-500/50 transition-all shadow-sm">
+                                        className="relative aspect-video rounded-xl overflow-hidden bg-brand-surface border border-brand-border active:border-indigo-500/50 transition-all shadow-sm">
                                         {isImg ? (
-                                            <img src={getOrderFileUrl(file) || ''} alt="Design" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                                            <img src={getOrderFileUrl(file) || ''} alt="Design" className="w-full h-full object-cover transition-opacity" />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-brand-bg">
                                                 <FileText className="w-6 h-6 text-text-muted" />
                                                 <span className="text-[10px] font-bold text-text-tertiary uppercase">Dokumen</span>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <ExternalLink className="w-5 h-5 text-indigo-600" />
-                                        </div>
+                                        {/* overlay removed — hover-reveal not suitable for mobile */}
                                     </a>
                                 );
                             })
@@ -183,7 +181,7 @@ export function PesananDetailItem() {
                     {parentOrder.sumber_pesanan === 'Online' ? (
                         parentOrder.file_resi ? (
                             <a href={getOrderFileUrl(parentOrder.file_resi) || '#'} target="_blank" rel="noreferrer"
-                                className="flex items-center gap-3 p-4 bg-brand-surface rounded-2xl border border-brand-border text-sm font-bold text-text-secondary hover:bg-brand-bg transition-colors shadow-sm">
+                                className="flex items-center gap-3 p-4 bg-brand-surface rounded-2xl border border-brand-border text-sm font-bold text-text-secondary active:bg-brand-bg transition-colors shadow-sm">
                                 <FileText className="w-5 h-5 text-blue-600" />
                                 <span>Lihat Dokumen Resi Pengiriman</span>
                                 <ExternalLink className="w-4 h-4 ml-auto text-text-tertiary" />
@@ -224,7 +222,7 @@ export function PesananDetailItem() {
                                 <button
                                     key={other.id}
                                     onClick={() => navigate(`/pesanan/detail-item/${other.id}`)}
-                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-brand-surface hover:bg-brand-bg transition-all border border-brand-border text-left group shadow-sm"
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-brand-surface active:bg-brand-bg transition-all border border-brand-border text-left shadow-sm active:scale-[0.99]"
                                 >
                                     <div className="flex items-center gap-2 flex-1 min-w-0">
                                         <span className="text-xs font-bold text-text-primary truncate">{other.products?.nama_produk}</span>
@@ -237,7 +235,7 @@ export function PesananDetailItem() {
                                         <span className="text-brand-border text-xs">–</span>
                                         <StatusBadge status={other.status} size="sm" className="shrink-0 scale-90 origin-left" />
                                     </div>
-                                    <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-accent group-hover:translate-x-1 transition-all ml-1 shrink-0" />
+                                    <ArrowRight className="w-3.5 h-3.5 text-text-muted transition-all ml-1 shrink-0" />
                                 </button>
                             ))
                         ) : (
@@ -252,7 +250,7 @@ export function PesananDetailItem() {
                 <div className="px-5 pb-10">
                     <button
                         onClick={() => handleOpenStatusModal(nextState)}
-                        className="w-full py-4 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 border border-blue-600/10"
+                        className="w-full py-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 border border-blue-600/10"
                     >
                         Lanjut ke {nextState}
                     </button>

@@ -97,7 +97,7 @@ export function PesananDetail() {
         return (
             <div className="p-8 text-center space-y-4">
                 <p className="text-text-tertiary text-sm">Pesanan tidak ditemukan.</p>
-                <Link to="/pesanan" className="text-brand-accent hover:underline text-sm font-bold">Kembali ke Daftar</Link>
+                <Link to="/pesanan" className="text-brand-accent active:underline text-sm font-bold">Kembali ke Daftar</Link>
             </div>
         );
     }
@@ -121,7 +121,7 @@ export function PesananDetail() {
 
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/pesanan" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/pesanan" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -133,7 +133,7 @@ export function PesananDetail() {
                     </div>
                 </div>
                 {canCancel && (
-                    <button onClick={() => handleOpenStatusModal('Dibatalkan', 'order')} className="p-2.5 text-orange-600 hover:text-orange-700 rounded-xl hover:bg-orange-50 transition-all border border-orange-100" title="Batalkan Pesanan">
+                    <button onClick={() => handleOpenStatusModal('Dibatalkan', 'order')} className="p-2.5 text-orange-600 rounded-xl active:bg-orange-50 transition-all border border-orange-100 active:scale-95" title="Batalkan Pesanan">
                         <Trash2 className="w-5 h-5" />
                     </button>
                 )}
@@ -163,7 +163,7 @@ export function PesananDetail() {
                         } catch (error) {
                             handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
                         }
-                    }} className="p-2.5 text-red-600 hover:text-red-700 rounded-xl hover:bg-red-50 transition-all border border-red-100" title="Hapus Permanen">
+                    }} className="p-2.5 text-red-600 rounded-xl active:bg-red-50 transition-all border border-red-100 active:scale-95" title="Hapus Permanen">
                         <Trash2 className="w-5 h-5" />
                     </button>
                 )}
@@ -198,13 +198,13 @@ export function PesananDetail() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
-                                            className="px-4 py-2 bg-brand-bg text-text-primary text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-brand-border active:scale-95 transition-all border border-brand-border"
+                                            className="px-4 py-2 bg-brand-bg text-text-primary text-[11px] font-bold uppercase tracking-widest rounded-xl active:bg-brand-border active:scale-95 transition-all border border-brand-border"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => handleOpenStatusModal('Diproses', 'order')}
-                                            className="px-4 py-2 bg-gradient-to-br from-blue-600 to-blue-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all border border-blue-600/10"
+                                            className="px-4 py-2 bg-gradient-to-br from-blue-600 to-blue-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-blue-600/20 active:scale-95 transition-all border border-blue-600/10"
                                         >
                                             Proses
                                         </button>
@@ -215,7 +215,7 @@ export function PesananDetail() {
                                 return (
                                     <button
                                         onClick={() => handleOpenStatusModal('Selesai', 'order')}
-                                        className="px-4 py-2 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all border border-emerald-600/10"
+                                        className="px-4 py-2 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all border border-emerald-600/10"
                                     >
                                         Selesaikan
                                     </button>
@@ -278,7 +278,7 @@ export function PesananDetail() {
                                     href={getOrderFileUrl(order.file_resi) || '#'}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2.5 px-4 py-2 bg-blue-50 border border-blue-100 rounded-xl text-xs font-bold text-blue-700 hover:bg-blue-100 transition-all hover:translate-y-[-2px] active:translate-y-0 shadow-sm"
+                                    className="inline-flex items-center gap-2.5 px-4 py-2 bg-blue-50 border border-blue-100 rounded-xl text-xs font-bold text-blue-700 active:bg-blue-100 transition-all active:translate-y-0 shadow-sm"
                                 >
                                     <FileText className="w-4 h-4" />
                                     Buka Resi Pengiriman
@@ -304,12 +304,12 @@ export function PesananDetail() {
 
                 {order.order_details?.map((item: any) => {
                     return (
-                        <Card key={item.id} className="border-brand-border bg-brand-surface group pb-6 cursor-pointer hover:border-brand-accent/30 transition-all duration-300 shadow-sm" onClick={() => navigate(`/pesanan/detail-item/${item.id}`)}>
+                        <Card key={item.id} className="border-brand-border bg-brand-surface group pb-6 cursor-pointer active:border-brand-accent/30 transition-all duration-150 shadow-sm active:scale-[0.99]" onClick={() => navigate(`/pesanan/detail-item/${item.id}`)}>
                             <div className="flex flex-col gap-5">
                                 {/* Product Name & Qty — Core Info Level 1 */}
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-lg font-display text-text-primary leading-tight truncate group-hover:text-brand-accent transition-colors">
+                                        <h4 className="font-bold text-lg font-display text-text-primary leading-tight truncate transition-colors">
                                             {item.products?.nama_produk || 'Produk Dihapus'}
                                         </h4>
                                         <div className="flex items-center gap-2 mt-1.5">
@@ -331,7 +331,7 @@ export function PesananDetail() {
                                             return (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Cetak DTF', 'detail', item.id); }}
-                                                    className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all"
+                                                    className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-blue-600/20 active:scale-95 transition-all"
                                                 >
                                                     Cetak
                                                 </button>
@@ -341,7 +341,7 @@ export function PesananDetail() {
                                             return (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Sablon', 'detail', item.id); }}
-                                                    className="px-3 py-1.5 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-indigo-600/20 hover:scale-105 active:scale-95 transition-all"
+                                                    className="px-3 py-1.5 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-indigo-600/20 active:scale-95 transition-all"
                                                 >
                                                     Sablon
                                                 </button>
@@ -351,7 +351,7 @@ export function PesananDetail() {
                                             return (
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Selesai', 'detail', item.id); }}
-                                                    className="px-3 py-1.5 bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all"
+                                                    className="px-3 py-1.5 bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-md shadow-emerald-600/20 active:scale-95 transition-all"
                                                 >
                                                     Selesai
                                                 </button>
@@ -400,13 +400,13 @@ export function PesananDetail() {
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         onClick={(e) => e.stopPropagation()}
-                                                        className="relative w-24 aspect-square shrink-0 rounded-xl bg-brand-bg border border-brand-border overflow-hidden ring-1 ring-black/5 hover:border-brand-accent transition-all group shadow-sm"
+                                                        className="relative w-24 aspect-square shrink-0 rounded-xl bg-brand-bg border border-brand-border overflow-hidden ring-1 ring-black/5 active:border-brand-accent transition-all shadow-sm"
                                                     >
                                                         {isImg ? (
                                                             <img
                                                                 src={getOrderFileUrl(path) || ''}
                                                                 alt="Design"
-                                                                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all duration-500"
+                                                                className="w-full h-full object-cover transition-all duration-300"
                                                             />
                                                         ) : (
                                                             <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 bg-brand-surface">
@@ -414,11 +414,7 @@ export function PesananDetail() {
                                                                 <span className="text-[9px] font-bold text-text-muted uppercase">File</span>
                                                             </div>
                                                         )}
-                                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/20 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <div className="w-full h-1 bg-brand-accent/30 rounded-full overflow-hidden">
-                                                                <div className="w-full h-full bg-brand-accent"></div>
-                                                            </div>
-                                                        </div>
+                                                        {/* overlay removed — hover-reveal not suitable for mobile */}
                                                     </a>
                                                 );
                                             })}

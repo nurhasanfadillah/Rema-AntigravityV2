@@ -105,7 +105,7 @@ export function ProdukList() {
             <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -213,12 +213,12 @@ export function ProdukList() {
                     </div>
                 ) : (
                     products.map(prod => (
-                        <Card key={prod.id} className="hover:border-brand-accent/40 hover:bg-brand-bg/40 transition-all duration-200 flex items-start gap-3.5 group p-3 bg-brand-surface shadow-sm border-brand-border">
+                        <Card key={prod.id} className="transition-all duration-150 flex items-start gap-3.5 group p-3 bg-brand-surface shadow-sm border-brand-border active:border-brand-accent/40 active:scale-[0.99]">
                             {/* Product Image */}
-                            <div className="relative aspect-square w-[72px] bg-brand-bg border border-brand-border rounded-xl shrink-0 overflow-hidden group-hover:shadow-[0_0_12px_rgba(59,130,246,0.12)] transition-all">
+                            <div className="relative aspect-square w-[72px] bg-brand-bg border border-brand-border rounded-xl shrink-0 overflow-hidden transition-all">
                                 {prod.foto_produk ? (
                                     <img src={getImageUrl(prod.foto_produk) || ''} alt={prod.nama_produk}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                        className="w-full h-full object-cover transition-transform duration-300" />
                                 ) : (
                                     <div className="flex items-center justify-center w-full h-full text-brand-border">
                                         <Package className="w-7 h-7 opacity-40" />
@@ -229,17 +229,17 @@ export function ProdukList() {
                             {/* Product Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start mb-1">
-                                    <h4 className="font-extrabold text-text-primary truncate pr-2 group-hover:text-brand-accent transition-colors text-[15px]">
+                                    <h4 className="font-extrabold text-text-primary truncate pr-2 transition-colors text-[15px]">
                                         {prod.nama_produk}
                                     </h4>
                                     <div className="flex items-center gap-1.5 shrink-0">
                                         <StatusBadge status={prod.status as any} size="sm" />
                                         <button onClick={() => handleEdit(prod)}
-                                            className="p-1.5 text-text-tertiary hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
+                                            className="p-1.5 text-text-tertiary rounded-lg active:bg-blue-50 active:text-blue-600 transition-colors border border-transparent active:border-blue-100">
                                             <Edit2 className="w-3.5 h-3.5" />
                                         </button>
                                         <button onClick={() => handleDelete(prod)}
-                                            className="p-1.5 text-text-tertiary hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors border border-transparent hover:border-red-100">
+                                            className="p-1.5 text-text-tertiary rounded-lg active:bg-red-50 active:text-red-600 transition-colors border border-transparent active:border-red-100">
                                             <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
@@ -247,9 +247,9 @@ export function ProdukList() {
                                 {prod.categories && (
                                     <p className="text-xs font-bold text-brand-accent uppercase tracking-wider mb-1.5">{prod.categories.nama_kategori}</p>
                                 )}
-                                <div className="flex justify-between items-center pt-2 border-t border-brand-border group-hover:border-brand-accent/20 transition-colors mt-2">
+                                <div className="flex justify-between items-center pt-2 border-t border-brand-border transition-colors mt-2">
                                     <span className="section-label font-bold text-text-tertiary uppercase tracking-widest text-[10px]">Harga Base</span>
-                                    <span className="text-sm font-extrabold text-text-primary group-hover:text-brand-accent transition-colors tabular-nums">
+                                    <span className="text-sm font-extrabold text-text-primary transition-colors tabular-nums">
                                         {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(prod.harga_default)}
                                     </span>
                                 </div>

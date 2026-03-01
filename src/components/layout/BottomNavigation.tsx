@@ -39,7 +39,7 @@ export function BottomNavigation() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-brand-accent' : 'text-text-tertiary hover:text-text-primary'}`}
+                            className={`flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200 active:scale-95 ${active ? 'text-brand-accent' : 'text-text-tertiary'}`}
                         >
                             <div className={`p-1.5 rounded-full transition-all duration-300 ${active ? 'bg-brand-accent-light text-brand-accent' : 'bg-transparent'}`}>
                                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />

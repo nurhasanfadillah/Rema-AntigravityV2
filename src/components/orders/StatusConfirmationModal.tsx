@@ -51,7 +51,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                         </div>
                         <h3 className="text-lg font-bold text-white tracking-tight">Konfirmasi Perubahan</h3>
                     </div>
-                    <button onClick={onClose} className="p-1 text-zinc-500 hover:text-white transition-colors">
+                    <button onClick={onClose} className="p-1 text-zinc-500 active:text-white transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -133,7 +133,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-4 py-2.5 rounded-xl text-zinc-400 font-bold hover:bg-zinc-800 hover:text-white transition-all disabled:opacity-50"
+                        className="flex-1 px-4 py-2.5 rounded-xl text-zinc-400 font-bold active:bg-zinc-800 active:text-white transition-all disabled:opacity-50"
                     >
                         Batal
                     </button>
@@ -144,8 +144,8 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                             ${!canConfirm || isLoading
                                 ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                                 : isCritical
-                                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-500 hover:to-red-600 shadow-red-500/20'
-                                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 shadow-blue-500/20'
+                                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white active:from-red-500 active:to-red-600 shadow-red-500/20'
+                                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white active:from-blue-500 active:to-blue-600 shadow-blue-500/20'
                             }`}
                     >
                         {isLoading ? (

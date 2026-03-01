@@ -141,7 +141,7 @@ export function FinanceDetail() {
 
             {/* Header */}
             <div className="flex items-center gap-3">
-                <Link to="/keuangan" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/keuangan" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1 min-w-0">
@@ -154,7 +154,7 @@ export function FinanceDetail() {
                     <button
                         onClick={doFetch}
                         disabled={isLoading}
-                        className="p-2 text-text-tertiary hover:text-text-primary transition-colors rounded-xl hover:bg-brand-border/40 disabled:opacity-40"
+                        className="p-2 text-text-tertiary transition-colors rounded-xl active:bg-brand-border/40 disabled:opacity-40"
                     >
                         <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
@@ -240,7 +240,7 @@ export function FinanceDetail() {
                                 type="submit"
                                 variant="primary"
                                 fullWidth
-                                className="!bg-rose-600 hover:!bg-rose-700 !shadow-rose-600/20 font-bold"
+                                className="!bg-rose-600 active:!bg-rose-700 !shadow-rose-600/20 font-bold"
                                 disabled={isLoading}
                             >
                                 {isLoading ? 'Menyimpan...' : 'Simpan'}
@@ -277,7 +277,7 @@ export function FinanceDetail() {
                             <p className="text-red-700 font-bold text-sm">Gagal Memuat Data</p>
                             <p className="text-text-tertiary text-xs mt-1">{fetchError}</p>
                         </div>
-                        <button onClick={doFetch} className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl border border-brand-border shadow-sm hover:bg-brand-bg transition-colors">
+                        <button onClick={doFetch} className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl border border-brand-border shadow-sm active:bg-brand-bg transition-colors active:scale-95">
                             <RefreshCw className="w-3.5 h-3.5" />
                             Coba Lagi
                         </button>
@@ -307,8 +307,8 @@ export function FinanceDetail() {
                                 <div
                                     key={tx.id_transaksi}
                                     className={`rounded-2xl border transition-all duration-300 shadow-sm ${isMasuk
-                                        ? 'bg-brand-surface border-blue-100 hover:border-blue-300'
-                                        : 'bg-brand-surface border-rose-100 hover:border-rose-300'
+                                        ? 'bg-brand-surface border-blue-100 active:border-blue-300'
+                                        : 'bg-brand-surface border-rose-100 active:border-rose-300'
                                         }`}
                                 >
                                     <div className="p-3.5 flex items-start gap-3.5">
@@ -358,14 +358,14 @@ export function FinanceDetail() {
                                                 <div className="flex items-center gap-1 mt-2.5 pt-2.5 border-t border-brand-border">
                                                     <button
                                                         onClick={() => handleEdit(tx)}
-                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors border border-brand-border/60 hover:border-amber-200"
+                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary active:text-amber-700 active:bg-amber-50 rounded-lg transition-colors border border-brand-border/60 active:border-amber-200"
                                                     >
                                                         <Edit2 className="w-3 h-3" />
                                                         Edit
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(tx)}
-                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-brand-border/60 hover:border-red-200"
+                                                        className="flex items-center gap-1 px-2.5 py-1 text-[10px] font-extrabold text-text-tertiary active:text-red-700 active:bg-red-50 rounded-lg transition-colors border border-brand-border/60 active:border-red-200"
                                                     >
                                                         <Trash2 className="w-3 h-3" />
                                                         Hapus

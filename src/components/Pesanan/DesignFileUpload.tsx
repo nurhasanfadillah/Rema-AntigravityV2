@@ -70,7 +70,7 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                             <img
                                 src={getOrderFileUrl(path) || ''}
                                 alt={`Design ${idx}`}
-                                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                                className="w-full h-full object-cover transition-transform"
                             />
                         ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 p-2 bg-gradient-to-br from-zinc-900 to-zinc-950">
@@ -81,7 +81,7 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                             </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 bg-transparent">
                             <a
                                 href={getOrderFileUrl(path) || '#'}
                                 target="_blank"
@@ -99,7 +99,7 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                                 e.stopPropagation();
                                 handleRemove(path);
                             }}
-                            className="absolute top-1.5 right-1.5 p-1 bg-red-500/90 hover:bg-red-600 text-white rounded-full shadow-sm"
+                            className="absolute top-1.5 right-1.5 p-1 bg-red-500/90 active:bg-red-600 text-white rounded-full shadow-sm"
                         >
                             <X className="w-3 h-3" />
                         </button>
@@ -111,8 +111,8 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
                     className={`
-                        aspect-square rounded-xl border-2 border-dashed border-zinc-800 hover:border-blue-600/50 
-                        hover:bg-blue-900/5 transition-all flex flex-col items-center justify-center gap-2
+                        aspect-square rounded-xl border-2 border-dashed border-zinc-800 active:border-blue-600/50 
+                        active:bg-blue-900/5 transition-all flex flex-col items-center justify-center gap-2
                         ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                     `}
                 >

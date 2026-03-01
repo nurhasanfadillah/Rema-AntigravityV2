@@ -116,7 +116,7 @@ export function MitraList() {
 
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-xl hover:bg-brand-border/40 transition-all active:scale-95">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary rounded-xl active:bg-brand-border/40 transition-all active:scale-95">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -139,7 +139,7 @@ export function MitraList() {
                             <h3 className="font-bold text-text-primary text-[17px] font-display">
                                 {editingId ? 'Edit Data Mitra' : 'Tambah Mitra Baru'}
                             </h3>
-                            <button type="button" onClick={handleCancel} className="text-text-tertiary hover:text-text-primary p-1">
+                            <button type="button" onClick={handleCancel} className="text-text-tertiary active:opacity-60 p-1 transition-opacity">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -236,10 +236,10 @@ export function MitraList() {
                 ) : (
                     <div className="grid gap-4">
                         {mitras.map(mitra => (
-                            <Card key={mitra.id} className="group hover:border-brand-accent/30 hover:shadow-xl hover:shadow-black/[0.02] transition-all duration-300 bg-brand-surface shadow-sm border-brand-border px-5 py-5 overflow-hidden active:scale-[0.99] relative">
+                            <Card key={mitra.id} className="group transition-all duration-150 bg-brand-surface shadow-sm border-brand-border px-5 py-5 overflow-hidden active:scale-[0.99] relative">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1 min-w-0 pr-4">
-                                        <h4 className="font-extrabold text-text-primary text-[16px] truncate group-hover:text-brand-accent transition-colors font-display">{mitra.nama_mitra}</h4>
+                                        <h4 className="font-extrabold text-text-primary text-[16px] truncate font-display">{mitra.nama_mitra}</h4>
                                         <p className="text-[13px] text-text-tertiary font-bold mt-1.5 flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 bg-brand-accent/40 rounded-full" />
                                             {mitra.kontak || 'Tanpa Kontak'}
@@ -252,14 +252,14 @@ export function MitraList() {
                                     </div>
                                     <div className="flex flex-col items-end gap-3 shrink-0">
                                         <StatusBadge status={mitra.status as any} size="sm" />
-                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center gap-1">
                                             <button onClick={(e) => { e.preventDefault(); handleEdit(mitra); }}
-                                                className="p-2.5 text-text-tertiary hover:text-brand-accent rounded-xl hover:bg-brand-accent/10 transition-all border border-transparent hover:border-brand-accent/10 active:scale-90"
+                                                className="p-2.5 text-text-tertiary rounded-xl active:bg-brand-accent/10 active:text-brand-accent transition-all border border-transparent active:border-brand-accent/10 active:scale-90"
                                                 title="Edit Mitra">
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button onClick={(e) => { e.preventDefault(); handleDelete(mitra); }}
-                                                className="p-2.5 text-text-tertiary hover:text-status-error-text rounded-xl hover:bg-status-error-bg transition-all border border-transparent hover:border-status-error-border/20 active:scale-90"
+                                                className="p-2.5 text-text-tertiary rounded-xl active:bg-status-error-bg active:text-status-error-text transition-all border border-transparent active:border-status-error-border/20 active:scale-90"
                                                 title="Hapus Mitra">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -268,7 +268,7 @@ export function MitraList() {
                                 </div>
 
                                 {/* Status Footer */}
-                                <div className="mt-5 pt-4 border-t border-brand-border/60 flex justify-between items-center bg-brand-bg/30 -mx-5 px-5 -mb-5 py-3.5 group-hover:bg-brand-accent/[0.02] transition-colors">
+                                <div className="mt-5 pt-4 border-t border-brand-border/60 flex justify-between items-center bg-brand-bg/30 -mx-5 px-5 -mb-5 py-3.5">
                                     <div className="flex flex-col">
                                         <span className="section-label font-bold text-text-tertiary uppercase tracking-[0.15em] text-[9px]">Limit Tagihan</span>
                                         <span className="text-[15px] font-extrabold text-text-secondary mt-0.5 font-display">

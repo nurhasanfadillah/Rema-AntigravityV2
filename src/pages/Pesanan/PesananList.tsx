@@ -12,9 +12,9 @@ function PesananListItem({ order }: { order: Order }) {
     const totalQty = order.order_details?.reduce((acc, curr) => acc + curr.qty, 0) || 0;
 
     return (
-        <Card className={`group relative overflow-hidden flex flex-col border-brand-border/80 hover:border-brand-accent/30 transition-all duration-300 !p-0 ${isExpanded ? 'border-brand-accent/20 bg-brand-bg/40' : 'bg-brand-surface hover:bg-brand-bg/20'}`}>
+        <Card className={`group relative overflow-hidden flex flex-col border-brand-border/80 transition-all duration-150 !p-0 ${isExpanded ? 'border-brand-accent/20 bg-brand-bg/40' : 'bg-brand-surface'}`}>
             {/* Accent left edge */}
-            <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-b from-blue-500 to-blue-600' : 'bg-gradient-to-b from-brand-border to-brand-border group-hover:from-blue-400 group-hover:to-blue-500'}`}></div>
+            <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-b from-blue-500 to-blue-600' : 'bg-gradient-to-b from-brand-border to-brand-border'}`}></div>
 
             {/* Main Clickable Area — Navigate to Order Detail */}
             <div
@@ -25,7 +25,7 @@ function PesananListItem({ order }: { order: Order }) {
                 <div className="flex items-start justify-between pt-4 pb-3 px-4 pl-5">
                     {/* Left: Mitra, Meta Info */}
                     <div className="flex flex-col gap-1 items-start flex-1 min-w-0 pr-4">
-                        <h3 className="text-[15px] font-bold text-text-primary font-display truncate w-full group-hover:text-brand-accent transition-colors tracking-tight leading-tight">
+                        <h3 className="text-[15px] font-bold text-text-primary font-display truncate w-full transition-colors tracking-tight leading-tight">
                             {order.mitra?.nama_mitra || 'Pelanggan'}
                         </h3>
                         {/* Meta row: tanggal • no pesanan • qty */}
@@ -60,7 +60,7 @@ function PesananListItem({ order }: { order: Order }) {
                                         {order.order_details.map((detail, idx) => (
                                             <div
                                                 key={detail.id || idx}
-                                                className="flex gap-2.5 items-start border-l-2 border-brand-border pl-2.5 py-1.5 group/detail hover:border-brand-accent/50 hover:bg-brand-bg active:bg-brand-border/40 rounded-r-lg transition-all cursor-pointer"
+                                                className="flex gap-2.5 items-start border-l-2 border-brand-border pl-2.5 py-1.5 group/detail active:border-brand-accent/50 active:bg-brand-bg active:bg-brand-border/40 rounded-r-lg transition-all cursor-pointer"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     navigate(`/pesanan/detail-item/${detail.id}`);
@@ -68,10 +68,10 @@ function PesananListItem({ order }: { order: Order }) {
                                             >
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between gap-2 mb-0.5">
-                                                        <h4 className="text-sm font-bold text-text-secondary truncate pr-2 group-hover/detail:text-brand-accent transition-colors">
+                                                        <h4 className="text-sm font-bold text-text-secondary truncate pr-2 transition-colors">
                                                             {detail.products?.nama_produk || 'Produk Tanpa Nama'}
                                                         </h4>
-                                                        <span className="text-[10px] font-bold text-text-tertiary bg-brand-bg px-1.5 py-0.5 rounded transition-colors group-hover/detail:bg-brand-border shrink-0">
+                                                        <span className="text-[10px] font-bold text-text-tertiary bg-brand-bg px-1.5 py-0.5 rounded shrink-0">
                                                             {detail.qty} Pcs
                                                         </span>
                                                     </div>
@@ -99,13 +99,13 @@ function PesananListItem({ order }: { order: Order }) {
 
             {/* Expand / Collapse Handle */}
             <div
-                className="w-full flex flex-col items-center justify-center py-1.5 cursor-pointer hover:bg-brand-bg active:bg-brand-border/40 transition-all border-t border-brand-bg min-h-[22px]"
+                className="w-full flex flex-col items-center justify-center py-1.5 cursor-pointer active:bg-brand-border/40 transition-all border-t border-brand-bg min-h-[22px]"
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
                 }}
             >
-                <div className={`w-10 h-1 rounded-full transition-all duration-300 ${isExpanded ? 'bg-brand-accent/30' : 'bg-brand-border group-hover:bg-brand-border/80'}`}></div>
+                <div className={`w-10 h-1 rounded-full transition-all duration-300 ${isExpanded ? 'bg-brand-accent/30' : 'bg-brand-border'}`}></div>
                 <ChevronDown className={`w-3 h-3 mt-1 text-text-muted transition-transform duration-300 ${isExpanded ? 'rotate-180 text-brand-accent/70' : ''}`} />
             </div>
         </Card>
@@ -124,7 +124,7 @@ export function PesananList() {
         <div className="p-4 flex flex-col min-h-screen pb-24 max-w-2xl mx-auto w-full">
             {/* Page Header */}
             <div className="flex items-center gap-3 mb-5">
-                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -133,7 +133,7 @@ export function PesananList() {
                 </div>
                 <Button
                     variant="primary"
-                    className="!p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 border-none shadow-lg shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all"
+                    className="!p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 border-none shadow-lg shadow-blue-600/20 active:scale-95 transition-all"
                     onClick={() => navigate('/pesanan/baru')}
                 >
                     <Plus className="w-5 h-5 text-white" />

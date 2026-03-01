@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Camera, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import { X, Loader2, Image as ImageIcon } from 'lucide-react';
 import { uploadProductImage, deleteProductImage, getImageUrl } from '../../utils/storage';
 import { notify } from '../../utils/notify';
 
@@ -67,9 +67,9 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                 <div
                     className={`
                         relative aspect-square w-full sm:w-48 bg-zinc-900 border-2 border-dashed 
-                        ${previewUrl ? 'border-blue-900/50' : 'border-zinc-700 hover:border-blue-600'} 
+                        ${previewUrl ? 'border-blue-900/50' : 'border-zinc-700'} 
                         rounded-xl overflow-hidden transition-all duration-300 flex items-center justify-center
-                        cursor-pointer group-hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]
+                        cursor-pointer
                     `}
                     onClick={() => !isUploading && fileInputRef.current?.click()}
                 >
@@ -80,8 +80,8 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                             className="w-full h-full object-cover"
                         />
                     ) : (
-                        <div className="flex flex-col items-center gap-2 text-zinc-500 group-hover:text-blue-400 transition-colors">
-                            <div className="p-3 rounded-full bg-zinc-800/50 group-hover:bg-blue-900/20">
+                        <div className="flex flex-col items-center gap-2 text-zinc-500 transition-colors">
+                            <div className="p-3 rounded-full bg-zinc-800/50">
                                 <ImageIcon className="w-8 h-8" />
                             </div>
                             <span className="text-xs font-medium">Tambah Foto</span>
@@ -94,13 +94,7 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                         </div>
                     )}
 
-                    {!isUploading && previewUrl && (
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <div className="p-2 rounded-full bg-blue-600/90 text-white shadow-lg">
-                                <Camera className="w-5 h-5" />
-                            </div>
-                        </div>
-                    )}
+                    {/* overlay removed — hover-reveal (camera icon) not suitable for mobile */}
                 </div>
 
                 {previewUrl && !isUploading && (
@@ -110,7 +104,7 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                             e.stopPropagation();
                             handleRemove();
                         }}
-                        className="absolute -top-2 -right-2 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg transition-transform hover:scale-110 active:scale-90 z-20"
+                        className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg active:scale-90 active:bg-red-600 transition-all z-20"
                     >
                         <X className="w-3.5 h-3.5" />
                     </button>

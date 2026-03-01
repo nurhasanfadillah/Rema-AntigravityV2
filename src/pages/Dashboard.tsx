@@ -115,8 +115,7 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
                 className="
                     relative flex-shrink-0 flex items-center justify-center
                     group-active:scale-[0.93]
-                    group-hover:scale-[1.06]
-                    transition-all duration-300 ease-out
+                    transition-all duration-150 ease-out
                 "
                 style={{
                     width: '60px',
@@ -141,8 +140,6 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
             <span
                 className="
                     text-center text-text-secondary
-                    group-hover:text-brand-accent
-                    transition-colors duration-200
                     truncate w-full
                 "
                 style={{

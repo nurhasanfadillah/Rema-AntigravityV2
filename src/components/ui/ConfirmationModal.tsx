@@ -65,7 +65,7 @@ const VARIANTS: Record<ConfirmVariant, {
         headerGradient: 'bg-status-error-bg/30',
         iconBg: 'bg-status-error-bg',
         iconColor: 'text-status-error-text',
-        confirmBg: 'bg-status-error-text hover:bg-red-700',
+        confirmBg: 'bg-status-error-text active:bg-red-700',
         confirmShadow: 'shadow-red-500/10',
         doubleConfirmBorder: 'border-status-error-border',
         doubleConfirmText: 'text-status-error-text',
@@ -75,7 +75,7 @@ const VARIANTS: Record<ConfirmVariant, {
         headerGradient: 'bg-status-warning-bg/30',
         iconBg: 'bg-status-warning-bg',
         iconColor: 'text-status-warning-text',
-        confirmBg: 'bg-status-warning-text hover:bg-amber-700',
+        confirmBg: 'bg-status-warning-text active:bg-amber-700',
         confirmShadow: 'shadow-amber-500/10',
         doubleConfirmBorder: 'border-status-warning-border',
         doubleConfirmText: 'text-status-warning-text',
@@ -85,7 +85,7 @@ const VARIANTS: Record<ConfirmVariant, {
         headerGradient: 'bg-status-info-bg/30',
         iconBg: 'bg-status-info-bg',
         iconColor: 'text-status-info-text',
-        confirmBg: 'bg-status-info-text hover:bg-blue-700',
+        confirmBg: 'bg-status-info-text active:bg-blue-700',
         confirmShadow: 'shadow-blue-500/10',
         doubleConfirmBorder: 'border-status-info-border',
         doubleConfirmText: 'text-status-info-text',
@@ -95,7 +95,7 @@ const VARIANTS: Record<ConfirmVariant, {
         headerGradient: 'bg-status-success-bg/30',
         iconBg: 'bg-status-success-bg',
         iconColor: 'text-status-success-text',
-        confirmBg: 'bg-status-success-text hover:bg-emerald-700',
+        confirmBg: 'bg-status-success-text active:bg-emerald-700',
         confirmShadow: 'shadow-emerald-500/10',
         doubleConfirmBorder: 'border-status-success-border',
         doubleConfirmText: 'text-status-success-text',
@@ -204,7 +204,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     {!loading && (
                         <button
                             onClick={onClose}
-                            className="p-2 text-text-tertiary hover:text-text-primary hover:bg-brand-bg rounded-xl transition-colors shrink-0 ml-2"
+                            className="p-2 text-text-tertiary active:text-text-primary active:bg-brand-bg rounded-xl transition-colors shrink-0 ml-2"
                             aria-label="Tutup"
                         >
                             <X className="w-5 h-5" />
@@ -285,7 +285,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="flex-1 px-4 py-3 rounded-2xl text-sm text-text-secondary font-bold hover:bg-brand-bg transition-all disabled:opacity-40"
+                        className="flex-1 px-4 py-3 rounded-2xl text-sm text-text-secondary font-bold active:bg-brand-bg transition-all disabled:opacity-40 active:scale-95"
                     >
                         {cancelLabel}
                     </button>

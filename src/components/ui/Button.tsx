@@ -14,12 +14,12 @@ export function Button({
     className = '',
     ...props
 }: ButtonProps) {
-    const baseStyle = "inline-flex items-center justify-center font-bold rounded-lg transition-all duration-200 cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-accent/50 focus:ring-offset-2 focus:ring-offset-brand-bg disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
+    const baseStyle = "inline-flex items-center justify-center font-bold rounded-lg transition-all duration-150 cursor-pointer active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-brand-accent/50 focus:ring-offset-2 focus:ring-offset-brand-bg disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100";
     const variants = {
-        primary: "bg-gradient-to-br from-brand-accent to-brand-accent-dark hover:from-brand-accent-dark hover:to-blue-800 text-white shadow-md shadow-brand-accent/20 border border-brand-accent/10",
-        secondary: "bg-brand-bg hover:bg-brand-border active:bg-brand-bg text-text-primary border border-brand-border shadow-sm",
-        outline: "bg-transparent border border-brand-border text-text-secondary hover:bg-brand-bg hover:text-text-primary active:bg-brand-border/20",
-        ghost: "bg-transparent text-brand-accent hover:bg-brand-accent-light active:bg-brand-accent/10"
+        primary: "bg-gradient-to-br from-brand-accent to-brand-accent-dark text-white shadow-md shadow-brand-accent/20 border border-brand-accent/10 active:from-brand-accent-dark active:to-blue-800",
+        secondary: "bg-brand-bg active:bg-brand-border text-text-primary border border-brand-border shadow-sm",
+        outline: "bg-transparent border border-brand-border text-text-secondary active:bg-brand-border/20",
+        ghost: "bg-transparent text-brand-accent active:bg-brand-accent/10"
     };
 
     const sizes = {

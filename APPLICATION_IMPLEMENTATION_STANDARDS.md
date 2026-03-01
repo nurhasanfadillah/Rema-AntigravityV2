@@ -25,6 +25,15 @@
    2.8 Gunakan Bahasa Indonesia pada antarmuka (UI).
    2.9 Pola Interaksi Kartu (Card Interaction Pattern): Gunakan area kartu yang luas untuk navigasi utama (Full Card Click), pisahkan mekanisme sekunder seperti expand/collapse menggunakan pegangan (handle) visual di bagian bawah, dan pastikan setiap elemen daftar internal mandiri memiliki trigger navigasi yang unik melalui stopPropagation untuk efisiensi alur kerja.
    2.10 Standar Ikon Navigasi Dashboard: Gunakan container ikon dengan ukuran 60x60px dan radius 18px menggunakan gradasi solid yang tegas (tanpa transparansi). Warna dikategorikan berdasarkan fungsi: Operasional (Gradasi Biru), Master Data (Gradasi Biru-Neutral/Slate), dan Keuangan (Gradasi Hijau/Emerald). Ikon menggunakan warna putih dengan stroke-width minimal 2.5 untuk tampilan yang kuat dan profesional.
+   2.11 Standar Interaksi Mobile-First (WAJIB DIIKUTI):
+      2.11.1 DILARANG menggunakan kelas `hover:` maupun `group-hover:` pada seluruh elemen interaktif. Hover state tidak relevan pada perangkat touch/mobile yang merupakan konteks utama aplikasi ini.
+      2.11.2 Gunakan `active:` (pressed state) sebagai pengganti hover untuk memberikan feedback visual saat elemen disentuh. Contoh: `active:bg-brand-border/40`, `active:scale-95`, `active:text-brand-accent`.
+      2.11.3 Untuk elemen yang memerlukan fokus aksesibilitas (input, textarea), gunakan `focus:` atau `focus-visible:` state.
+      2.11.4 DILARANG menggunakan pola "hover-reveal" seperti `opacity-0 group-hover:opacity-100` untuk menyembunyikan elemen interaktif penting (tombol edit/hapus, overlay, dll). Semua elemen interaktif harus selalu terlihat (permanently visible).
+      2.11.5 Durasi transisi harus singkat (100–200ms) agar terasa responsif di mobile. Hindari `duration-300` atau lebih untuk interaksi utama.
+      2.11.6 Untuk kartu yang dapat diklik (clickable card), tambahkan `active:scale-[0.99]` atau `active:scale-95` untuk feedback pressed yang jelas.
+      2.11.7 Upload areas dan image thumbnails tidak boleh menggunakan hover-reveal overlay. Fungsi utama (tap to upload, tap to open) sudah cukup jelas secara kontekstual.
+
 
 3. Standar Regional
    3.1 Gunakan format Indonesia untuk mata uang, angka, dan tanggal.

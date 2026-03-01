@@ -71,7 +71,7 @@ export function KategoriList() {
             <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -134,7 +134,7 @@ export function KategoriList() {
                     </div>
                 ) : (
                     categories.map(cat => (
-                        <Card key={cat.id} className="hover:border-brand-accent/40 hover:bg-brand-bg/40 transition-all duration-200 flex items-center gap-4 bg-brand-surface shadow-sm border-brand-border">
+                        <Card key={cat.id} className="transition-all duration-150 flex items-center gap-4 bg-brand-surface shadow-sm border-brand-border active:border-brand-accent/40 active:scale-[0.99]">
                             <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shrink-0">
                                 <LayoutDashboard className="w-5 h-5" />
                             </div>
@@ -143,11 +143,11 @@ export function KategoriList() {
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
                                 <button onClick={() => handleEdit(cat)}
-                                    className="p-1.5 text-text-tertiary hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors border border-transparent hover:border-blue-100">
+                                    className="p-1.5 text-text-tertiary rounded-lg active:bg-blue-50 active:text-blue-600 transition-colors border border-transparent active:border-blue-100">
                                     <Edit2 className="w-4 h-4" />
                                 </button>
                                 <button onClick={() => handleDelete(cat)}
-                                    className="p-1.5 text-text-tertiary hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors border border-transparent hover:border-red-100">
+                                    className="p-1.5 text-text-tertiary rounded-lg active:bg-red-50 active:text-red-600 transition-colors border border-transparent active:border-red-100">
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </div>

@@ -133,7 +133,7 @@ export function PesananEdit() {
     return (
         <div className="p-4 space-y-6 max-w-2xl mx-auto w-full">
             <div className="flex items-center gap-3">
-                <Button variant="outline" className="!p-2 -ml-1 h-10 w-10 rounded-xl border-brand-border hover:bg-brand-bg transition-colors" onClick={() => navigate(`/pesanan/${id}`)}>
+                <Button variant="outline" className="!p-2 -ml-1 h-10 w-10 rounded-xl border-brand-border active:bg-brand-bg transition-colors" onClick={() => navigate(`/pesanan/${id}`)}>
                     <ArrowLeft className="w-5 h-5 text-text-secondary" />
                 </Button>
                 <div className="flex-1">
@@ -216,7 +216,7 @@ export function PesananEdit() {
                             <span className="w-1.5 h-6 bg-blue-400 rounded-full" />
                             Daftar Item Produk
                         </h3>
-                        <Button type="button" variant="outline" className="!p-1.5 border-brand-accent/20 text-brand-accent hover:bg-brand-accent/5 rounded-xl h-9 w-9 flex items-center justify-center transition-all" onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}>
+                        <Button type="button" variant="outline" className="!p-1.5 border-brand-accent/20 text-brand-accent active:bg-brand-accent/5 rounded-xl h-9 w-9 flex items-center justify-center transition-all" onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}>
                             <Plus className="w-5 h-5" />
                         </Button>
                     </div>
@@ -235,7 +235,7 @@ export function PesananEdit() {
                                         </select>
                                     </div>
                                     {items.length > 1 && (
-                                        <Button type="button" variant="ghost" className="!p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl mt-6 transition-colors border border-transparent hover:border-red-100" onClick={() => setItems(items.filter((_, i) => i !== idx))}>
+                                        <Button type="button" variant="ghost" className="!p-2 text-red-500 active:text-red-600 active:bg-red-50 rounded-xl mt-6 transition-colors border border-transparent active:border-red-100" onClick={() => setItems(items.filter((_, i) => i !== idx))}>
                                             <Trash2 className="w-5 h-5" />
                                         </Button>
                                     )}

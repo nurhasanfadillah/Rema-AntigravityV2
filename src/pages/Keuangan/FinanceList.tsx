@@ -55,7 +55,7 @@ export function FinanceList() {
                     </div>
                     <button
                         onClick={doFetch}
-                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl hover:bg-brand-bg transition-colors border border-brand-border shadow-sm"
+                        className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl active:bg-brand-bg transition-colors border border-brand-border shadow-sm active:scale-95"
                     >
                         <RefreshCw className="w-3.5 h-3.5" />
                         Coba Lagi
@@ -77,14 +77,14 @@ export function FinanceList() {
         return summaries.map(summary => (
             <Card
                 key={summary.mitra_id}
-                className="hover:border-emerald-600/30 hover:bg-emerald-50/10 transition-all duration-300 cursor-pointer group shadow-sm"
+                className="active:border-emerald-600/30 active:bg-emerald-50/10 transition-all duration-150 cursor-pointer group shadow-sm active:scale-[0.99]"
                 onClick={() => navigate(`/keuangan/${summary.mitra_id}`)}
             >
                 {/* Header: Mitra name + Saldo */}
                 <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 min-w-0 pr-3">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-0.5">Mitra</p>
-                        <h4 className="font-bold text-text-primary text-lg truncate font-display group-hover:text-emerald-700 transition-colors">
+                        <h4 className="font-bold text-text-primary text-lg truncate font-display transition-colors">
                             {summary.nama_mitra}
                         </h4>
                     </div>
@@ -134,7 +134,7 @@ export function FinanceList() {
         <div className="p-4 space-y-5 pb-24 max-w-2xl mx-auto w-full">
             {/* Page Header */}
             <div className="flex items-center gap-3">
-                <Link to="/" className="p-2 -ml-2 text-text-tertiary hover:text-text-primary rounded-full hover:bg-brand-border/40 transition-colors">
+                <Link to="/" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex-1">
@@ -144,7 +144,7 @@ export function FinanceList() {
                 <button
                     onClick={doFetch}
                     disabled={isLoading}
-                    className="p-2 text-text-tertiary hover:text-text-primary transition-colors rounded-xl hover:bg-brand-border/40 disabled:opacity-40"
+                    className="p-2 text-text-tertiary transition-colors rounded-xl active:bg-brand-border/40 disabled:opacity-40"
                 >
                     <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>

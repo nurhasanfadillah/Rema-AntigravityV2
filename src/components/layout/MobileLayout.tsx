@@ -13,7 +13,7 @@ export function MobileLayout() {
                         <img
                             src="/LOGO_HEADER_REMVAV2.png"
                             alt="REMA Logo"
-                            className="h-9 sm:h-[42px] object-contain transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                            className="h-9 sm:h-[42px] object-contain transition-all duration-300"
                         />
                     </div>
                 </div>
