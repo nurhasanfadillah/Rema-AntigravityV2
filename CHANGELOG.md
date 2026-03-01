@@ -1,5 +1,17 @@
 # Changelog
 
+## [2026-03-01] - Refaktor UI Daftar Produksi & Sentralisasi Aksi Status
+### Changed
+- **UI Card `ProduksiList.tsx`**: Menyesuaikan tampilan daftar item produksi agar lebih ringkas dan berfokus pada monitoring:
+  - Mengubah hierarki visual dengan menjadikan "Nama Mitra" sebagai elemen paling dominan pada baris pertama.
+  - Menampilkan "Nama Produk x Qty" secara menyatu pada baris kedua.
+  - Menyederhanakan Deskripsi Desain menjadi teks inline yang ringkas tanpa ornamen/box.
+  - Memperkecil dan meredupkan informasi sekunder seperti Tanggal, Waktu Berlalu (relative time), dan No. Pesanan di bagian terbawah card.
+  - Sepenuhnya menghapus seluruh action button (seperti "Lanjut ke...") dan *StatusBadge* langsung dari baris list array untuk menjaga area card tetap bersih dari interupsi monitoring.
+- **Relokasi Action & Validasi Status ( `PesananDetailItem.tsx`)**:
+  - Memindahkan seluruh mekanisme konfirmasi perubahan status (`StatusConfirmationModal`) ke halaman "View Detail_Pesanan", di mana seluruh interaksi bergeser ke state detail.
+  - Mengintegrasikan aksi *floating* "Lanjut ke [Status]" di dalam page full view dengan dukungan sinkronisasi validasi dari backend.
+
 ## [2026-03-01] - Halaman Spesifik Detail Item Pesanan (Full Page View)
 ### Added
 - **Dedicated Page `PesananDetailItem.tsx`**: Mengubah UI "Modal Khusus View Detail_Pesanan" yang sebelumnya berada di `ProduksiList` menjadi halaman terpisah yang dirender penuh (Full Page View) dengan struktur:

@@ -1,14 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Tag, FileText, Globe, User, MapPin, Search, ArrowRight, Loader2, ExternalLink } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useOrderStore } from '../../store/orderStore';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { getOrderFileUrl } from '../../utils/orderStorage';
+import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
+import { getDetailTransitionRule } from '../../utils/orderRules';
 
 export function PesananDetailItem() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { orders, fetchOrders, isLoading } = useOrderStore();
+    const { orders, fetchOrders, isLoading, updateOrderDetailStatus } = useOrderStore();
+
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    const [statusModalConfig, setStatusModalConfig] = useState<{
+        targetStatus: string;
+        currentStatus: string;
+        prerequisiteError: string | null;
+        consequences: string[];
+    } | null>(null);
 
     useEffect(() => {
         if (orders.length === 0) {
@@ -41,8 +52,55 @@ export function PesananDetailItem() {
 
     const otherItems = parentOrder.order_details?.filter(d => d.id !== id) || [];
 
+    const getNextStatus = (currentStatus: string): string | null => {
+        if (currentStatus === 'Menunggu') return 'Cetak DTF';
+        if (currentStatus === 'Cetak DTF') return 'Sablon';
+        if (currentStatus === 'Sablon') return 'Selesai';
+        return null;
+    };
+
+    const nextState = getNextStatus(item.status);
+
+    const handleOpenStatusModal = (target: string) => {
+        if (!item || !parentOrder) return;
+
+        const rule = getDetailTransitionRule(item.status as any, target as any);
+        const error = rule ? rule.prerequisites(parentOrder, item) : 'Transisi tidak valid';
+
+        setStatusModalConfig({
+            targetStatus: target,
+            currentStatus: item.status,
+            prerequisiteError: error,
+            consequences: rule?.consequences || [],
+        });
+        setIsStatusModalOpen(true);
+    };
+
+    const handleConfirmStatusChange = async () => {
+        if (!statusModalConfig || !item || !parentOrder) return;
+
+        try {
+            await updateOrderDetailStatus(parentOrder.no_pesanan, item.id, statusModalConfig.targetStatus as any);
+            toast.success(`Status item berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+            setIsStatusModalOpen(false);
+        } catch (error: any) {
+            toast.error(error.message || 'Gagal memperbarui status');
+        }
+    };
+
     return (
-        <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 animate-in slide-in-from-right-4 duration-300 pb-10">
+        <div className={`flex flex-col min-h-screen bg-zinc-950 text-zinc-100 animate-in slide-in-from-right-4 duration-300 ${nextState ? 'pb-24' : 'pb-10'}`}>
+            <StatusConfirmationModal
+                isOpen={isStatusModalOpen}
+                onClose={() => setIsStatusModalOpen(false)}
+                onConfirm={handleConfirmStatusChange}
+                currentStatus={statusModalConfig?.currentStatus || ''}
+                targetStatus={statusModalConfig?.targetStatus || ''}
+                prerequisiteError={statusModalConfig?.prerequisiteError}
+                consequences={statusModalConfig?.consequences || []}
+                isLoading={isLoading}
+            />
+
             {/* Header Sticky */}
             <div className="sticky top-0 bg-zinc-950/80 backdrop-blur-md z-40 border-b border-zinc-900 p-4 flex items-center gap-3">
                 <button
@@ -178,6 +236,18 @@ export function PesananDetailItem() {
                     </div>
                 </div>
             </div>
+
+            {/* Floating Action Button for Status Progress */}
+            {nextState && parentOrder.status !== 'Menunggu Konfirmasi' && (
+                <div className="fixed bottom-0 left-0 right-0 w-full p-4 bg-zinc-950/80 backdrop-blur-md border-t border-zinc-900 z-50">
+                    <button
+                        onClick={() => handleOpenStatusModal(nextState)}
+                        className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-900/30 active:scale-95 border border-blue-400/20"
+                    >
+                        Lanjut ke {nextState}
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
