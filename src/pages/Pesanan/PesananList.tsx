@@ -2,104 +2,110 @@ import { useEffect, useState } from 'react';
 import { useOrderStore, type Order } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ArrowLeft, Plus, ChevronDown, ChevronUp, ShoppingBag, ExternalLink, Package, History } from 'lucide-react';
+import { ArrowLeft, Plus, ChevronDown, ShoppingBag, Package, History } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
 function PesananListItem({ order }: { order: Order }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const navigate = useNavigate();
     const totalQty = order.order_details?.reduce((acc, curr) => acc + curr.qty, 0) || 0;
 
     return (
-        <Card className={`group relative overflow-hidden flex flex-col border-zinc-800/80 hover:border-zinc-700/80 transition-all duration-300 ${isExpanded ? 'border-zinc-700/80 bg-zinc-900/40' : 'bg-transparent hover:bg-zinc-900/20'}`}>
+        <Card className={`group relative overflow-hidden flex flex-col border-zinc-800/80 hover:border-zinc-700/80 transition-all duration-300 !p-0 ${isExpanded ? 'border-zinc-700/80 bg-zinc-900/40' : 'bg-transparent hover:bg-zinc-900/20'}`}>
             {/* Accent background effect left edge */}
             <div className={`absolute top-0 left-0 w-1 h-full rounded-l-2xl transition-colors duration-300 ${isExpanded ? 'bg-gradient-to-b from-blue-500 to-blue-700' : 'bg-gradient-to-b from-zinc-700 to-zinc-800 group-hover:from-blue-600/50 group-hover:to-blue-900/50'}`}></div>
 
-            {/* Main Row / Header */}
+            {/* Main Clickable Area - Progress to Order Detail */}
             <div
-                className="flex items-start justify-between p-4 pl-5 cursor-pointer select-none"
-                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex-1 cursor-pointer select-none active:bg-zinc-800/20 transition-colors"
+                onClick={() => navigate(`/pesanan/${order.no_pesanan}`)}
             >
-                {/* Left Side: Mitra, Date, Package Info */}
-                <div className="flex flex-col gap-1 items-start flex-1 min-w-0 pr-4">
-                    <h3 className="text-[17px] font-bold text-white font-display truncate w-full group-hover:text-blue-400 transition-colors tracking-tight leading-none mb-0.5">
-                        {order.mitra?.nama_mitra || 'Pelanggan'}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-1 text-zinc-500 text-[11px] font-medium tracking-wide w-full">
-                        <span className="shrink-0 flex items-center gap-1">
-                            <History className="w-3 h-3 text-zinc-600" />
-                            {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
-                        </span>
-                        <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
-                        <span className="font-mono text-zinc-400 shrink-0 uppercase tracking-wider">{order.no_pesanan}</span>
-                        <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
-                        <span className="text-zinc-300 shrink-0 flex items-center gap-1 font-semibold">
-                            <Package className="w-3 h-3 text-zinc-500" />
-                            {totalQty} Pcs
-                        </span>
+                {/* Main Row / Header */}
+                <div className="flex items-start justify-between pt-4 pb-3 px-4 pl-5">
+                    {/* Left Side: Mitra, Date, Package Info */}
+                    <div className="flex flex-col gap-1 items-start flex-1 min-w-0 pr-4">
+                        <h3 className="text-[16px] font-bold text-white font-display truncate w-full group-hover:text-blue-400 transition-colors tracking-tight leading-tight">
+                            {order.mitra?.nama_mitra || 'Pelanggan'}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-0.5 text-zinc-500 text-[11px] font-medium tracking-wide w-full">
+                            <span className="shrink-0 flex items-center gap-1">
+                                <History className="w-3 h-3 text-zinc-600" />
+                                {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
+                            <span className="font-mono text-zinc-400 shrink-0 uppercase tracking-wider">{order.no_pesanan}</span>
+                            <span className="w-1 h-1 rounded-full bg-zinc-700 shrink-0"></span>
+                            <span className="text-zinc-300 shrink-0 flex items-center gap-1 font-semibold">
+                                <Package className="w-2.5 h-2.5 text-zinc-500" />
+                                {totalQty} Pcs
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Right Side: Status Badge */}
+                    <div className="flex flex-col items-end shrink-0">
+                        <StatusBadge status={order.status} size="sm" />
                     </div>
                 </div>
 
-                {/* Right Side: Status Badge & Actions */}
-                <div className="flex flex-col items-end justify-between self-stretch shrink-0 gap-2">
-                    <StatusBadge status={order.status} size="sm" />
-
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                        <Link
-                            to={`/pesanan/${order.no_pesanan}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="p-1.5 text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-colors flex items-center justify-center"
-                            title="Buka Detail Lengkap"
-                        >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                        </Link>
-                        <button
-                            className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${isExpanded ? 'text-white bg-zinc-800' : 'text-zinc-500 hover:text-white hover:bg-zinc-800'}`}
-                            title={isExpanded ? "Tutup Detail" : "Buka Detail"}
-                        >
-                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        </button>
+                {/* Expanded Content Wrapper */}
+                <div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100 pb-2' : 'grid-rows-[0fr] opacity-0'}`}>
+                    <div className="overflow-hidden">
+                        <div className="px-4 pl-5">
+                            <div className="pt-3 border-t border-zinc-800/80">
+                                {order.order_details && order.order_details.length > 0 ? (
+                                    <div className="flex flex-col gap-2">
+                                        {order.order_details.map((detail, idx) => (
+                                            <div
+                                                key={detail.id || idx}
+                                                className="flex gap-2.5 items-start border-l-2 border-zinc-800 pl-2.5 py-1.5 group/detail hover:border-blue-500/50 hover:bg-zinc-800/40 active:bg-zinc-800/60 rounded-r-lg transition-all"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(`/pesanan/detail-item/${detail.id}`);
+                                                }}
+                                            >
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-2 mb-0.5">
+                                                        <h4 className="text-sm font-semibold text-zinc-300 truncate pr-2 group-hover/detail:text-blue-400 transition-colors">
+                                                            {detail.products?.nama_produk || 'Produk Tanpa Nama'}
+                                                        </h4>
+                                                        <span className="text-[10px] font-bold text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded transition-colors group-hover/detail:bg-zinc-700">
+                                                            {detail.qty} Pcs
+                                                        </span>
+                                                    </div>
+                                                    {detail.deskripsi_desain ? (
+                                                        <p className="text-[11px] text-zinc-500 line-clamp-1 leading-relaxed">
+                                                            {detail.deskripsi_desain}
+                                                        </p>
+                                                    ) : (
+                                                        <p className="text-[11px] text-zinc-600 italic">Tanpa deskripsi</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-2 text-center">
+                                        <p className="text-xs text-zinc-600 italic">Detail pesanan kosong.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Expanded Content */}
-            <div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                <div className="overflow-hidden">
-                    <div className="p-4 pt-1 pb-4 pl-5">
-                        <div className="pt-3 border-t border-zinc-800/80">
-                            {order.order_details && order.order_details.length > 0 ? (
-                                <div className="flex flex-col gap-3">
-                                    {order.order_details.map((detail, idx) => (
-                                        <div key={detail.id || idx} className="flex gap-3 items-start border-l-2 border-zinc-800 pl-3 py-0.5 group/detail hover:border-zinc-600 transition-colors">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center justify-between gap-2 mb-1">
-                                                    <h4 className="text-sm font-semibold text-zinc-200 truncate pr-2 group-hover/detail:text-white transition-colors">
-                                                        {detail.products?.nama_produk || 'Produk Tanpa Nama'}
-                                                    </h4>
-                                                    <span className="text-xs font-bold text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded-md whitespace-nowrap">
-                                                        {detail.qty} Pcs
-                                                    </span>
-                                                </div>
-                                                {detail.deskripsi_desain ? (
-                                                    <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed max-w-[90%]">
-                                                        {detail.deskripsi_desain}
-                                                    </p>
-                                                ) : (
-                                                    <p className="text-xs text-zinc-600 italic">Tanpa deskripsi</p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="py-2 text-center">
-                                    <p className="text-xs text-zinc-600 italic">Detail pesanan kosong.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
+            {/* Expand/Collapse Handle (Affordance) */}
+            <div
+                className="w-full flex flex-col items-center justify-center py-1.5 cursor-pointer hover:bg-zinc-800/40 active:bg-zinc-800/60 transition-all border-t border-zinc-900 content-none min-h-[22px]"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setIsExpanded(!isExpanded);
+                }}
+            >
+                <div className={`w-10 h-1 rounded-full transition-all duration-300 ${isExpanded ? 'bg-blue-500/40' : 'bg-zinc-800 group-hover:bg-zinc-700'}`}></div>
+                <ChevronDown className={`w-3 h-3 mt-1 text-zinc-600 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-blue-400' : ''}`} />
             </div>
         </Card>
     );
@@ -114,9 +120,9 @@ export function PesananList() {
     }, [fetchOrders]);
 
     return (
-        <div className="p-4 flex flex-col min-h-screen pb-24">
+        <div className="p-4 flex flex-col min-h-screen pb-24 max-w-2xl mx-auto w-full">
             {/* Header Section */}
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-5">
                 <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-zinc-800/50 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
@@ -134,7 +140,7 @@ export function PesananList() {
             </div>
 
             {/* List Section */}
-            <div className="grid gap-3">
+            <div className="space-y-3">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20 animate-pulse">
                         <div className="w-10 h-10 rounded-full border-2 border-blue-500/20 border-t-blue-500 animate-spin mb-4"></div>

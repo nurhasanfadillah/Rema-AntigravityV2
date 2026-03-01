@@ -22,6 +22,7 @@
    2.5 Kebijakan Layout: Hanya bottom navigation yang diperbolehkan menggunakan posisi sticky/fixed. Komponen lain seperti header, tab, filter bar, dan action bar harus mengikuti flow layout responsif (scroll normal) untuk menjaga stabilitas pengalaman pengguna.
    2.6 Proses input data harus cepat dan efisien.
    2.7 Gunakan Bahasa Indonesia pada antarmuka (UI).
+   2.8 Pola Interaksi Kartu (Card Interaction Pattern): Gunakan area kartu yang luas untuk navigasi utama (Full Card Click), pisahkan mekanisme sekunder seperti expand/collapse menggunakan pegangan (handle) visual di bagian bawah, dan pastikan setiap elemen daftar internal mandiri memiliki trigger navigasi yang unik melalui stopPropagation untuk efisiensi alur kerja.
 
 3. Standar Regional
    3.1 Gunakan format Indonesia untuk mata uang, angka, dan tanggal.

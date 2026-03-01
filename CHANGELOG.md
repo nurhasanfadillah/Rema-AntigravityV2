@@ -1,5 +1,19 @@
 # Changelog
 
+## [2026-03-01] - Standarisasi Padding & Spacing UI Data Pesanan
+### Changed
+- **Penyelarasan Proporsi Card**: Menyesuaikan padding internal kartu pesanan pada daftar "Data Pesanan" (`PesananList.tsx`) agar identik dengan standar visual halaman "Produksi". Mengubah padding utama menjadi `pt-4 pb-3 px-4 pl-5` untuk mengkompensasi border logis dan menyamakan *visual weight*.
+- **Konsistensi Ritme Vertikal**: Memperbarui spacing antar elemen kartu (gap) dari `grid gap-4` menjadi `space-y-3` agar sesuai dengan ritme vertikal yang diterapkan pada antarmuka daftar Produksi.
+- **Hierarki Density**: Menghilangkan indikasi *double padding* (`!p-0`) pada `Card` komponen dasar agar tata letak *expand/collapse handle* tetap *full-width* dan menyentuh tepi kartu tanpa jarak kosong, mengamankan hierarki density yang dirancang khusus untuk Data Pesanan responsif.
+
+## [2026-03-01] - Optimasi Interaksi Kartu Pesanan & Navigasi Direct
+### Changed
+- **Sistem Trigger Collapse Baru**: Mengganti mekanisme *expand/collapse* dari klik header menjadi handle visual minimalis di bagian bawah kartu (affordance) untuk menghindari konflik interaksi.
+- **Navigasi Kartu Utuh (Full Card Navigation)**: Seluruh area kartu pesanan kini dapat diklik untuk menavigasi langsung ke halaman detail pesanan (`/pesanan/:id`), meningkatkan efisiensi akses informasi.
+- **Akses Langsung Item Detail**: Mengimplementasikan navigasi langsung dari daftar item di dalam kartu yang telah di-expand menuju halaman detail spesifik item (`/pesanan/detail-item/:id`).
+- **Feedback Interaksi Responsif**: Menambahkan efek mikrotouch `active:bg-zinc-800/20` dan hover state yang lebih kontras pada seluruh elemen interaktif dalam kartu untuk meningkatkan *affordance* dan pengalaman pengguna.
+- **Pembersihan UI**: Menghapus tombol aksi eksternal yang redundan pada baris daftar untuk menciptakan tampilan yang lebih bersih, profesional, dan fokus pada konten.
+
 ## [2026-03-01] - Restrukturisasi Navigasi Bottom & Arsitektur Hub
 ### Changed
 - **Penyederhanaan Bottom Navigation**: Menghapus menu "Lainnya" dan membatasi navigasi utama menjadi maksimal 3 menu: **Home (Dashboard)**, **Pesanan**, dan **Produksi**.
