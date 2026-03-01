@@ -9,6 +9,8 @@ import { PesananBaru } from './pages/Pesanan/PesananBaru';
 import { PesananDetail } from './pages/Pesanan/PesananDetail';
 import { PesananDetailItem } from './pages/Pesanan/PesananDetailItem';
 import { ProduksiList } from './pages/Produksi/ProduksiList';
+import { FinanceList } from './pages/Keuangan/FinanceList';
+import { FinanceDetail } from './pages/Keuangan/FinanceDetail';
 import { Lainnya } from './pages/Lainnya';
 
 function App() {
@@ -26,6 +28,10 @@ function App() {
           <Route path="detail-item/:id" element={<PesananDetailItem />} />
         </Route>
         <Route path="produksi" element={<ProduksiList />} />
+        <Route path="keuangan">
+          <Route index element={<FinanceList />} />
+          <Route path=":id" element={<FinanceDetail />} />
+        </Route>
         <Route path="lainnya" element={<Lainnya />} />
       </Route>
     </Routes>

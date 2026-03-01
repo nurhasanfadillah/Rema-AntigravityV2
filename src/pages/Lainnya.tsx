@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Users, Package, LayoutGrid, Settings } from 'lucide-react';
+import { Users, Package, LayoutGrid, Settings, Wallet } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 
 export function Lainnya() {
     const menuItems = [
+        { label: 'Keuangan', path: '/keuangan', icon: Wallet, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
         { label: 'Mitra', path: '/mitra', icon: Users, color: 'text-blue-400', bg: 'bg-blue-500/10' },
         { label: 'Kategori', path: '/kategori', icon: LayoutGrid, color: 'text-indigo-400', bg: 'bg-indigo-500/10' },
         { label: 'Produk', path: '/produk', icon: Package, color: 'text-purple-400', bg: 'bg-purple-500/10' },
