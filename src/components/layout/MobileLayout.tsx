@@ -6,7 +6,7 @@ export function MobileLayout() {
     return (
         <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 max-w-md mx-auto shadow-2xl relative">
             {/* Top Header */}
-            <header className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-zinc-800/60 transition-all duration-200">
+            <header className="bg-zinc-950 px-4 py-3 flex items-center justify-between border-b border-zinc-800/60 transition-all duration-200">
                 <div className="flex items-center gap-2.5">
                     {/* Brand Logo Placeholder */}
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-900/40">

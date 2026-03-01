@@ -89,7 +89,7 @@ export function PesananDetailItem() {
     };
 
     return (
-        <div className={`flex flex-col min-h-screen bg-zinc-950 text-zinc-100 animate-in slide-in-from-right-4 duration-300 ${nextState ? 'pb-24' : 'pb-10'}`}>
+        <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 animate-in slide-in-from-right-4 duration-300 pb-12">
             <StatusConfirmationModal
                 isOpen={isStatusModalOpen}
                 onClose={() => setIsStatusModalOpen(false)}
@@ -101,8 +101,8 @@ export function PesananDetailItem() {
                 isLoading={isLoading}
             />
 
-            {/* Header Sticky */}
-            <div className="sticky top-0 bg-zinc-950/80 backdrop-blur-md z-40 border-b border-zinc-900 p-4 flex items-center gap-3">
+            {/* Header */}
+            <div className="bg-zinc-950 border-b border-zinc-900 p-4 flex items-center gap-3">
                 <button
                     onClick={() => navigate(-1)}
                     className="p-2 -ml-2 text-zinc-400 hover:text-white rounded-full hover:bg-zinc-800/50 transition-colors"
@@ -237,12 +237,12 @@ export function PesananDetailItem() {
                 </div>
             </div>
 
-            {/* Floating Action Button for Status Progress */}
+            {/* Action Button for Status Progress */}
             {nextState && parentOrder.status !== 'Menunggu Konfirmasi' && (
-                <div className="fixed bottom-0 left-0 right-0 w-full p-4 bg-zinc-950/80 backdrop-blur-md border-t border-zinc-900 z-50">
+                <div className="px-5 pb-10">
                     <button
                         onClick={() => handleOpenStatusModal(nextState)}
-                        className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-900/30 active:scale-95 border border-blue-400/20"
+                        className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-900/30 active:scale-95 border border-blue-400/20"
                     >
                         Lanjut ke {nextState}
                     </button>

@@ -217,7 +217,7 @@ export function PesananBaru() {
                         ))}
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900 sticky bottom-0">
+                    <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900">
                         <span className="font-medium text-zinc-400">Total Transaksi</span>
                         <span className="font-bold text-white drop-shadow-sm text-lg">
                             {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(calculateTotal())}
@@ -225,7 +225,7 @@ export function PesananBaru() {
                     </div>
                 </Card>
 
-                <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-zinc-950/90 backdrop-blur-md border-t border-zinc-800/50 flex justify-end gap-3 z-50">
+                <div className="mt-8 flex justify-end gap-3 pb-8">
                     <Button type="button" variant="ghost" onClick={() => navigate('/pesanan')}>Batal</Button>
                     <Button type="submit" variant="primary" disabled={isLoading} className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 active:from-blue-700 active:to-blue-900 border-blue-700/50 shadow-lg shadow-blue-900/40 flex items-center gap-2">
                         <Save className="w-4 h-4" />

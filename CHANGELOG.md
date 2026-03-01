@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026-03-01] - Eliminasi Sistem Sticky & Standarisasi Layout
+### Changed
+- **Penyesuaian Menyeluruh UI**: Menghapus sistem `sticky` dan `fixed` pada seluruh elemen aplikasi kecuali Bottom Navigation (Home/Pesanan/Produksi/Lainnya).
+- **Update Layout & Komponen**:
+  - `MobileLayout.tsx`: Header utama kini mengikuti scroll normal.
+  - `ProduksiList.tsx`: Header dan Segmented Control (Tabs) status kini bersifat scrollable secara normal.
+  - `PesananBaru.tsx`: Baris total transaksi (Card Summary) dan Action Bar tombol simpan kini mengikuti alur layout.
+  - `PesananDetailItem.tsx`: Header detail dan floating button progres status diubah menjadi elemen layout normal.
+- **Kebijakan Desain Baru**: Menempatkan navigasi utama (Bottom Navigation) sebagai satu-satunya elemen `fixed` yang diizinkan untuk stabilitas visual.
+
 ## [2026-03-01] - Refinemen UI Produksi (Compact & Flex-Grow Tabs)
 ### Changed
 - **Optimasi Tab Status**: Memperbarui sistem tab pada `ProduksiList.tsx` untuk tampilan yang lebih modern dan efisien:

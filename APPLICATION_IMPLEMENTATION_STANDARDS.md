@@ -19,8 +19,9 @@
    2.2 Gunakan tema UI/UX Corporate Modern.
    2.3 Gunakan skema warna yang paling relevan dengan fungsi aplikasi, seperti Dark Gray dengan aksen gradasi blue ke dark blue or dark blue ke dark.
    2.4 Navigasi harus ringkas dan intuitif.
-   2.5 Proses input data harus cepat dan efisien.
-   2.6 Gunakan Bahasa Indonesia pada antarmuka (UI).
+   2.5 Kebijakan Layout: Hanya bottom navigation yang diperbolehkan menggunakan posisi sticky/fixed. Komponen lain seperti header, tab, filter bar, dan action bar harus mengikuti flow layout responsif (scroll normal) untuk menjaga stabilitas pengalaman pengguna.
+   2.6 Proses input data harus cepat dan efisien.
+   2.7 Gunakan Bahasa Indonesia pada antarmuka (UI).
 
 3. Standar Regional
    3.1 Gunakan format Indonesia untuk mata uang, angka, dan tanggal.

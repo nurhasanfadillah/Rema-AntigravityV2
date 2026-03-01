@@ -36,7 +36,7 @@ export function ProduksiList() {
         <div className="flex flex-col min-h-screen bg-zinc-950 text-zinc-100 pb-20">
 
             {/* Header */}
-            <header className="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 pt-4 pb-3">
+            <header className="bg-zinc-950 border-b border-zinc-900 pt-4 pb-3">
                 <div className="px-4 mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-xl border border-blue-500/20 shadow-sm shadow-blue-900/20">
