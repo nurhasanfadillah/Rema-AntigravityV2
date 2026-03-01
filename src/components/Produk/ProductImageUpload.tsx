@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Camera, X, Loader2, Image as ImageIcon } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import { uploadProductImage, deleteProductImage, getImageUrl } from '../../utils/storage';
+import { notify } from '../../utils/notify';
 
 interface ProductImageUploadProps {
     value: string | null;
@@ -18,6 +18,7 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const toastId = notify.loading('Mengupload foto produk...');
         try {
             setIsUploading(true);
 
@@ -30,9 +31,9 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
             const path = await uploadProductImage(file);
             onChange(path);
             setPreviewUrl(getImageUrl(path));
-            toast.success('Foto berhasil diupload');
+            notify.success('Foto berhasil diupload', toastId);
         } catch (error: any) {
-            toast.error(error.message || 'Gagal upload foto');
+            notify.error(error.message || 'Gagal upload foto', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);
@@ -43,15 +44,16 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
     const handleRemove = async () => {
         if (!value) return;
 
+        const toastId = notify.loading('Menghapus foto...');
         try {
             setIsUploading(true);
             await deleteProductImage(value);
             if (onDelete) onDelete(value);
             onChange(null);
             setPreviewUrl(null);
-            toast.success('Foto berhasil dihapus');
+            notify.success('Foto berhasil dihapus', toastId);
         } catch (error) {
-            toast.error('Gagal menghapus foto');
+            notify.error('Gagal menghapus foto', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);

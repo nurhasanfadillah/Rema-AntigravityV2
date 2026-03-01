@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { useCategoryStore } from '../../store/categoryStore';
 import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
@@ -10,10 +9,13 @@ import { Link } from 'react-router-dom';
 import { ProductImageUpload } from '../../components/Produk/ProductImageUpload';
 import { getImageUrl, deleteProductImage } from '../../utils/storage';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+import { useConfirmation } from '../../hooks/useConfirmation';
+import { notify } from '../../utils/notify';
 
 export function ProdukList() {
     const { categories, fetchCategories } = useCategoryStore();
     const { products, fetchProducts, isLoading, addProduct, updateProduct, deleteProduct } = useProductStore();
+    const { confirm, ConfirmDialog } = useConfirmation();
 
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -40,20 +42,21 @@ export function ProdukList() {
             foto_produk: formData.foto_produk || null
         };
 
+        const toastId = notify.loading(editingId ? 'Memperbarui produk...' : 'Menyimpan produk...');
         try {
             if (editingId) {
                 await updateProduct(editingId, payload);
-                toast.success('Produk berhasil diperbarui');
+                notify.success('Produk berhasil diperbarui', toastId);
             } else {
                 await addProduct(payload);
-                toast.success('Produk berhasil ditambahkan');
+                notify.success('Produk berhasil ditambahkan', toastId);
             }
 
             setShowAddForm(false);
             setEditingId(null);
             setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
         } catch (error) {
-            toast.error('Gagal menyimpan data produk');
+            notify.error('Gagal menyimpan data produk', toastId);
             console.error(error);
         }
     };
@@ -72,22 +75,35 @@ export function ProdukList() {
     };
 
     const handleDelete = async (prod: any) => {
-        if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-            try {
-                if (prod.foto_produk) {
-                    await deleteProductImage(prod.foto_produk);
-                }
-                await deleteProduct(prod.id);
-                toast.success('Produk berhasil dihapus');
-            } catch (error) {
-                toast.error('Gagal menghapus produk');
-                console.error(error);
+        const { confirmed } = await confirm({
+            title: 'Hapus Produk?',
+            description: 'Produk ini akan dihapus secara permanen beserta foto yang telah diunggah.',
+            subject: prod.nama_produk,
+            variant: 'danger',
+            confirmLabel: 'Hapus Produk',
+            consequences: [
+                'Foto produk juga akan dihapus dari storage.',
+                'Produk tidak dapat dipulihkan setelah dihapus.',
+            ],
+        });
+        if (!confirmed) return;
+
+        const toastId = notify.loading('Menghapus produk...');
+        try {
+            if (prod.foto_produk) {
+                await deleteProductImage(prod.foto_produk);
             }
+            await deleteProduct(prod.id);
+            notify.success('Produk berhasil dihapus', toastId);
+        } catch (error) {
+            notify.error('Gagal menghapus produk', toastId);
+            console.error(error);
         }
     };
 
     return (
         <div className="p-4 space-y-6">
+            <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
                 <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">

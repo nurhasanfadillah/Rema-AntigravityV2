@@ -1,5 +1,4 @@
 import { Outlet, Link } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 import { Settings } from 'lucide-react';
 import { BottomNavigation } from './BottomNavigation';
 
@@ -28,27 +27,6 @@ export function MobileLayout() {
 
             {/* Bottom Navigation */}
             <BottomNavigation />
-
-            {/* Global Toaster for notifications */}
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        background: '#18181b', // zinc-900
-                        color: '#f4f4f5', // zinc-100
-                        border: '1px solid #27272a', // zinc-800
-                        borderRadius: '0.75rem',
-                        fontSize: '0.875rem',
-                    },
-                    success: {
-                        iconTheme: { primary: '#3b82f6', secondary: '#fff' },
-                    },
-                    error: {
-                        iconTheme: { primary: '#ef4444', secondary: '#fff' },
-                    },
-                }}
-            />
         </div>
     );
 }

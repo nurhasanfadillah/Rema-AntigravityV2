@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
 import { useOrderStore } from '../../store/orderStore';
 import type { OrderDetail } from '../../store/orderStore';
 import { useMitraStore } from '../../store/mitraStore';
@@ -12,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { FileResiUpload } from '../../components/Pesanan/FileResiUpload';
 import { DesignFileUpload } from '../../components/Pesanan/DesignFileUpload';
 import { deleteOrderFile } from '../../utils/orderStorage';
+import { notify } from '../../utils/notify';
 
 export function PesananBaru() {
     const navigate = useNavigate();
@@ -62,22 +62,23 @@ export function PesananBaru() {
         e.preventDefault();
 
         if (formData.sumber_pesanan === 'Online' && !formData.file_resi) {
-            toast.error('File Resi (PDF) wajib diunggah untuk pesanan Online.');
+            notify.warning('File Resi (PDF) wajib diunggah untuk pesanan Online.');
             return;
         }
 
         if (items.some(i => !i.product_id)) {
-            toast.error('Pilih produk untuk semua item sebelum menyimpan.');
+            notify.warning('Pilih produk untuk semua item sebelum menyimpan.');
             return;
         }
 
+        const toastId = notify.loading('Menyimpan pesanan baru...');
         try {
             await addOrder({
                 ...formData,
                 status: 'Menunggu Konfirmasi'
             }, items);
 
-            toast.success('Pesanan berhasil dibuat');
+            notify.success('Pesanan berhasil dibuat', toastId);
             navigate('/pesanan');
         } catch (error) {
             // Prevent orphan files: attempt to rollback uploaded files
@@ -92,7 +93,7 @@ export function PesananBaru() {
                 }
             }
 
-            toast.error('Gagal membuat pesanan. File yang diupload telah dibersihkan.');
+            notify.error('Gagal membuat pesanan. File yang diupload telah dibersihkan.', toastId);
             console.error(error);
         }
     };

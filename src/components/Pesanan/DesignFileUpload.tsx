@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { FileText, X, Loader2, Plus } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import { uploadOrderFile, deleteOrderFile, getOrderFileUrl } from '../../utils/orderStorage';
+import { notify } from '../../utils/notify';
 
 interface DesignFileUploadProps {
     value: string[] | null;
@@ -17,14 +17,15 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const toastId = notify.loading('Mengupload file desain...');
         try {
             setIsUploading(true);
             const newPath = await uploadOrderFile(file, 'design');
             const newPaths = [...paths, newPath];
             onChange(newPaths);
-            toast.success('File desain berhasil diupload');
+            notify.success('File desain berhasil diupload', toastId);
         } catch (error: any) {
-            toast.error(error.message || 'Gagal upload file desain');
+            notify.error(error.message || 'Gagal upload file desain', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);
@@ -33,14 +34,15 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
     };
 
     const handleRemove = async (pathToRemove: string) => {
+        const toastId = notify.loading('Menghapus file...');
         try {
             setIsUploading(true);
             await deleteOrderFile(pathToRemove);
             const newPaths = paths.filter(p => p !== pathToRemove);
             onChange(newPaths.length > 0 ? newPaths : null);
-            toast.success('File desain berhasil dihapus');
+            notify.success('File desain berhasil dihapus', toastId);
         } catch (error) {
-            toast.error('Gagal menghapus file desain');
+            notify.error('Gagal menghapus file desain', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);

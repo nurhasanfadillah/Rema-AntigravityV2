@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { useCategoryStore } from '../../store/categoryStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Plus, ArrowLeft, LayoutDashboard, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useConfirmation } from '../../hooks/useConfirmation';
+import { notify } from '../../utils/notify';
 
 export function KategoriList() {
     const { categories, fetchCategories, isLoading, addCategory, updateCategory, deleteCategory } = useCategoryStore();
+    const { confirm, ConfirmDialog } = useConfirmation();
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [namaKategori, setNamaKategori] = useState('');
@@ -20,20 +22,21 @@ export function KategoriList() {
         e.preventDefault();
         if (!namaKategori.trim()) return;
 
+        const toastId = notify.loading(editingId ? 'Memperbarui kategori...' : 'Menyimpan kategori...');
         try {
             if (editingId) {
                 await updateCategory(editingId, { nama_kategori: namaKategori });
-                toast.success('Kategori berhasil diperbarui');
+                notify.success('Kategori berhasil diperbarui', toastId);
             } else {
                 await addCategory({ nama_kategori: namaKategori });
-                toast.success('Kategori berhasil ditambahkan');
+                notify.success('Kategori berhasil ditambahkan', toastId);
             }
 
             setShowAddForm(false);
             setEditingId(null);
             setNamaKategori('');
         } catch (error) {
-            toast.error('Gagal menyimpan kategori');
+            notify.error('Gagal menyimpan kategori', toastId);
             console.error(error);
         }
     };
@@ -44,20 +47,29 @@ export function KategoriList() {
         setShowAddForm(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
-            try {
-                await deleteCategory(id);
-                toast.success('Kategori berhasil dihapus');
-            } catch (error) {
-                toast.error('Gagal menghapus kategori');
-                console.error(error);
-            }
+    const handleDelete = async (cat: any) => {
+        const { confirmed } = await confirm({
+            title: 'Hapus Kategori?',
+            description: 'Kategori ini akan dihapus. Produk yang menggunakan kategori ini tidak akan terpengaruh.',
+            subject: cat.nama_kategori,
+            variant: 'danger',
+            confirmLabel: 'Hapus Kategori',
+        });
+        if (!confirmed) return;
+
+        const toastId = notify.loading('Menghapus kategori...');
+        try {
+            await deleteCategory(cat.id);
+            notify.success('Kategori berhasil dihapus', toastId);
+        } catch (error) {
+            notify.error('Gagal menghapus kategori', toastId);
+            console.error(error);
         }
     };
 
     return (
         <div className="p-4 space-y-6">
+            <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
                 <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
@@ -128,7 +140,7 @@ export function KategoriList() {
                                     className="p-1.5 text-zinc-500 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
                                     <Edit2 className="w-4 h-4" />
                                 </button>
-                                <button onClick={() => handleDelete(cat.id)}
+                                <button onClick={() => handleDelete(cat)}
                                     className="p-1.5 text-zinc-500 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
                                     <Trash2 className="w-4 h-4" />
                                 </button>

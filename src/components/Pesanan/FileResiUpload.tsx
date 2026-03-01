@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { FileText, X, Loader2, UploadCloud } from 'lucide-react';
-import { toast } from 'react-hot-toast';
 import { uploadOrderFile, deleteOrderFile, getOrderFileUrl } from '../../utils/orderStorage';
+import { notify } from '../../utils/notify';
 
 interface FileResiUploadProps {
     value: string | null;
@@ -17,6 +17,7 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const toastId = notify.loading('Mengupload resi...');
         try {
             setIsUploading(true);
 
@@ -29,9 +30,9 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
 
             onChange(newPath);
             setPreviewUrl(getOrderFileUrl(newPath));
-            toast.success('Resi berhasil diupload');
+            notify.success('Resi berhasil diupload', toastId);
         } catch (error: any) {
-            toast.error(error.message || 'Gagal upload resi');
+            notify.error(error.message || 'Gagal upload resi', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);
@@ -42,14 +43,15 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
     const handleRemove = async () => {
         if (!value) return;
 
+        const toastId = notify.loading('Menghapus resi...');
         try {
             setIsUploading(true);
             await deleteOrderFile(value);
             onChange(null);
             setPreviewUrl(null);
-            toast.success('Resi berhasil dihapus');
+            notify.success('Resi berhasil dihapus', toastId);
         } catch (error) {
-            toast.error('Gagal menghapus resi');
+            notify.error('Gagal menghapus resi', toastId);
             console.error(error);
         } finally {
             setIsUploading(false);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { useMitraStore } from '../../store/mitraStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -7,9 +6,12 @@ import { NumberInput } from '../../components/ui/NumberInput';
 import { Plus, ArrowLeft, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+import { useConfirmation } from '../../hooks/useConfirmation';
+import { notify } from '../../utils/notify';
 
 export function MitraList() {
     const { mitras, fetchMitras, isLoading, addMitra, updateMitra, deleteMitra } = useMitraStore();
+    const { confirm, ConfirmDialog } = useConfirmation();
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({
@@ -31,20 +33,21 @@ export function MitraList() {
             limit_tagihan: formData.limit_tagihan ? parseInt(formData.limit_tagihan.toString(), 10) : 0
         };
 
+        const toastId = notify.loading(editingId ? 'Memperbarui mitra...' : 'Menyimpan mitra...');
         try {
             if (editingId) {
                 await updateMitra(editingId, payload);
-                toast.success('Mitra berhasil diperbarui');
+                notify.success('Mitra berhasil diperbarui', toastId);
             } else {
                 await addMitra(payload);
-                toast.success('Mitra berhasil ditambahkan');
+                notify.success('Mitra berhasil ditambahkan', toastId);
             }
 
             setShowAddForm(false);
             setEditingId(null);
             setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
         } catch (error) {
-            toast.error('Gagal menyimpan data mitra');
+            notify.error('Gagal menyimpan data mitra', toastId);
             console.error(error);
         }
     };
@@ -61,20 +64,34 @@ export function MitraList() {
         setShowAddForm(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm('Apakah Anda yakin ingin menghapus mitra ini?')) {
-            try {
-                await deleteMitra(id);
-                toast.success('Mitra berhasil dihapus');
-            } catch (error) {
-                toast.error('Gagal menghapus mitra');
-                console.error(error);
-            }
+    const handleDelete = async (mitra: any) => {
+        const { confirmed } = await confirm({
+            title: 'Hapus Mitra?',
+            description: 'Data mitra ini akan dihapus secara permanen dan tidak dapat dipulihkan kembali.',
+            subject: mitra.nama_mitra,
+            variant: 'danger',
+            confirmLabel: 'Hapus Mitra',
+            requiresDoubleConfirm: false,
+            consequences: [
+                'Semua riwayat pesanan terkait mitra ini tetap tersimpan.',
+                'Mitra tidak dapat digunakan untuk transaksi baru.',
+            ],
+        });
+        if (!confirmed) return;
+
+        const toastId = notify.loading('Menghapus mitra...');
+        try {
+            await deleteMitra(mitra.id);
+            notify.success('Mitra berhasil dihapus', toastId);
+        } catch (error) {
+            notify.error('Gagal menghapus mitra', toastId);
+            console.error(error);
         }
     };
 
     return (
         <div className="p-4 space-y-6">
+            <ConfirmDialog />
             {/* Page Header */}
             <div className="flex items-center gap-3">
                 <Link to="/" className="p-2 -ml-2 text-zinc-400 hover:text-zinc-100 rounded-full hover:bg-zinc-800/50 transition-colors">
@@ -179,7 +196,7 @@ export function MitraList() {
                                             className="p-1.5 text-zinc-500 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">
                                             <Edit2 className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(mitra.id)}
+                                        <button onClick={() => handleDelete(mitra)}
                                             className="p-1.5 text-zinc-500 hover:text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
                                             <Trash2 className="w-4 h-4" />
                                         </button>

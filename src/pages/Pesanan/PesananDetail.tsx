@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
@@ -8,11 +7,14 @@ import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/orderRules';
 import { StatusBadge, StatusStepper } from '../../components/ui/StatusBadge';
+import { useConfirmation } from '../../hooks/useConfirmation';
+import { notify } from '../../utils/notify';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
     const { orders, fetchOrders, isLoading, updateOrderStatus, updateOrderDetailStatus, deleteOrder } = useOrderStore();
     const navigate = useNavigate();
+    const { confirm, ConfirmDialog } = useConfirmation();
 
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [statusModalConfig, setStatusModalConfig] = useState<{
@@ -70,17 +72,18 @@ export function PesananDetail() {
     const handleConfirmStatusChange = async (reason?: string) => {
         if (!statusModalConfig || !id) return;
 
+        const toastId = notify.loading('Memperbarui status...');
         try {
             if (statusModalConfig.type === 'order') {
                 await updateOrderStatus(id, statusModalConfig.targetStatus as any, reason);
-                toast.success(`Status pesanan berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+                notify.success(`Status pesanan diubah ke ${statusModalConfig.targetStatus}`, toastId);
             } else if (statusModalConfig.detailId) {
                 await updateOrderDetailStatus(id, statusModalConfig.detailId, statusModalConfig.targetStatus as any);
-                toast.success(`Status item berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+                notify.success(`Status item diubah ke ${statusModalConfig.targetStatus}`, toastId);
             }
             setIsStatusModalOpen(false);
         } catch (error: any) {
-            toast.error(error.message || 'Gagal mengubah status');
+            notify.error(error.message || 'Gagal mengubah status', toastId);
         }
     };
 
@@ -101,6 +104,7 @@ export function PesananDetail() {
 
     return (
         <div className="p-4 space-y-6">
+            <ConfirmDialog />
             <StatusConfirmationModal
                 isOpen={isStatusModalOpen}
                 onClose={() => setIsStatusModalOpen(false)}
@@ -128,15 +132,30 @@ export function PesananDetail() {
                 </div>
                 {canDelete && (
                     <button onClick={async () => {
-                        if (window.confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
-                            try {
-                                await deleteOrder(order.no_pesanan);
-                                toast.success('Pesanan berhasil dihapus');
-                                navigate('/pesanan');
-                            } catch (error) {
-                                toast.error('Gagal menghapus pesanan');
-                                console.error(error);
-                            }
+                        if (!order) return;
+                        const { confirmed } = await confirm({
+                            title: 'Hapus Pesanan?',
+                            description: 'Pesanan ini akan dihapus secara permanen bersama semua data item di dalamnya.',
+                            subject: `${order.no_pesanan} — ${order.mitra?.nama_mitra || 'Tamu'}`,
+                            variant: 'danger',
+                            confirmLabel: 'Hapus Pesanan',
+                            requiresDoubleConfirm: true,
+                            consequences: [
+                                'Semua item produksi dalam pesanan ini ikut terhapus.',
+                                'File desain dan resi yang terunggah tidak dihapus dari storage.',
+                                'Tindakan ini tidak dapat dibatalkan.',
+                            ],
+                        });
+                        if (!confirmed) return;
+
+                        const toastId = notify.loading('Menghapus pesanan...');
+                        try {
+                            await deleteOrder(order.no_pesanan);
+                            notify.success('Pesanan berhasil dihapus', toastId);
+                            navigate('/pesanan');
+                        } catch (error) {
+                            notify.error('Gagal menghapus pesanan', toastId);
+                            console.error(error);
                         }
                     }} className="p-2.5 text-red-500/70 hover:text-red-400 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20">
                         <Trash2 className="w-5 h-5" />

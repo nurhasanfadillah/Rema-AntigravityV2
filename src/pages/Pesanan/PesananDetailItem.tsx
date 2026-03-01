@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Tag, FileText, Globe, User, MapPin, Search, ArrowRight, Loader2, ExternalLink } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { useOrderStore } from '../../store/orderStore';
 import { StatusBadge, StatusStepper } from '../../components/ui/StatusBadge';
 import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getDetailTransitionRule } from '../../utils/orderRules';
+import { notify } from '../../utils/notify';
 
 export function PesananDetailItem() {
     const { id } = useParams<{ id: string }>();
@@ -78,12 +78,13 @@ export function PesananDetailItem() {
     const handleConfirmStatusChange = async () => {
         if (!statusModalConfig || !item || !parentOrder) return;
 
+        const toastId = notify.loading('Memperbarui status item...');
         try {
             await updateOrderDetailStatus(parentOrder.no_pesanan, item.id, statusModalConfig.targetStatus as any);
-            toast.success(`Status item berhasil diubah menjadi ${statusModalConfig.targetStatus}`);
+            notify.success(`Status item diubah ke ${statusModalConfig.targetStatus}`, toastId);
             setIsStatusModalOpen(false);
         } catch (error: any) {
-            toast.error(error.message || 'Gagal memperbarui status');
+            notify.error(error.message || 'Gagal memperbarui status', toastId);
         }
     };
 
