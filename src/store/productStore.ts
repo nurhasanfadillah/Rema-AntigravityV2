@@ -42,6 +42,8 @@ export const useProductStore = create<ProductState>((set) => ({
             if (data) set({ products: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
@@ -53,6 +55,8 @@ export const useProductStore = create<ProductState>((set) => ({
             if (data) set({ products: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
@@ -64,6 +68,8 @@ export const useProductStore = create<ProductState>((set) => ({
             if (data) set({ products: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     }

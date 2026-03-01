@@ -11,6 +11,7 @@ import { getImageUrl, deleteProductImage } from '../../utils/storage';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { notify } from '../../utils/notify';
+import { handleBackendError } from '../../utils/errorHandler';
 
 export function ProdukList() {
     const { categories, fetchCategories } = useCategoryStore();
@@ -56,8 +57,7 @@ export function ProdukList() {
             setEditingId(null);
             setFormData({ nama_produk: '', category_id: '', deskripsi: '', harga_default: '', status: 'Aktif', foto_produk: '' });
         } catch (error) {
-            notify.error('Gagal menyimpan data produk', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menyimpan data produk', toastId, 'Produk');
         }
     };
 
@@ -96,8 +96,7 @@ export function ProdukList() {
             await deleteProduct(prod.id);
             notify.success('Produk berhasil dihapus', toastId);
         } catch (error) {
-            notify.error('Gagal menghapus produk', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menghapus produk', toastId, 'Produk');
         }
     };
 

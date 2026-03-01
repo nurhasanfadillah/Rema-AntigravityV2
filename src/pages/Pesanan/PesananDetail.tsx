@@ -9,6 +9,7 @@ import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/ord
 import { StatusBadge, StatusStepper } from '../../components/ui/StatusBadge';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { notify } from '../../utils/notify';
+import { handleBackendError } from '../../utils/errorHandler';
 
 export function PesananDetail() {
     const { id } = useParams<{ id: string }>();
@@ -83,7 +84,7 @@ export function PesananDetail() {
             }
             setIsStatusModalOpen(false);
         } catch (error: any) {
-            notify.error(error.message || 'Gagal mengubah status', toastId);
+            handleBackendError(error, 'Gagal mengubah status', toastId, 'Pesanan');
         }
     };
 
@@ -154,8 +155,7 @@ export function PesananDetail() {
                             notify.success('Pesanan berhasil dihapus', toastId);
                             navigate('/pesanan');
                         } catch (error) {
-                            notify.error('Gagal menghapus pesanan', toastId);
-                            console.error(error);
+                            handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
                         }
                     }} className="p-2.5 text-red-500/70 hover:text-red-400 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20">
                         <Trash2 className="w-5 h-5" />

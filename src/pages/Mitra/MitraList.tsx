@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { notify } from '../../utils/notify';
+import { handleBackendError } from '../../utils/errorHandler';
 
 export function MitraList() {
     const { mitras, fetchMitras, isLoading, addMitra, updateMitra, deleteMitra } = useMitraStore();
@@ -47,8 +48,7 @@ export function MitraList() {
             setEditingId(null);
             setFormData({ nama_mitra: '', kontak: '', alamat: '', status: 'Aktif', limit_tagihan: '' });
         } catch (error) {
-            notify.error('Gagal menyimpan data mitra', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menyimpan data mitra', toastId, 'Mitra');
         }
     };
 
@@ -84,8 +84,7 @@ export function MitraList() {
             await deleteMitra(mitra.id);
             notify.success('Mitra berhasil dihapus', toastId);
         } catch (error) {
-            notify.error('Gagal menghapus mitra', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menghapus mitra', toastId, 'Mitra');
         }
     };
 

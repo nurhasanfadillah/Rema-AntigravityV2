@@ -36,6 +36,8 @@ export const useCategoryStore = create<CategoryState>((set) => ({
             if (data) set({ categories: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
@@ -47,6 +49,8 @@ export const useCategoryStore = create<CategoryState>((set) => ({
             if (data) set({ categories: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
@@ -58,6 +62,8 @@ export const useCategoryStore = create<CategoryState>((set) => ({
             if (data) set({ categories: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     }

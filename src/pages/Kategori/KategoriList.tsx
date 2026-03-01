@@ -6,6 +6,7 @@ import { Plus, ArrowLeft, LayoutDashboard, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useConfirmation } from '../../hooks/useConfirmation';
 import { notify } from '../../utils/notify';
+import { handleBackendError } from '../../utils/errorHandler';
 
 export function KategoriList() {
     const { categories, fetchCategories, isLoading, addCategory, updateCategory, deleteCategory } = useCategoryStore();
@@ -36,8 +37,7 @@ export function KategoriList() {
             setEditingId(null);
             setNamaKategori('');
         } catch (error) {
-            notify.error('Gagal menyimpan kategori', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menyimpan kategori', toastId, 'Kategori');
         }
     };
 
@@ -62,8 +62,7 @@ export function KategoriList() {
             await deleteCategory(cat.id);
             notify.success('Kategori berhasil dihapus', toastId);
         } catch (error) {
-            notify.error('Gagal menghapus kategori', toastId);
-            console.error(error);
+            handleBackendError(error, 'Gagal menghapus kategori', toastId, 'Kategori');
         }
     };
 

@@ -41,6 +41,8 @@ export const useMitraStore = create<MitraState>((set) => ({
             if (data) set({ mitras: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
@@ -52,6 +54,8 @@ export const useMitraStore = create<MitraState>((set) => ({
             if (data) set({ mitras: data });
         } else {
             console.error(error);
+            set({ isLoading: false });
+            throw error;
         }
         set({ isLoading: false });
     },
