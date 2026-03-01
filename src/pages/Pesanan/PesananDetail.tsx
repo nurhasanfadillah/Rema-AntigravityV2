@@ -33,7 +33,8 @@ export function PesananDetail() {
     }, [orders.length, fetchOrders]);
 
     const order = orders.find(o => o.no_pesanan === id);
-    const canDelete = order ? !['Diproses', 'Packing', 'Selesai'].includes(order.status) : false;
+    const canDelete = order ? order.status === 'Dibatalkan' : false;
+    const canCancel = order ? order.status !== 'Dibatalkan' : false;
 
     const handleOpenStatusModal = (target: string, type: 'order' | 'detail', detailId?: string) => {
         if (!order) return;
@@ -131,19 +132,24 @@ export function PesananDetail() {
                         <span className="section-label">{order.no_pesanan}</span>
                     </div>
                 </div>
+                {canCancel && (
+                    <button onClick={() => handleOpenStatusModal('Dibatalkan', 'order')} className="p-2.5 text-orange-500/70 hover:text-orange-400 rounded-xl hover:bg-orange-500/10 transition-all border border-transparent hover:border-orange-500/20" title="Batalkan Pesanan">
+                        <Trash2 className="w-5 h-5" />
+                    </button>
+                )}
                 {canDelete && (
                     <button onClick={async () => {
                         if (!order) return;
                         const { confirmed } = await confirm({
                             title: 'Hapus Pesanan?',
-                            description: 'Pesanan ini akan dihapus secara permanen bersama semua data item di dalamnya.',
+                            description: 'Pesanan ini akan dihapus secara permanen beserta data di dalamnya.',
                             subject: `${order.no_pesanan} — ${order.mitra?.nama_mitra || 'Tamu'}`,
                             variant: 'danger',
                             confirmLabel: 'Hapus Pesanan',
                             requiresDoubleConfirm: true,
                             consequences: [
-                                'Semua item produksi dalam pesanan ini ikut terhapus.',
-                                'File desain dan resi yang terunggah tidak dihapus dari storage.',
+                                'Semua item produksi akan dihapus.',
+                                'Transaksi keuangan yang terhubung sudah dibersihkan.',
                                 'Tindakan ini tidak dapat dibatalkan.',
                             ],
                         });
@@ -152,12 +158,12 @@ export function PesananDetail() {
                         const toastId = notify.loading('Menghapus pesanan...');
                         try {
                             await deleteOrder(order.no_pesanan);
-                            notify.success('Pesanan berhasil dihapus', toastId);
+                            notify.success('Pesanan berhasil dihapus permanen', toastId);
                             navigate('/pesanan');
                         } catch (error) {
                             handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
                         }
-                    }} className="p-2.5 text-red-500/70 hover:text-red-400 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20">
+                    }} className="p-2.5 text-red-500/70 hover:text-red-400 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20" title="Hapus Permanen">
                         <Trash2 className="w-5 h-5" />
                     </button>
                 )}
@@ -189,12 +195,20 @@ export function PesananDetail() {
                         {(() => {
                             if (order.status === 'Menunggu Konfirmasi') {
                                 return (
-                                    <button
-                                        onClick={() => handleOpenStatusModal('Diproses', 'order')}
-                                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all border border-blue-400/20"
-                                    >
-                                        Proses Sekarang
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
+                                            className="px-4 py-2 bg-zinc-800 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-zinc-700 active:bg-zinc-600 transition-all border border-zinc-700"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleOpenStatusModal('Diproses', 'order')}
+                                            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-blue-900/40 hover:scale-105 active:scale-95 transition-all border border-blue-400/20"
+                                        >
+                                            Proses Sekarang
+                                        </button>
+                                    </div>
                                 );
                             }
                             if (order.status === 'Packing') {

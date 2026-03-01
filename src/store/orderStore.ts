@@ -36,6 +36,7 @@ interface OrderState {
     isLoading: boolean;
     fetchOrders: () => Promise<void>;
     addOrder: (order: Omit<Order, 'order_details' | 'mitra'>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
+    updateOrderData: (no_pesanan: string, orderData: Partial<Order>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
     updateOrderStatus: (no_pesanan: string, status: Order['status'], reason?: string) => Promise<void>;
     updateOrderDetailStatus: (order_id: string, detail_id: string, status: OrderDetail['status']) => Promise<void>;
     deleteOrder: (no_pesanan: string) => Promise<void>;
@@ -221,14 +222,81 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         }
         set({ isLoading: false });
     },
+    updateOrderData: async (no_pesanan, orderData, items) => {
+        set({ isLoading: true });
+
+        // Logic check: order can only be edited if status is 'Menunggu Konfirmasi'
+        const { data: currentOrder } = await supabase.from('orders').select('status').eq('no_pesanan', no_pesanan).single();
+        if (currentOrder && currentOrder.status !== 'Menunggu Konfirmasi') {
+            set({ isLoading: false });
+            throw new Error('Pesanan hanya dapat diedit saat status "Menunggu Konfirmasi".');
+        }
+
+        try {
+            // 1. Update Header
+            const { error: orderError } = await supabase
+                .from('orders')
+                .update(orderData)
+                .eq('no_pesanan', no_pesanan);
+
+            if (orderError) throw orderError;
+
+            // 2. Clear old Details (we replace entirely for simplicity of edit, relying on CASCADE for related cleanup if any, though during Menunggu Konfirmasi there shouldn't be related transaction data)
+            const { error: deleteDetailsError } = await supabase
+                .from('order_details')
+                .delete()
+                .eq('o_pesanan', no_pesanan);
+
+            if (deleteDetailsError) throw deleteDetailsError;
+
+            // 3. Insert new Details
+            if (items.length > 0) {
+                const detailsToInsert = items.map(item => ({
+                    ...item,
+                    o_pesanan: no_pesanan,
+                    status: 'Menunggu' // Default back to Menunggu
+                }));
+
+                const { error: detailError } = await supabase
+                    .from('order_details')
+                    .insert(detailsToInsert);
+
+                if (detailError) throw detailError;
+            }
+
+            // Create Audit Trail for Edit
+            if (currentOrder) {
+                await supabase.from('order_audit_trail').insert([{
+                    no_pesanan,
+                    status_lama: currentOrder.status,
+                    status_baru: currentOrder.status,
+                    alasan: 'Edit keseluruhan data pesanan oleh Admin',
+                    aksi_oleh: 'Admin'
+                }]);
+            }
+
+            // Re-fetch
+            const { data } = await supabase
+                .from('orders')
+                .select(`*, mitra ( * ), order_details ( *, products ( * ) )`)
+                .order('created_at', { ascending: false });
+
+            if (data) set({ orders: data as Order[] });
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     deleteOrder: async (no_pesanan) => {
         set({ isLoading: true });
 
-        // Logic Data #2: Pesanan 'Diproses', 'Packing' dan 'Selesai' hanya bisa ‘Dibatalkan’ tidak bisa dihapus
+        // Logic Data #2: Hanya pesanan berstatus 'Dibatalkan' yang bisa dihapus permanen
         const { data: orderToDelete } = await supabase.from('orders').select('*, order_details(*)').eq('no_pesanan', no_pesanan).single();
-        if (orderToDelete && ['Diproses', 'Packing', 'Selesai'].includes(orderToDelete.status)) {
+        if (orderToDelete && orderToDelete.status !== 'Dibatalkan') {
             set({ isLoading: false });
-            throw new Error('Pesanan yang sudah diproses tidak dapat dihapus, hanya bisa dibatalkan.');
+            throw new Error('Hanya pesanan dengan status "Dibatalkan" yang dapat dihapus secara permanen.');
         }
 
         // Cleanup storage files

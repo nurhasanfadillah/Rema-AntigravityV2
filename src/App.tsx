@@ -6,6 +6,7 @@ import { KategoriList } from './pages/Kategori/KategoriList';
 import { ProdukList } from './pages/Produk/ProdukList';
 import { PesananList } from './pages/Pesanan/PesananList';
 import { PesananBaru } from './pages/Pesanan/PesananBaru';
+import { PesananEdit } from './pages/Pesanan/PesananEdit';
 import { PesananDetail } from './pages/Pesanan/PesananDetail';
 import { PesananDetailItem } from './pages/Pesanan/PesananDetailItem';
 import { ProduksiList } from './pages/Produksi/ProduksiList';
@@ -24,6 +25,7 @@ function App() {
         <Route path="pesanan">
           <Route index element={<PesananList />} />
           <Route path="baru" element={<PesananBaru />} />
+          <Route path="edit/:id" element={<PesananEdit />} />
           <Route path=":id" element={<PesananDetail />} />
           <Route path="detail-item/:id" element={<PesananDetailItem />} />
         </Route>
