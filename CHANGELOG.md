@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026-03-02] - Optimasi Build & Bundle Split (Vite)
+### Changed
+- **Penerapan Manual Chunking**: Mengkonfigurasi `build.rollupOptions.output.manualChunks` di `vite.config.ts` untuk memisahkan library besar ke dalam chunk tersendiri:
+  - `react-vendor`: Memisahkan `react`, `react-dom`, dan `react-router-dom`.
+  - `supabase`: Memisahkan `@supabase/supabase-js`.
+  - `icons`: Memisahkan `lucide-react`.
+  - `vendor`: Mengelompokkan library pihak ketiga lainnya.
+- **Peningkatan Batas Chunk**: Menaikkan `chunkSizeWarningLimit` menjadi 1000 kB untuk menghindari peringatan build yang tidak perlu pada library vendor yang sudah dioptimasi.
+- **Resolusi Warning Build**: Menghilangkan peringatan "Some chunks are larger than 500 kB" dan meningkatkan efisiensi caching browser melalui pemisahan dependensi.
+
 ## [2026-03-02] - Implementasi Identitas Visual & Branding Terpadu
 ### Added
 - **Logo Header Utama (`LOGO_HEADER_REMVAV2.png`)**:
