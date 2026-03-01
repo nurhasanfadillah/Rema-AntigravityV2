@@ -6,9 +6,10 @@ export type DetailStatus = 'Menunggu' | 'Cetak DTF' | 'Sablon' | 'Selesai';
 interface StatusBadgeProps {
     status: OrderStatus | DetailStatus;
     size?: 'sm' | 'md';
+    className?: string;
 }
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' }) => {
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md', className = '' }) => {
     const getStatusStyles = (status: string) => {
         switch (status) {
             case 'Selesai':
@@ -68,7 +69,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
     const styles = getStatusStyles(status);
 
     return (
-        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full border ${styles.bg} ${styles.text} ${styles.border} ${size === 'sm' ? 'text-[10px]' : 'text-xs'} font-medium`}>
+        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full border ${styles.bg} ${styles.text} ${styles.border} ${size === 'sm' ? 'text-[10px]' : 'text-xs'} font-medium ${className}`}>
             {styles.icon}
             <span>{styles.label}</span>
         </div>

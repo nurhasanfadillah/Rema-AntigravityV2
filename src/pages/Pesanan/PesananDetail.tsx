@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, ChevronDown, ChevronUp, Package, Globe, Wallet } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, Package, Globe, Wallet } from 'lucide-react';
 import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/orderRules';
@@ -16,7 +16,6 @@ export function PesananDetail() {
 
 
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-    const [expandedDesigns, setExpandedDesigns] = useState<Record<string, boolean>>({});
     const [statusModalConfig, setStatusModalConfig] = useState<{
         targetStatus: string;
         currentStatus: string;
@@ -266,11 +265,8 @@ export function PesananDetail() {
                 </div>
 
                 {order.order_details?.map((item: any) => {
-                    const isExpanded = expandedDesigns[item.id] || false;
-                    const needsClamp = item.deskripsi_desain && item.deskripsi_desain.length > 60;
-
                     return (
-                        <Card key={item.id} className="border-zinc-800/80 bg-zinc-900/20 group pb-6">
+                        <Card key={item.id} className="border-zinc-800/80 bg-zinc-900/20 group pb-6 cursor-pointer hover:border-zinc-700/60 transition-colors" onClick={() => navigate(`/pesanan/detail-item/${item.id}`)}>
                             <div className="flex flex-col gap-5">
                                 {/* Product Name & Qty Section - Core Info Level 1 */}
                                 <div className="flex justify-between items-start">
@@ -297,7 +293,7 @@ export function PesananDetail() {
                                         if (item.status === 'Menunggu') {
                                             return (
                                                 <button
-                                                    onClick={() => handleOpenStatusModal('Cetak DTF', 'detail', item.id)}
+                                                    onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Cetak DTF', 'detail', item.id); }}
                                                     className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-blue-900/30 hover:scale-105 active:scale-95 transition-all"
                                                 >
                                                     Cetak
@@ -308,7 +304,7 @@ export function PesananDetail() {
                                         if (item.status === 'Cetak DTF') {
                                             return (
                                                 <button
-                                                    onClick={() => handleOpenStatusModal('Sablon', 'detail', item.id)}
+                                                    onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Sablon', 'detail', item.id); }}
                                                     className="px-3 py-1.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-indigo-900/30 hover:scale-105 active:scale-95 transition-all"
                                                 >
                                                     Sablon
@@ -319,7 +315,7 @@ export function PesananDetail() {
                                         if (item.status === 'Sablon') {
                                             return (
                                                 <button
-                                                    onClick={() => handleOpenStatusModal('Selesai', 'detail', item.id)}
+                                                    onClick={(e) => { e.stopPropagation(); handleOpenStatusModal('Selesai', 'detail', item.id); }}
                                                     className="px-3 py-1.5 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-emerald-900/30 hover:scale-105 active:scale-95 transition-all"
                                                 >
                                                     Selesai
@@ -342,29 +338,14 @@ export function PesananDetail() {
                                     </div>
                                 )}
 
-                                {/* Deskripsi Desain Section - Core Info Level 2 */}
+                                {/* Design Description - Compact Tag Style */}
                                 {item.deskripsi_desain && (
-                                    <div className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-800/40 shadow-inner">
-                                        <div className="flex items-center gap-1.5 text-zinc-500 mb-2">
-                                            <Tag className="w-3 h-3" />
-                                            <span className="text-[10px] font-bold uppercase tracking-widest">Detail & Intruksi Desain</span>
-                                        </div>
-                                        <div className="relative">
-                                            <p className={`text-[13px] text-zinc-300 leading-relaxed italic ${!isExpanded && needsClamp ? 'line-clamp-2' : ''}`}>
-                                                "{item.deskripsi_desain}"
-                                            </p>
-                                            {needsClamp && (
-                                                <button
-                                                    onClick={() => setExpandedDesigns(prev => ({ ...prev, [item.id]: !isExpanded }))}
-                                                    className="mt-1 flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
-                                                >
-                                                    {isExpanded ? (
-                                                        <>Sembunyikan <ChevronUp className="w-3 h-3" /></>
-                                                    ) : (
-                                                        <>Selengkapnya <ChevronDown className="w-3 h-3" /></>
-                                                    )}
-                                                </button>
-                                            )}
+                                    <div className="flex flex-wrap gap-1.5 px-0.5">
+                                        <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-zinc-950/60 border border-zinc-800/60 rounded-lg max-w-full">
+                                            <Tag className="w-2.5 h-2.5 text-zinc-500 shrink-0" />
+                                            <span className="text-[11px] text-zinc-300 leading-tight italic truncate">
+                                                {item.deskripsi_desain}
+                                            </span>
                                         </div>
                                     </div>
                                 )}
@@ -385,6 +366,7 @@ export function PesananDetail() {
                                                         href={getOrderFileUrl(path) || '#'}
                                                         target="_blank"
                                                         rel="noreferrer"
+                                                        onClick={(e) => e.stopPropagation()}
                                                         className="relative w-24 aspect-square shrink-0 rounded-xl bg-zinc-950 border border-zinc-800/50 overflow-hidden ring-1 ring-white/5 hover:ring-blue-500 transition-all group"
                                                     >
                                                         {isImg ? (

@@ -1,5 +1,28 @@
 # Changelog
 
+## [2026-03-01] - Halaman Spesifik Detail Item Pesanan (Full Page View)
+### Added
+- **Dedicated Page `PesananDetailItem.tsx`**: Mengubah UI "Modal Khusus View Detail_Pesanan" yang sebelumnya berada di `ProduksiList` menjadi halaman terpisah yang dirender penuh (Full Page View) dengan struktur:
+  - Navigasi kembali (Back Button) yang mulus dengan animasi transisi halaman (slide in/out).
+  - Tampilan hierarki informasi inti: Deskripsi Desain, File Desain, serta File Resi (sumber Online) atau Detail Pengiriman (sumber Offline) yang dipertahankan tanpa interupsi informasi asing.
+  - Daftar ringkas (List) item lain di bagian paling bawah pada pesanan (order) yang sama dengan deskripsi singkat, Qty, dan Status.
+- **Navigasi Terpusat**: Semua Card item di halaman `PesananDetail` dan daftar di `ProduksiList` kini menggunakan pola akses navigasi push/route yang sama (`/pesanan/detail-item/:id`) menuju Dedicated Page yang baru ini, menggantikan mekanisme modal sebelumnya.
+### Changed
+- **Komponen `Card.tsx`**: Menambahkan *support* property `onClick` yang secara native meneruskan event click untuk mendukung navigasi langsung klik-card pada antarmuka.## [2026-03-01] - Halaman Produksi & Restrukturisasi Menu Navigasi
+### Added
+- **Pusat Pengelolaan Produksi (`ProduksiList.tsx`)**: Menambahkan halaman baru "Produksi" yang berfungsi sebagai pusat manajemen `detail_pesanan` secara independen, dengan fitur:
+  - **Filter Relasi Backend**: Hanya menampilkan item detail yang pesanan induknya berstatus "Diproses" atau "Packing".
+  - **Segmented Control Status**: Filtrasi item menggunakan tab/segmented control (Menunggu, Cetak DTF, Sablon, Selesai) untuk *monitoring* yang jelas.
+  - **Atribut Visual Inti**: Menggunakan "Nama Produk" sebagai judul, Nama Mitra sebagai konteks sekunder, kuantitas, deskripsi dengan *line-clamp*, dan indikator status interaktif.
+  - **Aksi Progresif**: Tombol aksi dinamis per baris item sesuai logic transisi yang berlaku untuk memindahkan status item ke tahap selanjutnya.
+- **Produksi Store (`produksiStore.ts`)**: Pembuatan store *Zustand* khusus untuk melayani halaman Produksi, yang memisahkan logic pengambilan data langsung dari `order_details` dengan relasi yang sudah diperiksa.
+- **Menu Halaman 'Lainnya' (`Lainnya.tsx`)**: Membuat halaman menu yang berfungsi sebagai folder pengelompokan akses untuk master data, mitra, dan pengaturan tanpa perlu navigasi dari Dashboard utama.
+### Changed
+- **Pembaruan Susunan Bottom Navigation**: Mereorganisasi menu *bottom bar* agar memenuhi aturan maksimal 4 menu. Daftar yang ditampilkan sekarang difokuskan pada *core operation*: 
+  - Home, Pesanan, Produksi, dan Lainnya (sebagai pengganti menu Produk/Mitra yang digabung menjadi satu pengelompokan yang cerdas).
+- **Integrasi Store Produksi dengan Transisi Order Store**: Memastikan setiap pembaruan manual di halaman "Produksi" terkait pembaruan status item tetap terhubung dengan *rule transitions* yang terdapat di `useOrderStore` sehingga *audit trail* dan perubahan order otomatis ke 'Packing' berjalan sesuai alur yang ada.
+
+
 ## [2026-03-01] - Penyederhanaan UI Daftar Pesanan & Sistem Expand/Collapse
 ### Changed
 - **Penyederhanaan Baris Data Utama**: Menghilangkan label field eksplisit pada daftar pesanan untuk tampilan yang lebih bersih. Nama Mitra kini menjadi elemen paling dominan, didukung informasi inti (Tanggal, No. Pesanan, Status, dan Total Qty) dalam format ringkas bersimbol yang mudah dipindai.

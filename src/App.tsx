@@ -7,6 +7,9 @@ import { ProdukList } from './pages/Produk/ProdukList';
 import { PesananList } from './pages/Pesanan/PesananList';
 import { PesananBaru } from './pages/Pesanan/PesananBaru';
 import { PesananDetail } from './pages/Pesanan/PesananDetail';
+import { PesananDetailItem } from './pages/Pesanan/PesananDetailItem';
+import { ProduksiList } from './pages/Produksi/ProduksiList';
+import { Lainnya } from './pages/Lainnya';
 
 function App() {
   return (
@@ -20,7 +23,10 @@ function App() {
           <Route index element={<PesananList />} />
           <Route path="baru" element={<PesananBaru />} />
           <Route path=":id" element={<PesananDetail />} />
+          <Route path="detail-item/:id" element={<PesananDetailItem />} />
         </Route>
+        <Route path="produksi" element={<ProduksiList />} />
+        <Route path="lainnya" element={<Lainnya />} />
       </Route>
     </Routes>
   );

@@ -7,8 +7,8 @@ export function BottomNavigation() {
     const navItems = [
         { label: 'Home', path: '/', icon: LayoutDashboard },
         { label: 'Pesanan', path: '/pesanan', icon: ShoppingCart },
-        { label: 'Produk', path: '/produk', icon: Package },
-        { label: 'Mitra', path: '/mitra', icon: Users },
+        { label: 'Produksi', path: '/produksi', icon: Package },
+        { label: 'Lainnya', path: '/lainnya', icon: Users },
     ];
 
     // List of paths where the bottom navigation should be hidden
