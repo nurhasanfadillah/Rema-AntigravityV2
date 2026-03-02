@@ -113,11 +113,11 @@ WHEN (NEW.status = 'Selesai')
 EXECUTE FUNCTION public.check_all_items_done();
 
 
--- B. Proteksi Hapus Pesanan (Diproses, Packing, Selesai)
+-- B. Proteksi Hapus Pesanan (Hanya boleh 'Menunggu Konfirmasi' atau 'Dibatalkan')
 CREATE OR REPLACE FUNCTION public.prevent_order_deletion()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF OLD.status IN ('Diproses', 'Packing', 'Selesai') THEN
+    IF OLD.status NOT IN ('Menunggu Konfirmasi', 'Dibatalkan') THEN
         RAISE EXCEPTION 'Pesanan dengan status % tidak dapat dihapus, gunakan opsi Dibatalkan.', OLD.status;
     END IF;
     RETURN OLD;
@@ -128,6 +128,36 @@ CREATE TRIGGER trg_prevent_order_delete
 BEFORE DELETE ON public.orders
 FOR EACH ROW
 EXECUTE FUNCTION public.prevent_order_deletion();
+
+
+-- B2. Validasi Transisi Status Pesanan (Single Source of Truth)
+CREATE OR REPLACE FUNCTION public.unified_validate_order_status_transition()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.status = NEW.status THEN RETURN NEW; END IF;
+    IF OLD.status = 'Menunggu Konfirmasi' AND NEW.status NOT IN ('Diproses', 'Dibatalkan') THEN
+        RAISE EXCEPTION 'Transisi tidak valid: Menunggu Konfirmasi -> Diproses/Dibatalkan.';
+    END IF;
+    IF OLD.status = 'Diproses' AND NEW.status NOT IN ('Packing', 'Dibatalkan') THEN
+        RAISE EXCEPTION 'Transisi tidak valid: Diproses -> Packing/Dibatalkan.';
+    END IF;
+    IF OLD.status = 'Packing' AND NEW.status NOT IN ('Selesai', 'Dibatalkan') THEN
+        RAISE EXCEPTION 'Transisi tidak valid: Packing -> Selesai/Dibatalkan.';
+    END IF;
+    IF OLD.status = 'Selesai' AND NEW.status NOT IN ('Dibatalkan') THEN
+        RAISE EXCEPTION 'Transisi tidak valid: Selesai -> Dibatalkan.';
+    END IF;
+    IF OLD.status = 'Dibatalkan' THEN
+        RAISE EXCEPTION 'Transisi tidak valid: Dibatalkan tidak dapat diubah.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trg_unified_validate_order_status
+BEFORE UPDATE OF status ON public.orders
+FOR EACH ROW
+EXECUTE FUNCTION public.unified_validate_order_status_transition();
 
 
 -- C. Validasi Transisi Detail Pesanan (Hanya bisa dari Menunggu jika Order Diproses)

@@ -41,14 +41,14 @@ export function PesananDetail() {
 
         if (type === 'order') {
             const rule = getOrderTransitionRule(order.status as any, target as any);
-            const error = rule ? rule.prerequisites(order) : (target === 'Dibatalkan' ? null : 'Transisi status tidak valid');
+            const error = rule ? rule.prerequisites(order) : 'Transisi status tidak valid';
 
             setStatusModalConfig({
                 targetStatus: target,
                 currentStatus: order.status,
                 prerequisiteError: error,
-                consequences: rule?.consequences || (target === 'Dibatalkan' ? ['Pesanan akan dibatalkan secara permanen.'] : []),
-                requiresReason: rule?.requiresReason || target === 'Dibatalkan',
+                consequences: rule?.consequences || [],
+                requiresReason: rule?.requiresReason || false,
                 type: 'order'
             });
         } else {

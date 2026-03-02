@@ -51,11 +51,11 @@ export const ORDER_TRANSITIONS: OrderTransitionRule[] = [
         from: ['Packing'],
         to: 'Selesai',
         prerequisites: () => null,
-        consequences: ['Status pesanan akan menjadi Selesai.', 'Pesanan dianggap tuntas dan tidak dapat diubah lagi.'],
+        consequences: ['Status pesanan akan menjadi Selesai.', 'Pesanan dianggap tuntas dan tercatat di sistem.'],
         doubleConfirmation: true,
     },
     {
-        from: ['Diproses', 'Packing', 'Selesai'],
+        from: ['Menunggu Konfirmasi', 'Diproses', 'Packing', 'Selesai'],
         to: 'Dibatalkan',
         prerequisites: () => null,
         consequences: ['Pesanan akan dibatalkan.', 'Seluruh proses produksi akan dihentikan.', 'Status akan berubah menjadi "Dibatalkan" dan tercatat di Audit Trail.'],
@@ -92,9 +92,6 @@ export const DETAIL_TRANSITIONS: DetailTransitionRule[] = [
 
 export const isValidOrderTransition = (from: OrderStatus, to: OrderStatus) => {
     if (from === to) return false;
-    // Special case for Dibatalkan: can be done from anywhere except Dibatalkan
-    if (to === 'Dibatalkan' && from !== 'Dibatalkan') return true;
-
     return ORDER_TRANSITIONS.some(rule => rule.from.includes(from) && rule.to === to);
 };
 
