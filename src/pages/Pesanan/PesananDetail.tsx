@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useOrderStore, getOrderDisplayStatus } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, Package, Globe, Wallet } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, Package, Globe } from 'lucide-react';
 import { getOrderFileUrl } from '../../utils/orderStorage';
 import { StatusConfirmationModal } from '../../components/orders/StatusConfirmationModal';
 import { getOrderTransitionRule, getDetailTransitionRule } from '../../utils/orderRules';
@@ -120,20 +120,17 @@ export function PesananDetail() {
             />
 
             {/* Page Header */}
-            <div className="flex items-start justify-between gap-4">
-                <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-2">
-                        <Link to="/pesanan" className="p-1 -ml-1 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                        <h2 className="text-xl font-bold text-text-primary">Detail Pesanan</h2>
-                    </div>
-                    <div className="flex items-center ml-1">
+            <div className="grid grid-cols-[auto_1fr_auto] gap-3 items-center">
+                <Link to="/pesanan" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
+                    <ArrowLeft className="w-5 h-5" />
+                </Link>
+                <div className="flex flex-col justify-center">
+                    <h2 className="text-xl font-bold text-text-primary leading-tight">Detail Pesanan</h2>
+                    <div className="mt-1">
                         <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
                     </div>
                 </div>
-
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 justify-end">
                     {canCancel && (
                         <button
                             onClick={() => handleOpenStatusModal('Dibatalkan', 'order')}
@@ -185,52 +182,32 @@ export function PesananDetail() {
             <Card className="border-brand-border bg-brand-surface relative overflow-hidden shadow-sm">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/[0.02] rounded-bl-[120px] pointer-events-none"></div>
 
-                <div className="flex flex-col gap-4">
-                    {/* Row 1: Customer Info & Edit Button */}
+                <div className="flex flex-col gap-4 relative z-10">
+                    {/* Row 1: Customer Info & Action Buttons */}
                     <div className="flex items-start justify-between gap-4">
-                        <div className="flex gap-3 items-center">
-                            <div className="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center border border-brand-border shrink-0">
-                                <User className="w-5 h-5 text-brand-accent/70" />
-                            </div>
-                            <div className="flex flex-col">
-                                <h3 className="text-lg font-bold text-text-primary leading-tight">
-                                    {order.mitra?.nama_mitra || 'Tamu / Walk-in'}
-                                </h3>
-                                <span className="text-sm text-text-tertiary font-mono">{order.no_pesanan}</span>
-                            </div>
+                        <div className="flex-1 min-w-0 pt-1">
+                            <h3 className="text-lg font-bold text-text-primary leading-tight truncate">
+                                {order.mitra?.nama_mitra || 'Tamu / Walk-in'}{' '}
+                                <span className="font-normal text-text-tertiary mx-1">-</span>{' '}
+                                <span className="text-base font-medium text-text-secondary font-mono">{order.no_pesanan}</span>
+                            </h3>
                         </div>
-
-                        {order.status === 'Menunggu Konfirmasi' && (
-                            <button
-                                onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
-                                className="px-3 py-1.5 bg-brand-bg text-text-primary text-sm font-medium rounded-lg active:bg-brand-border active:scale-95 transition-all border border-brand-border shrink-0"
-                            >
-                                Edit
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Row 2: Date & Source / Process Actions */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-text-tertiary" />
-                            <span className="text-sm font-medium text-text-secondary">
-                                {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-end gap-3 flex-wrap">
-                            <div className="flex items-center gap-1.5 text-text-secondary">
-                                <Globe className="w-4 h-4 text-text-tertiary" />
-                                <span className="text-sm font-medium">{order.sumber_pesanan}</span>
-                            </div>
-
+                        <div className="flex items-center gap-2 shrink-0">
+                            {order.status === 'Menunggu Konfirmasi' && (
+                                <button
+                                    onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
+                                    className="px-4 py-1.5 bg-brand-bg text-text-primary text-sm font-medium rounded-lg active:bg-brand-border active:scale-95 transition-all border border-brand-border"
+                                >
+                                    Edit
+                                </button>
+                            )}
                             {/* Action Buttons related to process */}
                             {(() => {
                                 if (order.status === 'Menunggu Konfirmasi') {
                                     return (
                                         <button
                                             onClick={() => handleOpenStatusModal('Diproses', 'order')}
-                                            className="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
+                                            className="px-4 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
                                         >
                                             Proses
                                         </button>
@@ -240,7 +217,7 @@ export function PesananDetail() {
                                     return (
                                         <button
                                             onClick={() => handleOpenStatusModal('Selesai', 'order')}
-                                            className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
+                                            className="px-4 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
                                         >
                                             Selesaikan
                                         </button>
@@ -251,52 +228,72 @@ export function PesananDetail() {
                         </div>
                     </div>
 
-                    {/* Row 3: Total Payment */}
-                    <div className="flex justify-end pt-3 border-t border-brand-border/40">
-                        <div className="flex items-center gap-2">
-                            <Wallet className="w-4 h-4 text-text-tertiary" />
-                            <span className="text-lg font-bold text-brand-accent font-display">
-                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total)}
+                    {/* Row 2: Date & Source */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-1.5 text-text-secondary">
+                            <Calendar className="w-4 h-4 text-text-tertiary" />
+                            <span className="text-sm font-medium">
+                                {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
                             </span>
+                        </div>
+                        <div className="flex items-center justify-end gap-1.5 text-text-secondary">
+                            <Globe className="w-4 h-4 text-text-tertiary" />
+                            <span className="text-sm font-medium">{order.sumber_pesanan}</span>
                         </div>
                     </div>
 
-                    {/* Row 4: Resi Document (Online Only) */}
-                    {order.sumber_pesanan === 'Online' && (
-                        <div className="pt-1">
-                            {order.file_resi ? (
-                                <a
-                                    href={getOrderFileUrl(order.file_resi) || '#'}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-700 active:bg-blue-100 transition-all font-medium"
-                                >
-                                    <FileText className="w-4 h-4" />
-                                    Lihat Resi
-                                </a>
-                            ) : (
-                                <p className="text-sm text-red-600/80 italic font-medium">Resi belum diunggah</p>
-                            )}
-                        </div>
-                    )}
+                    {/* Row 3: Total Payment */}
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-brand-border/40">
+                        <span className="text-sm font-semibold text-text-tertiary uppercase tracking-wider">Total Pembayaran</span>
+                        <span className="text-2xl font-bold text-brand-accent font-display">
+                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total)}
+                        </span>
+                    </div>
 
-                    {/* Row 5: Recipient Info */}
-                    {order.nama_penerima && (
-                        <div className="pt-3 border-t border-brand-border/40">
-                            <div className="flex items-center gap-2 mb-1">
-                                <User className="w-4 h-4 text-text-tertiary" />
-                                <span className="text-sm font-medium text-text-primary">
-                                    {order.nama_penerima} {order.kontak_penerima && <span className="text-text-tertiary font-normal">({order.kontak_penerima})</span>}
-                                </span>
+                    {/* Row 4: Shipping / Recipient Info */}
+                    <div className="pt-3 border-t border-brand-border/40">
+                        <h4 className="text-sm font-bold text-text-primary mb-2">Informasi Pengiriman</h4>
+                        {order.sumber_pesanan === 'Online' ? (
+                            <div className="w-full">
+                                {order.file_resi ? (
+                                    <a
+                                        href={getOrderFileUrl(order.file_resi) || '#'}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-700 active:bg-blue-100 transition-all font-semibold shadow-sm"
+                                    >
+                                        <FileText className="w-4 h-4" />
+                                        Lihat Dokumen Resi
+                                    </a>
+                                ) : (
+                                    <div className="w-full p-2.5 bg-red-50 border border-red-100 rounded-lg flex items-center justify-center shadow-sm">
+                                        <p className="text-sm text-red-600/80 italic font-medium">Resi belum diunggah</p>
+                                    </div>
+                                )}
                             </div>
-                            {order.alamat_penerima && (
-                                <div className="flex items-start gap-2 ml-6 text-text-secondary">
-                                    <MapPin className="w-3.5 h-3.5 text-text-tertiary shrink-0 mt-0.5" />
-                                    <p className="text-sm leading-relaxed">{order.alamat_penerima}</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                        ) : (
+                            <div className="w-full bg-brand-bg/50 rounded-lg border border-brand-border/60 p-3">
+                                {order.nama_penerima ? (
+                                    <>
+                                        <div className="flex items-center gap-2 mb-1.5">
+                                            <User className="w-4 h-4 text-text-tertiary" />
+                                            <span className="text-sm font-medium text-text-primary">
+                                                {order.nama_penerima} {order.kontak_penerima && <span className="text-text-tertiary font-normal">({order.kontak_penerima})</span>}
+                                            </span>
+                                        </div>
+                                        {order.alamat_penerima && (
+                                            <div className="flex items-start gap-2 text-text-secondary">
+                                                <MapPin className="w-4 h-4 text-text-tertiary shrink-0 mt-0.5" />
+                                                <p className="text-sm leading-relaxed">{order.alamat_penerima}</p>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <p className="text-sm text-text-tertiary italic text-center py-1">Informasi penerima tidak tersedia</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </Card>
 

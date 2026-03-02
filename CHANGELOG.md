@@ -1,13 +1,17 @@
-## [2026-03-02] - Refinemen Layout UI Detail Pesanan
+## [2026-03-03] - Penyesuaian Skala Logo Header
 ### Changed
-- **Header Layout**: Mengubah struktur header menjadi dua kolom dengan alignment seimbang. Kolom kiri berisi tombol back & judul pada baris pertama, dan badge status pada baris kedua. Kolom kanan berisi tombol aksi proporsional (Batalkan/Hapus).
-- **Card Layout Dinamis**: Merestrukturisasi Card utama dengan distribusi dua kolom adaptif:
-  - Baris pertama: Ikon pelanggan, Nama Pelanggan, dan No. Pemesanan (dikelompokkan rapi tanpa label eksplisit) di kiri; tombol Edit di kanan.
-  - Baris kedua: Ikon & tanggal pesanan di kiri; sumber pesanan dan tombol aksi proses (Proses/Selesaikan) disejajarkan rata kanan, proporsional, dan tidak bertumpuk.
-  - Baris ketiga: Total Pembayaran (beserta ikon dompet) rata kanan.
-  - Baris keempat: Dokumen Resi hanya muncul jika sumber Online.
-  - Baris kelima: Informasi Penerima tampil ringkas.
-- **Tipografi & Spacing**: Mengurangi penggunaan huruf kapital penuh yang tidak perlu, membatasi *bold* hanya pada elemen prioritas (Nama Mitra/Pelanggan & angka nominal penting), serta menyeimbangkan porsi penggunaan ikon dan label agar tampilan tetap *clean* dan optimal untuk layar mobile.
+- **Peningkatan Ukuran Logo Header**: Menambah ukuran logo header (`LOGO_HEADER_REMVAV2`) sebesar ±30% dari ukuran sebelumnya untuk memperkuat visibilitas brand. Skala baru disesuaikan menjadi `h-[47px]` (dari `h-9`/36px) pada perangkat mobile dan `sm:h-[55px]` (dari `h-[42px]`) pada layar yang lebih lebar.
+- **Optimalisasi Kontainer Logo**: Memperluas `max-width` kontainer logo menjadi `max-w-[260px]` (mobile) dan `sm:max-w-[340px]` untuk memastikan logo tetap proporsional dan terpusat tanpa risiko terpotong.
+
+## [2026-03-03] - Refinemen UI Layout Halaman View Pesanan
+### Changed
+- **Header Layout**: Mengubah struktur header menjadi tiga kolom sejajar (`grid-cols-[auto_1fr_auto]`). Kolom pertama berisi tombol navigasi back, kolom kedua menampung judul "Detail Pesanan" beserta status badge di bawahnya, dan kolom ketiga berisi tombol aksi (Hapus/Batalkan) dengan alignment rata kanan.
+- **Card Layout Terstruktur**: Menyempurnakan Card utama menjadi tata letak yang lebih bersih:
+  - Baris pertama: Menampilkan "Nama Pelanggan - No. Pemesanan" dalam satu baris murni teks (tanpa ikon/label) di sisi kiri, dan tombol aksi (Edit/Status) rata kanan seimbang.
+  - Baris kedua: Ikon & tanggal di kiri, ikon & sumber pesanan di kanan.
+  - Baris ketiga: Label "Total Pembayaran" dan nominal disejajarkan rata kanan dengan proporsi ukuran font yang memperkuat hierarki pembacaan.
+  - Baris keempat: Menampilkan label "Informasi Pengiriman" rata kiri, diikuti dengan tombol Dokumen Resi *full-width* (jika sumber Online) atau blok ringkasan Informasi Penerima (jika Offline).
+- **Tipografi & Hierarki Visual**: Mengurangi penggunaan huruf kapital penuh yang tidak perlu, membatasi *bold* hanya pada elemen prioritas (Nama Pelanggan/Mitra, Nilai Total), serta merapikan ukuran font (Judul > Nama > Total > Metadata) demi antarmuka pengguna yang *clean* dan sangat profesional untuk konteks *mobile*.
 
 ## [2026-03-02] - Refinemen UI/UX Keuangan & Filter Rentang Tanggal
 ### Added

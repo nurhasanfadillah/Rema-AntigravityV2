@@ -9,11 +9,11 @@ export function MobileLayout() {
             {/* Top Header */}
             <header className="bg-brand-surface px-4 py-2.5 flex items-center justify-center border-b border-brand-border transition-all duration-200 sticky top-0 z-50">
                 <div className="flex items-center justify-center w-full">
-                    <div className="flex items-center justify-center max-w-[200px] sm:max-w-[260px]">
+                    <div className="flex items-center justify-center max-w-[260px] sm:max-w-[340px]">
                         <img
                             src="/LOGO_HEADER_REMVAV2.png"
                             alt="REMA Logo"
-                            className="h-9 sm:h-[42px] object-contain transition-all duration-300"
+                            className="h-[47px] sm:h-[55px] object-contain transition-all duration-300"
                         />
                     </div>
                 </div>
