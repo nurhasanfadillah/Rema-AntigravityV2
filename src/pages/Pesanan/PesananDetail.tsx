@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useOrderStore } from '../../store/orderStore';
+import { useOrderStore, getOrderDisplayStatus } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
 import { ArrowLeft, ShoppingCart, Calendar, MapPin, User, Tag, Trash2, FileText, Package, Globe, Wallet } from 'lucide-react';
 import { getOrderFileUrl } from '../../utils/orderStorage';
@@ -127,7 +127,7 @@ export function PesananDetail() {
                 <div className="flex-1">
                     <h2 className="page-title font-display">Detail Pesanan</h2>
                     <div className="flex items-center gap-2 mt-1">
-                        <StatusBadge status={order.status} size="sm" />
+                        <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
                         <span className="text-brand-border">•</span>
                         <span className="section-label font-mono font-bold">{order.no_pesanan}</span>
                     </div>
@@ -221,7 +221,7 @@ export function PesananDetail() {
                                     </button>
                                 );
                             }
-                            return <StatusBadge status={order.status} />;
+                            return <StatusBadge status={getOrderDisplayStatus(order)} />;
                         })()}
                     </div>
                 </div>

@@ -1,3 +1,16 @@
+## [2026-03-02] - Refinemen UI/UX Keuangan & Filter Rentang Tanggal
+### Added
+- **Filter Rentang Tanggal Dinamis**: Fitur filtrasi transaksi berdasarkan rentang waktu (`startDate` & `endDate`) pada halaman Detail Keuangan.
+- **Modal Date Range Picker**: UI modal yang compact, minimalis, dan mobile-friendly untuk pemilihan rentang tanggal dengan tombol "Terapkan" dan "Reset".
+- **Indikator Periode Aktif**: Tampilan badge periode yang sedang diterapkan (e.g., "1 Jan 2024 — 15 Jan 2024") dengan tombol hapus filter cepat.
+### Changed
+- **Pembersihan Redundansi UI**: Menghapus sub-card "Total Tagihan" dan "Total Pembayaran" dari halaman utama daftar keuangan (`FinanceList.tsx`) untuk fokus pada Saldo Utama.
+- **Kontekstualisasi Metrik**: Menampilkan "Total Tagihan" dan "Total Pembayaran" hanya saat filter periode aktif di halaman Detail Keuangan, memberikan angka yang relevan dengan rentang waktu yang dipilih.
+- **Recalculation Dinamis**: Sistem secara otomatis menghitung ulang total masuk/keluar dan memperbarui daftar transaksi segera setelah filter diterapkan atau transaksi manual dimanipulasi.
+- **Minimalist Filter UI**: Mengganti tombol filter teks panjang dengan ikon filter elegan yang konsisten dengan sistem desain aplikasi.
+- **Store Update (`financeStore.ts`)**: Mendukung parameter `startDate` dan `endDate` pada fungsi `fetchTransactionsByMitra` untuk sinkronisasi data dengan backend Supabase.
+- **Fix Component `Card`**: Menambahkan dukungan formal untuk `React.MouseEvent` pada props `onClick` untuk mencegah bubbling event pada modal interaktif.
+
 ## [2026-03-02] - Modul Aktivitas — Audit Trail Terpusat (Plan 7)
 ### Added
 - **Tabel `activity_logs`** (`plan7_activity_logs.sql`): Tabel audit trail terpusat dengan kolom timestamp presisi, user_id, user_role, module, action, description, reference_id, old_value (JSONB), new_value (JSONB), dan metadata (JSONB). RLS insert-only (tidak dapat diedit/dihapus user biasa).

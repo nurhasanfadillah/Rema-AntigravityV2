@@ -29,7 +29,7 @@ interface FinanceState {
     isLoading: boolean;
     error: string | null;
     fetchSummaries: () => Promise<void>;
-    fetchTransactionsByMitra: (mitraId: string) => Promise<void>;
+    fetchTransactionsByMitra: (mitraId: string, startDate?: string, endDate?: string) => Promise<void>;
     addTransactionKeluar: (mitraId: string, deskripsi: string, amount: number) => Promise<void>;
     updateTransactionKeluar: (id_transaksi: string, deskripsi: string, amount: number, mitraId: string) => Promise<void>;
     deleteTransactionKeluar: (id_transaksi: string, mitraId: string) => Promise<void>;
@@ -68,13 +68,22 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
         }
     },
 
-    fetchTransactionsByMitra: async (mitraId: string) => {
+    fetchTransactionsByMitra: async (mitraId: string, startDate?: string, endDate?: string) => {
         set({ isLoading: true, error: null, transactions: [] });
 
-        const { data, error } = await supabase
+        let query = supabase
             .from('financial_transactions')
             .select('id_transaksi, tanggal, mitra_id, deskripsi, masuk, keluar, reference_id, created_at, updated_at')
-            .eq('mitra_id', mitraId)
+            .eq('mitra_id', mitraId);
+
+        if (startDate) {
+            query = query.gte('tanggal', startDate);
+        }
+        if (endDate) {
+            query = query.lte('tanggal', endDate);
+        }
+
+        const { data, error } = await query
             .order('tanggal', { ascending: false })
             .order('created_at', { ascending: false });
 

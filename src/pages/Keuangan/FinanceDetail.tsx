@@ -9,7 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
 import {
     ArrowLeft, TrendingUp, TrendingDown, Plus, Edit2, Trash2,
-    RefreshCw, Wallet, AlertCircle
+    RefreshCw, Wallet, AlertCircle, Filter, Calendar, X, Check
 } from 'lucide-react';
 
 const formatRupiah = (val: number) =>
@@ -43,21 +43,62 @@ export function FinanceDetail() {
     const [formData, setFormData] = useState({ deskripsi: '', amount: '' });
     const [fetchError, setFetchError] = useState<string | null>(null);
 
+    // Filter states
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
+    const [tempDates, setTempDates] = useState({ start: '', end: '' });
+    const [showFilterModal, setShowFilterModal] = useState(false);
+
+    const isFiltered = startDate !== '' || endDate !== '';
+
     const doFetch = useCallback(async () => {
         if (!id) return;
         setFetchError(null);
         try {
-            await fetchTransactionsByMitra(id);
-            // Pastikan summaries juga ter-fetch untuk summary banner
+            await fetchTransactionsByMitra(id, startDate || undefined, endDate || undefined);
+            // Pastikan summaries juga ter-fetch untuk summary banner (saldo tagihan all-time)
             await fetchSummaries();
         } catch (e: any) {
             setFetchError(e?.message || 'Gagal memuat data transaksi');
         }
-    }, [id, fetchTransactionsByMitra, fetchSummaries]);
+    }, [id, fetchTransactionsByMitra, fetchSummaries, startDate, endDate]);
 
     useEffect(() => {
         doFetch();
     }, [doFetch]);
+
+    const activePeriodLabel = () => {
+        if (!startDate && !endDate) return null;
+        if (startDate && endDate) {
+            if (startDate === endDate) return formatTanggal(startDate);
+            return `${formatTanggal(startDate)} — ${formatTanggal(endDate)}`;
+        }
+        if (startDate) return `Sejak ${formatTanggal(startDate)}`;
+        if (endDate) return `Hingga ${formatTanggal(endDate)}`;
+        return null;
+    };
+
+    const applyFilter = () => {
+        setStartDate(tempDates.start);
+        setEndDate(tempDates.end);
+        setShowFilterModal(false);
+    };
+
+    const resetFilter = () => {
+        setStartDate('');
+        setEndDate('');
+        setTempDates({ start: '', end: '' });
+        setShowFilterModal(false);
+    };
+
+    // Calculate dynamic totals from current transaction list
+    const { filteredMasuk, filteredKeluar } = transactions.reduce(
+        (acc, tx) => ({
+            filteredMasuk: acc.filteredMasuk + Number(tx.masuk),
+            filteredKeluar: acc.filteredKeluar + Number(tx.keluar),
+        }),
+        { filteredMasuk: 0, filteredKeluar: 0 }
+    );
 
     const summary = summaries.find(s => s.mitra_id === id);
 
@@ -88,6 +129,7 @@ export function FinanceDetail() {
                 notify.success('Transaksi keluar berhasil dicatat', toastId);
             }
             resetForm();
+            doFetch();
         } catch (error) {
             handleBackendError(error, 'Gagal menyimpan transaksi', toastId, 'Transaksi');
         }
@@ -121,6 +163,7 @@ export function FinanceDetail() {
             // Kirim mitraId sebagai parameter agar tidak bergantung pada state
             await deleteTransactionKeluar(tx.id_transaksi, tx.mitra_id || id!);
             notify.success('Transaksi berhasil dihapus', toastId);
+            doFetch();
         } catch (error) {
             handleBackendError(error, 'Gagal menghapus transaksi', toastId, 'Transaksi');
         }
@@ -152,14 +195,26 @@ export function FinanceDetail() {
                 </div>
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={doFetch}
+                        onClick={() => {
+                            setTempDates({ start: startDate, end: endDate });
+                            setShowFilterModal(true);
+                        }}
+                        className={`p-2.5 transition-all rounded-xl border active:scale-95 shadow-sm ${isFiltered
+                            ? 'bg-blue-50 border-blue-200 text-blue-600'
+                            : 'bg-brand-surface border-brand-border text-text-tertiary active:bg-brand-border/40'
+                            }`}
+                    >
+                        <Filter className={`w-4 h-4 ${isFiltered ? 'fill-blue-600/10' : ''}`} />
+                    </button>
+                    <button
+                        onClick={() => doFetch()}
                         disabled={isLoading}
-                        className="p-2 text-text-tertiary transition-colors rounded-xl active:bg-brand-border/40 disabled:opacity-40"
+                        className="p-2.5 text-text-tertiary transition-all rounded-xl border border-brand-border bg-brand-surface active:bg-brand-border/40 disabled:opacity-40 active:scale-95 shadow-sm"
                     >
                         <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
                     {!showForm && (
-                        <Button variant="primary" className="!p-2.5 shadow-md shadow-blue-600/20" onClick={() => {
+                        <Button variant="primary" className="!p-2.5 shadow-md shadow-blue-600/20 active:scale-95" onClick={() => {
                             setFormData({ deskripsi: '', amount: '' });
                             setEditingId(null);
                             setShowForm(true);
@@ -172,30 +227,124 @@ export function FinanceDetail() {
 
             {/* Summary Cards */}
             {summary && (
-                <div className="grid grid-cols-2 gap-2.5">
-                    <div className="col-span-2 bg-gradient-to-r from-emerald-50 via-brand-surface to-brand-surface px-4 py-3 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
+                <div className="space-y-2.5">
+                    {/* Saldo Utama - Selalu Tampil */}
+                    <div className="bg-gradient-to-r from-emerald-50 via-brand-surface to-brand-surface px-4 py-3 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
                         <div className="flex items-center gap-2 text-emerald-600">
                             <Wallet className="w-5 h-5" />
-                            <span className="font-extrabold uppercase tracking-wider text-[11px]">Saldo Kas</span>
+                            <span className="font-extrabold uppercase tracking-wider text-[11px]">Saldo Tagihan</span>
                         </div>
                         <span className={`font-display font-extrabold text-xl ${summary.saldo >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                             {formatRupiah(summary.saldo)}
                         </span>
                     </div>
-                    <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
-                        <div className="flex items-center gap-1.5 text-blue-600 mb-1">
-                            <TrendingUp className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Total Masuk</span>
+
+                    {/* Filter Period Indicator + Contextual Totals */}
+                    {isFiltered ? (
+                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex items-center justify-between px-1 mb-2">
+                                <div className="flex items-center gap-1.5 text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100 shadow-sm">
+                                    <Calendar className="w-3 h-3" />
+                                    <span className="text-[10px] font-bold truncate max-w-[180px]">
+                                        {activePeriodLabel()}
+                                    </span>
+                                    <button onClick={resetFilter} className="ml-1 p-0.5 hover:bg-blue-100 rounded-full transition-colors">
+                                        <X className="w-2.5 h-2.5" />
+                                    </button>
+                                </div>
+                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest bg-brand-bg px-2 py-1 rounded-lg border border-brand-border/40">
+                                    Total Periode
+                                </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2.5">
+                                <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className="flex items-center gap-1.5 text-blue-600 mb-1">
+                                        <TrendingUp className="w-3.5 h-3.5" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">Total Tagihan</span>
+                                    </div>
+                                    <p className="text-sm font-extrabold text-text-primary">{formatRupiah(filteredMasuk)}</p>
+                                </div>
+                                <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100 shadow-sm">
+                                    <div className="flex items-center gap-1.5 text-rose-600 mb-1">
+                                        <TrendingDown className="w-3.5 h-3.5" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">Total Pembayaran</span>
+                                    </div>
+                                    <p className="text-sm font-extrabold text-text-primary">{formatRupiah(filteredKeluar)}</p>
+                                </div>
+                            </div>
                         </div>
-                        <p className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_masuk)}</p>
-                    </div>
-                    <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100">
-                        <div className="flex items-center gap-1.5 text-rose-600 mb-1">
-                            <TrendingDown className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Total Keluar</span>
+                    ) : (
+                        /* Placeholder or hint when not filtered? No, user said only when filtered */
+                        null
+                    )}
+                </div>
+            )}
+
+            {/* Date Picker Modal */}
+            {showFilterModal && (
+                <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-text-primary/20 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowFilterModal(false)}>
+                    <Card
+                        className="w-full max-w-sm border-brand-border shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300 pointer-events-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-blue-50 rounded-lg">
+                                    <Calendar className="w-5 h-5 text-blue-600" />
+                                </div>
+                                <h3 className="font-bold text-text-primary text-lg">Filter Periode</h3>
+                            </div>
+                            <button
+                                onClick={() => setShowFilterModal(false)}
+                                className="p-2 text-text-tertiary hover:bg-brand-bg rounded-xl transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
                         </div>
-                        <p className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_keluar)}</p>
-                    </div>
+
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Dari Tanggal</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                        value={tempDates.start}
+                                        onChange={(e) => setTempDates(prev => ({ ...prev, start: e.target.value }))}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">S/D Tanggal</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                        value={tempDates.end}
+                                        onChange={(e) => setTempDates(prev => ({ ...prev, end: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2.5 pt-2">
+                                <Button
+                                    variant="outline"
+                                    fullWidth
+                                    onClick={resetFilter}
+                                    className="font-bold !py-3 rounded-xl"
+                                >
+                                    Reset
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={applyFilter}
+                                    className="font-bold !py-3 rounded-xl shadow-lg shadow-blue-600/20"
+                                >
+                                    <Check className="w-4 h-4 mr-2" />
+                                    Terapkan
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
                 </div>
             )}
 
@@ -277,7 +426,7 @@ export function FinanceDetail() {
                             <p className="text-red-700 font-bold text-sm">Gagal Memuat Data</p>
                             <p className="text-text-tertiary text-xs mt-1">{fetchError}</p>
                         </div>
-                        <button onClick={doFetch} className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl border border-brand-border shadow-sm active:bg-brand-bg transition-colors active:scale-95">
+                        <button onClick={() => doFetch()} className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-text-secondary bg-brand-surface rounded-xl border border-brand-border shadow-sm active:bg-brand-bg transition-colors active:scale-95">
                             <RefreshCw className="w-3.5 h-3.5" />
                             Coba Lagi
                         </button>

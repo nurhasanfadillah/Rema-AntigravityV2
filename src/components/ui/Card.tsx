@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Card({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
+export function Card({ children, className = '', onClick }: { children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
     return (
         <div
             onClick={onClick}

@@ -5,6 +5,7 @@ import { logActivity } from '../utils/activityLogger';
 import type { Mitra } from './mitraStore';
 import type { Product } from './productStore';
 import { isValidOrderTransition, getOrderTransitionRule, isValidDetailTransition } from '../utils/orderRules';
+import { useFinanceStore } from './financeStore';
 
 export interface Order {
     no_pesanan: string;
@@ -19,6 +20,20 @@ export interface Order {
     mitra?: Mitra | null;
     order_details?: OrderDetail[];
 }
+
+/**
+ * Logic Data: Representasi Status 'Dikonfirmasi'
+ * Jika seluruh order_details berstatus 'Menunggu', maka tampilkan 'Dikonfirmasi' (khusus status Diproses).
+ * Secara otomatis kembali menjadi 'Diproses' jika minimal satu detail sudah mulai dikerjakan.
+ */
+export const getOrderDisplayStatus = (order: Order): Order['status'] | 'Dikonfirmasi' => {
+    if (order.status === 'Diproses') {
+        const hasDetails = order.order_details && order.order_details.length > 0;
+        const allWaiting = hasDetails && order.order_details!.every(d => d.status === 'Menunggu');
+        if (allWaiting) return 'Dikonfirmasi';
+    }
+    return order.status;
+};
 
 export interface OrderDetail {
     id: string;
@@ -174,6 +189,9 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
             const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
             if (data) set({ orders: data as Order[] });
+
+            // Refresh finance summaries when order status changes
+            useFinanceStore.getState().fetchSummaries();
         } else {
             console.error(error);
             throw error;

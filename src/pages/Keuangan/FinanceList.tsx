@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFinanceStore } from '../../store/financeStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, Wallet, TrendingUp, TrendingDown, Clock, RefreshCw, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Wallet, Clock, RefreshCw, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export function FinanceList() {
@@ -89,8 +89,8 @@ export function FinanceList() {
                         </h4>
                     </div>
                     <div className="text-right shrink-0">
-                        <span className="text-[9px] uppercase font-extrabold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md tracking-widest border border-emerald-100 block mb-1 shadow-sm">
-                            SALDO KAS
+                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">
+                            Saldo Tagihan
                         </span>
                         <p className={`text-xl font-extrabold font-display leading-tight ${summary.saldo >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                             {formatRupiah(summary.saldo)}
@@ -98,29 +98,11 @@ export function FinanceList() {
                     </div>
                 </div>
 
-                {/* Metrics: Masuk & Keluar */}
-                <div className="grid grid-cols-2 gap-2.5 mb-3">
-                    <div className="bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
-                        <div className="flex items-center gap-1.5 text-blue-600 mb-1.5">
-                            <TrendingUp className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Total Masuk</span>
-                        </div>
-                        <span className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_masuk)}</span>
-                    </div>
-                    <div className="bg-rose-50/50 p-2.5 rounded-xl border border-rose-100">
-                        <div className="flex items-center gap-1.5 text-rose-600 mb-1.5">
-                            <TrendingDown className="w-3.5 h-3.5" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Total Keluar</span>
-                        </div>
-                        <span className="text-sm font-extrabold text-text-primary">{formatRupiah(summary.total_keluar)}</span>
-                    </div>
-                </div>
-
                 {/* Estimasi tagihan berjalan */}
                 <div className="flex justify-between items-center bg-amber-50 px-3 py-2.5 rounded-xl border border-amber-100 shadow-sm shadow-amber-600/5">
                     <div className="flex items-center gap-1.5 text-amber-700">
                         <Clock className="w-3.5 h-3.5" />
-                        <span className="text-xs font-bold">Estimasi Tagihan Aktif</span>
+                        <span className="text-xs font-bold">Tagihan Pending</span>
                     </div>
                     <span className="text-sm font-extrabold text-amber-700">
                         {formatRupiah(summary.estimasi_tagihan)}

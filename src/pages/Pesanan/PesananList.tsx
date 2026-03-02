@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useOrderStore, type Order } from '../../store/orderStore';
+import { useOrderStore, type Order, getOrderDisplayStatus } from '../../store/orderStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft, Plus, ChevronDown, ShoppingBag, Package, History } from 'lucide-react';
@@ -46,7 +46,7 @@ function PesananListItem({ order }: { order: Order }) {
 
                     {/* Right: Status Badge */}
                     <div className="flex flex-col items-end shrink-0">
-                        <StatusBadge status={order.status} size="sm" />
+                        <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
                     </div>
                 </div>
 

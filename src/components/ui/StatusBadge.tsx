@@ -1,6 +1,6 @@
 import { CheckCircle2, Clock, Package, XCircle, Printer, Layers } from 'lucide-react';
 
-export type OrderStatus = 'Menunggu Konfirmasi' | 'Diproses' | 'Packing' | 'Selesai' | 'Dibatalkan';
+export type OrderStatus = 'Menunggu Konfirmasi' | 'Diproses' | 'Packing' | 'Selesai' | 'Dibatalkan' | 'Dikonfirmasi';
 export type DetailStatus = 'Menunggu' | 'Cetak DTF' | 'Sablon' | 'Selesai';
 
 // Generic status badge for Mitra / Produk active state
@@ -50,6 +50,12 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md', c
                     icon: <Clock className={iconSize} />,
                     label: status
                 };
+            case 'Dikonfirmasi':
+                return {
+                    className: 'badge-info',
+                    icon: <CheckCircle2 className={iconSize} />,
+                    label: 'Dikonfirmasi'
+                };
             case 'Diproses':
             case 'Cetak DTF':
                 return {
@@ -95,7 +101,9 @@ export const StatusStepper: React.FC<StatusStepperProps> = ({ currentStatus, typ
     const detailSteps: DetailStatus[] = ['Menunggu', 'Cetak DTF', 'Sablon', 'Selesai'];
 
     const steps = type === 'order' ? orderSteps : detailSteps;
-    const currentIndex = steps.indexOf(currentStatus as any);
+    const isConfirmedForStepper = type === 'order' && currentStatus === 'Dikonfirmasi';
+    const effectiveStatus = isConfirmedForStepper ? 'Diproses' : currentStatus;
+    const currentIndex = steps.indexOf(effectiveStatus as any);
 
     if (currentStatus === 'Dibatalkan') {
         return (
