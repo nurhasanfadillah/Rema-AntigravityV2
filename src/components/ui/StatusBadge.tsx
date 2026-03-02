@@ -64,13 +64,16 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md', c
                     label: status
                 };
             case 'Packing':
+                return {
+                    className: 'badge-production',
+                    icon: <Package className={iconSize} />,
+                    label: 'Packing'
+                };
             case 'Sablon':
                 return {
                     className: 'badge-production',
-                    icon: status === 'Packing'
-                        ? <Package className={iconSize} />
-                        : <Layers className={iconSize} />,
-                    label: status
+                    icon: <Layers className={iconSize} />,
+                    label: 'Sablon'
                 };
             default:
                 return {

@@ -34,7 +34,7 @@ export function PesananDetail() {
 
     const order = orders.find(o => o.no_pesanan === id);
     const canDelete = order ? order.status === 'Dibatalkan' : false;
-    const canCancel = order ? order.status !== 'Dibatalkan' : false;
+    const canCancel = order ? (order.status !== 'Dibatalkan' && order.status !== 'Selesai') : false;
 
     const handleOpenStatusModal = (target: string, type: 'order' | 'detail', detailId?: string) => {
         if (!order) return;

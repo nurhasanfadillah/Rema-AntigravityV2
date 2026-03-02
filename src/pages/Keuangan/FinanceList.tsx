@@ -105,7 +105,7 @@ export function FinanceList() {
                         <span className="text-xs font-bold">Tagihan Pending</span>
                     </div>
                     <span className="text-sm font-extrabold text-amber-700">
-                        {formatRupiah(summary.estimasi_tagihan)}
+                        {formatRupiah(summary.tagihan_pending)}
                     </span>
                 </div>
             </Card>

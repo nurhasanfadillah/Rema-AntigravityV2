@@ -8,7 +8,7 @@ export interface FinanceSummary {
     total_masuk: number;
     total_keluar: number;
     saldo: number;
-    estimasi_tagihan: number;
+    tagihan_pending: number;
 }
 
 export interface FinancialTransaction {
@@ -48,7 +48,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
         // Tidak menggunakan FK join PostgREST karena View tidak mendukung relational embed
         const { data, error } = await supabase
             .from('finance_summary')
-            .select('mitra_id, nama_mitra, total_masuk, total_keluar, saldo, estimasi_tagihan');
+            .select('mitra_id, nama_mitra, total_masuk, total_keluar, saldo, tagihan_pending');
 
         if (!error && data) {
             // Konversi nilai numerik yang mungkin datang sebagai string dari Supabase
@@ -58,7 +58,7 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
                 total_masuk: Number(d.total_masuk) || 0,
                 total_keluar: Number(d.total_keluar) || 0,
                 saldo: Number(d.saldo) || 0,
-                estimasi_tagihan: Number(d.estimasi_tagihan) || 0,
+                tagihan_pending: Number(d.tagihan_pending) || 0,
             }));
             set({ summaries: mapped, isLoading: false });
         } else {
