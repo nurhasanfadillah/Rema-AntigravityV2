@@ -1,3 +1,14 @@
+## [2026-03-02] - Refinemen Layout UI Detail Pesanan
+### Changed
+- **Header Layout**: Mengubah struktur header menjadi dua kolom dengan alignment seimbang. Kolom kiri berisi tombol back & judul pada baris pertama, dan badge status pada baris kedua. Kolom kanan berisi tombol aksi proporsional (Batalkan/Hapus).
+- **Card Layout Dinamis**: Merestrukturisasi Card utama dengan distribusi dua kolom adaptif:
+  - Baris pertama: Ikon pelanggan, Nama Pelanggan, dan No. Pemesanan (dikelompokkan rapi tanpa label eksplisit) di kiri; tombol Edit di kanan.
+  - Baris kedua: Ikon & tanggal pesanan di kiri; sumber pesanan dan tombol aksi proses (Proses/Selesaikan) disejajarkan rata kanan, proporsional, dan tidak bertumpuk.
+  - Baris ketiga: Total Pembayaran (beserta ikon dompet) rata kanan.
+  - Baris keempat: Dokumen Resi hanya muncul jika sumber Online.
+  - Baris kelima: Informasi Penerima tampil ringkas.
+- **Tipografi & Spacing**: Mengurangi penggunaan huruf kapital penuh yang tidak perlu, membatasi *bold* hanya pada elemen prioritas (Nama Mitra/Pelanggan & angka nominal penting), serta menyeimbangkan porsi penggunaan ikon dan label agar tampilan tetap *clean* dan optimal untuk layar mobile.
+
 ## [2026-03-02] - Refinemen UI/UX Keuangan & Filter Rentang Tanggal
 ### Added
 - **Filter Rentang Tanggal Dinamis**: Fitur filtrasi transaksi berdasarkan rentang waktu (`startDate` & `endDate`) pada halaman Detail Keuangan.

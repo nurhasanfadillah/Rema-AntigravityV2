@@ -120,181 +120,179 @@ export function PesananDetail() {
             />
 
             {/* Page Header */}
-            <div className="flex items-center gap-3">
-                <Link to="/pesanan" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
-                    <ArrowLeft className="w-5 h-5" />
-                </Link>
-                <div className="flex-1">
-                    <h2 className="page-title font-display">Detail Pesanan</h2>
-                    <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                        <Link to="/pesanan" className="p-1 -ml-1 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
+                            <ArrowLeft className="w-5 h-5" />
+                        </Link>
+                        <h2 className="text-xl font-bold text-text-primary">Detail Pesanan</h2>
+                    </div>
+                    <div className="flex items-center ml-1">
                         <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
-                        <span className="text-brand-border">•</span>
-                        <span className="section-label font-mono font-bold">{order.no_pesanan}</span>
                     </div>
                 </div>
-                {canCancel && (
-                    <button
-                        onClick={() => handleOpenStatusModal('Dibatalkan', 'order')}
-                        className="flex items-center gap-2 px-3 py-2 text-orange-600 rounded-xl active:bg-orange-50 transition-all border border-orange-100 active:scale-95 shadow-sm"
-                        title="Batalkan Pesanan"
-                    >
-                        <Trash2 className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Batalkan</span>
-                    </button>
-                )}
-                {canDelete && (
-                    <button onClick={async () => {
-                        if (!order) return;
-                        const isNewOrder = order.status === 'Menunggu Konfirmasi';
-                        const { confirmed } = await confirm({
-                            title: isNewOrder ? 'Hapus Pesanan Baru?' : 'Hapus Pesanan?',
-                            description: isNewOrder
-                                ? 'Pesanan ini masih dalam tahap konfirmasi. Menghapus akan membatalkan seluruh rencana transaksi secara permanen.'
-                                : 'Pesanan ini sudah dibatalkan sebelumnya. Menghapus akan membersihkan record dari database secara permanen.',
-                            subject: `${order.no_pesanan} — ${order.mitra?.nama_mitra || 'Tamu'}`,
-                            variant: 'danger',
-                            confirmLabel: 'Hapus Permanen',
-                            requiresDoubleConfirm: true,
-                            consequences: [
-                                'Data pesanan dan item produksi akan dihapus.',
-                                'Aset desain yang diunggah akan dihapus dari storage.',
-                                'Tindakan ini bersifat destruktif dan tidak dapat diurungkan.',
-                            ],
-                        });
-                        if (!confirmed) return;
 
-                        const toastId = notify.loading('Menghapus pesanan...');
-                        try {
-                            await deleteOrder(order.no_pesanan);
-                            notify.success('Pesanan berhasil dihapus permanen', toastId);
-                            navigate('/pesanan');
-                        } catch (error) {
-                            handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
-                        }
-                    }} className="flex items-center gap-2 px-3 py-2 text-red-600 rounded-xl active:bg-red-50 transition-all border border-red-100 active:scale-95 shadow-sm" title="Hapus Permanen">
-                        <Trash2 className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Hapus</span>
-                    </button>
-                )}
+                <div className="flex items-center gap-2 shrink-0">
+                    {canCancel && (
+                        <button
+                            onClick={() => handleOpenStatusModal('Dibatalkan', 'order')}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-orange-600 rounded-lg active:bg-orange-50 transition-all border border-orange-100 active:scale-95 shadow-sm"
+                            title="Batalkan"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            <span className="text-sm font-medium">Batalkan</span>
+                        </button>
+                    )}
+                    {canDelete && (
+                        <button onClick={async () => {
+                            if (!order) return;
+                            const isNewOrder = order.status === 'Menunggu Konfirmasi';
+                            const { confirmed } = await confirm({
+                                title: isNewOrder ? 'Hapus Pesanan Baru?' : 'Hapus Pesanan?',
+                                description: isNewOrder
+                                    ? 'Pesanan ini masih dalam tahap konfirmasi. Menghapus akan membatalkan seluruh rencana transaksi secara permanen.'
+                                    : 'Pesanan ini sudah dibatalkan sebelumnya. Menghapus akan membersihkan record dari database secara permanen.',
+                                subject: `${order.no_pesanan} — ${order.mitra?.nama_mitra || 'Tamu'}`,
+                                variant: 'danger',
+                                confirmLabel: 'Hapus Permanen',
+                                requiresDoubleConfirm: true,
+                                consequences: [
+                                    'Data pesanan dan item produksi akan dihapus.',
+                                    'Aset desain yang diunggah akan dihapus dari storage.',
+                                    'Tindakan ini bersifat destruktif dan tidak dapat diurungkan.',
+                                ],
+                            });
+                            if (!confirmed) return;
+
+                            const toastId = notify.loading('Menghapus pesanan...');
+                            try {
+                                await deleteOrder(order.no_pesanan);
+                                notify.success('Pesanan berhasil dihapus permanen', toastId);
+                                navigate('/pesanan');
+                            } catch (error) {
+                                handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
+                            }
+                        }} className="flex items-center gap-1.5 px-3 py-1.5 text-red-600 rounded-lg active:bg-red-50 transition-all border border-red-100 active:scale-95 shadow-sm" title="Hapus Permanen">
+                            <Trash2 className="w-4 h-4" />
+                            <span className="text-sm font-medium">Hapus</span>
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Order Overview Card */}
-            <Card className="border-brand-border bg-brand-surface relative overflow-hidden shadow-md">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/[0.03] rounded-bl-[120px] pointer-events-none"></div>
+            <Card className="border-brand-border bg-brand-surface relative overflow-hidden shadow-sm">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/[0.02] rounded-bl-[120px] pointer-events-none"></div>
 
-                {/* Primary: Mitra Name */}
-                <div className="mb-5">
-                    <span className="section-label mb-1 block">Pelanggan / Mitra</span>
-                    <h3 className="text-2xl font-bold text-text-primary font-display leading-tight tracking-tight">{order.mitra?.nama_mitra || 'Tamu / Walk-in'}</h3>
-                </div>
-
-                {/* Total & Action Row */}
-                <div className="grid grid-cols-2 gap-6 pb-5 border-b border-brand-border/60">
-                    <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-1.5 text-text-tertiary">
-                            <Wallet className="w-3.5 h-3.5" />
-                            <span className="section-label">Total Pembayaran</span>
+                <div className="flex flex-col gap-4">
+                    {/* Row 1: Customer Info & Edit Button */}
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex gap-3 items-center">
+                            <div className="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center border border-brand-border shrink-0">
+                                <User className="w-5 h-5 text-brand-accent/70" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-lg font-bold text-text-primary leading-tight">
+                                    {order.mitra?.nama_mitra || 'Tamu / Walk-in'}
+                                </h3>
+                                <span className="text-sm text-text-tertiary font-mono">{order.no_pesanan}</span>
+                            </div>
                         </div>
-                        <p className="font-extrabold text-brand-accent text-xl font-display leading-none">
-                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total)}
-                        </p>
+
+                        {order.status === 'Menunggu Konfirmasi' && (
+                            <button
+                                onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
+                                className="px-3 py-1.5 bg-brand-bg text-text-primary text-sm font-medium rounded-lg active:bg-brand-border active:scale-95 transition-all border border-brand-border shrink-0"
+                            >
+                                Edit
+                            </button>
+                        )}
                     </div>
 
-                    <div className="flex flex-col items-end gap-1.5">
-                        {(() => {
-                            if (order.status === 'Menunggu Konfirmasi') {
-                                return (
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => navigate(`/pesanan/edit/${order.no_pesanan}`)}
-                                            className="px-4 py-2 bg-brand-bg text-text-primary text-[11px] font-bold uppercase tracking-widest rounded-xl active:bg-brand-border active:scale-95 transition-all border border-brand-border"
-                                        >
-                                            Edit
-                                        </button>
+                    {/* Row 2: Date & Source / Process Actions */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-text-tertiary" />
+                            <span className="text-sm font-medium text-text-secondary">
+                                {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </span>
+                        </div>
+                        <div className="flex items-center justify-end gap-3 flex-wrap">
+                            <div className="flex items-center gap-1.5 text-text-secondary">
+                                <Globe className="w-4 h-4 text-text-tertiary" />
+                                <span className="text-sm font-medium">{order.sumber_pesanan}</span>
+                            </div>
+
+                            {/* Action Buttons related to process */}
+                            {(() => {
+                                if (order.status === 'Menunggu Konfirmasi') {
+                                    return (
                                         <button
                                             onClick={() => handleOpenStatusModal('Diproses', 'order')}
-                                            className="px-4 py-2 bg-gradient-to-br from-blue-600 to-blue-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-blue-600/20 active:scale-95 transition-all border border-blue-600/10"
+                                            className="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
                                         >
                                             Proses
                                         </button>
-                                    </div>
-                                );
-                            }
-                            if (order.status === 'Packing') {
-                                return (
-                                    <button
-                                        onClick={() => handleOpenStatusModal('Selesai', 'order')}
-                                        className="px-4 py-2 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all border border-emerald-600/10"
-                                    >
-                                        Selesaikan
-                                    </button>
-                                );
-                            }
-                            return <StatusBadge status={getOrderDisplayStatus(order)} />;
-                        })()}
-                    </div>
-                </div>
-
-                {/* Secondary Meta Info Grid */}
-                <div className="grid grid-cols-2 gap-y-5 pt-5">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-text-tertiary">
-                            <Calendar className="w-3.5 h-3.5" />
-                            <span className="section-label">Tanggal</span>
+                                    );
+                                }
+                                if (order.status === 'Packing') {
+                                    return (
+                                        <button
+                                            onClick={() => handleOpenStatusModal('Selesai', 'order')}
+                                            className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg shadow-sm active:scale-95 transition-all"
+                                        >
+                                            Selesaikan
+                                        </button>
+                                    );
+                                }
+                                return null;
+                            })()}
                         </div>
-                        <p className="text-sm font-bold text-text-secondary">
-                            {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
-                        </p>
                     </div>
 
-                    <div className="space-y-1 justify-self-end text-right">
-                        <div className="flex items-center gap-1.5 text-text-tertiary justify-end">
-                            <Globe className="w-3.5 h-3.5" />
-                            <span className="section-label">Sumber</span>
+                    {/* Row 3: Total Payment */}
+                    <div className="flex justify-end pt-3 border-t border-brand-border/40">
+                        <div className="flex items-center gap-2">
+                            <Wallet className="w-4 h-4 text-text-tertiary" />
+                            <span className="text-lg font-bold text-brand-accent font-display">
+                                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total)}
+                            </span>
                         </div>
-                        <p className="text-sm font-bold text-text-secondary">{order.sumber_pesanan}</p>
                     </div>
 
-                    {/* Offline: Receiver Info */}
-                    {order.sumber_pesanan === 'Offline' && (
-                        <div className="col-span-2 p-3 bg-brand-bg rounded-xl border border-brand-border/60">
-                            <div className="flex items-center gap-1.5 text-text-tertiary mb-2">
-                                <User className="w-3.5 h-3.5 text-brand-accent/70" />
-                                <span className="section-label">Informasi Penerima</span>
-                            </div>
-                            <div className="space-y-1.5">
-                                <p className="text-sm font-bold text-text-primary">{order.nama_penerima}</p>
-                                <p className="text-xs text-text-tertiary font-medium">{order.kontak_penerima}</p>
-                                {order.alamat_penerima && (
-                                    <div className="flex gap-2 mt-2 pt-2 border-t border-brand-border">
-                                        <MapPin className="w-3.5 h-3.5 text-text-muted shrink-0 mt-0.5" />
-                                        <p className="text-xs text-text-tertiary leading-relaxed italic">{order.alamat_penerima}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Online: Resi Document */}
+                    {/* Row 4: Resi Document (Online Only) */}
                     {order.sumber_pesanan === 'Online' && (
-                        <div className="col-span-2 pt-2">
-                            <div className="flex items-center gap-1.5 text-text-tertiary mb-2.5">
-                                <FileText className="w-3.5 h-3.5" />
-                                <span className="section-label">Dokumen Resi</span>
-                            </div>
+                        <div className="pt-1">
                             {order.file_resi ? (
                                 <a
                                     href={getOrderFileUrl(order.file_resi) || '#'}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2.5 px-4 py-2 bg-blue-50 border border-blue-100 rounded-xl text-xs font-bold text-blue-700 active:bg-blue-100 transition-all active:translate-y-0 shadow-sm"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-700 active:bg-blue-100 transition-all font-medium"
                                 >
                                     <FileText className="w-4 h-4" />
-                                    Buka Resi Pengiriman
+                                    Lihat Resi
                                 </a>
                             ) : (
-                                <div className="px-4 py-2.5 bg-red-50 border border-red-100 rounded-xl">
-                                    <p className="text-xs text-red-600/80 italic font-medium">Data resi pengiriman belum diunggah</p>
+                                <p className="text-sm text-red-600/80 italic font-medium">Resi belum diunggah</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Row 5: Recipient Info */}
+                    {order.nama_penerima && (
+                        <div className="pt-3 border-t border-brand-border/40">
+                            <div className="flex items-center gap-2 mb-1">
+                                <User className="w-4 h-4 text-text-tertiary" />
+                                <span className="text-sm font-medium text-text-primary">
+                                    {order.nama_penerima} {order.kontak_penerima && <span className="text-text-tertiary font-normal">({order.kontak_penerima})</span>}
+                                </span>
+                            </div>
+                            {order.alamat_penerima && (
+                                <div className="flex items-start gap-2 ml-6 text-text-secondary">
+                                    <MapPin className="w-3.5 h-3.5 text-text-tertiary shrink-0 mt-0.5" />
+                                    <p className="text-sm leading-relaxed">{order.alamat_penerima}</p>
                                 </div>
                             )}
                         </div>
