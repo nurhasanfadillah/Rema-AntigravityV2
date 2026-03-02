@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
+import { logActivity } from '../utils/activityLogger';
 
 export interface Product {
     id: string;
@@ -63,8 +64,15 @@ export const useProductStore = create<ProductState>((set, get) => ({
     },
     addProduct: async (product) => {
         set({ isLoading: true });
-        const { error } = await supabase.from('products').insert([product]);
-        if (!error) {
+        const { data: inserted, error } = await supabase.from('products').insert([product]).select('id').single();
+        if (!error && inserted) {
+            logActivity({
+                module: 'Produk',
+                action: 'CREATE',
+                description: `Menambahkan produk baru: ${product.nama_produk}`,
+                referenceId: inserted.id,
+                newValue: { nama_produk: product.nama_produk, harga_default: product.harga_default, status: product.status },
+            });
             await get().fetchProducts();
         } else {
             console.error(error);
@@ -75,8 +83,17 @@ export const useProductStore = create<ProductState>((set, get) => ({
     },
     updateProduct: async (id, productUpdate) => {
         set({ isLoading: true });
+        const oldProd = get().products.find(p => p.id === id);
         const { error } = await supabase.from('products').update(productUpdate).eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Produk',
+                action: 'UPDATE',
+                description: `Memperbarui produk: ${oldProd?.nama_produk || id}`,
+                referenceId: id,
+                oldValue: oldProd ? { nama_produk: oldProd.nama_produk, harga_default: oldProd.harga_default, status: oldProd.status } : null,
+                newValue: productUpdate,
+            });
             await get().fetchProducts();
         } else {
             console.error(error);
@@ -105,8 +122,16 @@ export const useProductStore = create<ProductState>((set, get) => ({
             throw new Error(`Produk ini tidak dapat dihapus karena masih terdapat pada ${count} item pesanan. Selesaikan atau batalkan pesanan terkait terlebih dahulu.`);
         }
 
+        const oldProd = get().products.find(p => p.id === id);
         const { error } = await supabase.from('products').delete().eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Produk',
+                action: 'DELETE',
+                description: `Menghapus produk: ${oldProd?.nama_produk || id}`,
+                referenceId: id,
+                oldValue: oldProd ? { nama_produk: oldProd.nama_produk, harga_default: oldProd.harga_default } : null,
+            });
             await get().fetchProducts();
         } else {
             console.error(error);

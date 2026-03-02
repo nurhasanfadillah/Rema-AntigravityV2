@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
 import { deleteOrderFile } from '../utils/orderStorage';
+import { logActivity } from '../utils/activityLogger';
 import type { Mitra } from './mitraStore';
 import type { Product } from './productStore';
 import { isValidOrderTransition, getOrderTransitionRule, isValidDetailTransition } from '../utils/orderRules';
@@ -93,6 +94,15 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 if (detailError) throw detailError;
             }
 
+            // Activity Log
+            logActivity({
+                module: 'Pesanan',
+                action: 'CREATE',
+                description: `Membuat pesanan baru: ${orderData.no_pesanan}`,
+                referenceId: orderData.no_pesanan,
+                newValue: { no_pesanan: orderData.no_pesanan, sumber_pesanan: order.sumber_pesanan, status: order.status, jumlah_item: items.length },
+            });
+
             // Re-fetch
             const { data } = await supabase
                 .from('orders')
@@ -142,14 +152,25 @@ export const useOrderStore = create<OrderState>((set, get) => ({
             .eq('no_pesanan', no_pesanan);
 
         if (!error) {
-            // 3. Create Audit Trail
+            // 3. Create Audit Trail (existing order_audit_trail)
             await supabase.from('order_audit_trail').insert([{
                 no_pesanan,
                 status_lama: oldStatus,
                 status_baru: status,
                 alasan: reason || 'Perubahan status manual',
-                aksi_oleh: 'Admin' // Placeholder until Auth is implemented
+                aksi_oleh: 'Admin'
             }]);
+
+            // 4. Activity Log (centralized)
+            logActivity({
+                module: 'Pesanan',
+                action: status === 'Dibatalkan' ? 'CANCEL' : 'STATUS_CHANGE',
+                description: `${status === 'Dibatalkan' ? 'Membatalkan' : 'Mengubah status'} pesanan ${no_pesanan}: ${oldStatus} → ${status}`,
+                referenceId: no_pesanan,
+                oldValue: { status: oldStatus },
+                newValue: { status },
+                metadata: reason ? { alasan: reason } : null,
+            });
 
             const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
             if (data) set({ orders: data as Order[] });
@@ -197,6 +218,17 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 aksi_oleh: 'Admin'
             }]);
 
+            // Activity Log (centralized)
+            logActivity({
+                module: 'Detail Pesanan',
+                action: 'STATUS_CHANGE',
+                description: `Mengubah status item pesanan ${order_id}: ${oldDetailStatus} → ${status}`,
+                referenceId: detail_id,
+                oldValue: { status: oldDetailStatus },
+                newValue: { status },
+                metadata: { no_pesanan: order_id },
+            });
+
             // Logic Data #1: Status orders otomatis menjadi 'Packing' hanya jika SEMUA order_details sudah 'Selesai'
             const { data: orderData } = await supabase.from('orders').select('*, order_details(*)').eq('no_pesanan', order_id).single();
             if (orderData && orderData.order_details) {
@@ -211,6 +243,15 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                         alasan: 'Otomatis: Semua item selesai dikerjakan',
                         aksi_oleh: 'System'
                     }]);
+                    logActivity({
+                        module: 'Pesanan',
+                        action: 'STATUS_CHANGE',
+                        description: `Status pesanan ${order_id} otomatis berubah ke Packing (semua item selesai)`,
+                        referenceId: order_id,
+                        oldValue: { status: orderData.status },
+                        newValue: { status: 'Packing' },
+                        metadata: { trigger: 'auto_packing' },
+                    });
                 }
             }
 
@@ -273,6 +314,15 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                     alasan: 'Edit keseluruhan data pesanan oleh Admin',
                     aksi_oleh: 'Admin'
                 }]);
+
+                logActivity({
+                    module: 'Pesanan',
+                    action: 'UPDATE',
+                    description: `Mengedit data pesanan: ${no_pesanan}`,
+                    referenceId: no_pesanan,
+                    oldValue: { status: currentOrder.status },
+                    newValue: { ...orderData, jumlah_item: items.length },
+                });
             }
 
             // Re-fetch
@@ -317,6 +367,13 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
         const { error } = await supabase.from('orders').delete().eq('no_pesanan', no_pesanan);
         if (!error) {
+            logActivity({
+                module: 'Pesanan',
+                action: 'DELETE',
+                description: `Menghapus pesanan: ${no_pesanan}`,
+                referenceId: no_pesanan,
+                oldValue: orderToDelete ? { no_pesanan, status: orderToDelete.status } : null,
+            });
             const { data } = await supabase.from('orders').select('*, mitra ( * ), order_details ( *, products ( * ) )').order('created_at', { ascending: false });
             if (data) set({ orders: data as Order[] });
         } else {

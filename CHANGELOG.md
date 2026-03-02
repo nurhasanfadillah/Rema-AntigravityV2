@@ -1,3 +1,23 @@
+## [2026-03-02] - Modul Aktivitas — Audit Trail Terpusat (Plan 7)
+### Added
+- **Tabel `activity_logs`** (`plan7_activity_logs.sql`): Tabel audit trail terpusat dengan kolom timestamp presisi, user_id, user_role, module, action, description, reference_id, old_value (JSONB), new_value (JSONB), dan metadata (JSONB). RLS insert-only (tidak dapat diedit/dihapus user biasa).
+- **Central Logger Service** (`activityLogger.ts`): Fungsi `logActivity()` terpusat dengan pola fire-and-forget (non-blocking) untuk pencatatan otomatis dari semua store.
+- **Activity Store** (`activityStore.ts`): Zustand store dengan pagination (25/halaman), filter multi-kriteria (modul, aksi, rentang tanggal, pencarian teks).
+- **Halaman Log Aktivitas** (`AktivitasList.tsx`): UI read-only berbasis card-timeline dengan:
+  - Filter panel (modul, aksi, tanggal, pencarian)
+  - Action badge berkode warna (CREATE=hijau, UPDATE=biru, DELETE=merah, STATUS_CHANGE=kuning, CANCEL=merah)
+  - Expandable detail old_value vs new_value diff view
+  - Pagination navigasi
+  - Empty state responsif
+- **Menu Dashboard**: Grup "Sistem" baru dengan ikon Activity gradient violet/purple.
+### Changed
+- **Integrasi Logger ke 5 Store**:
+  - `mitraStore.ts`: Logging CREATE, UPDATE, DELETE dengan old/new value tracking.
+  - `categoryStore.ts`: Logging CREATE, UPDATE, DELETE.
+  - `productStore.ts`: Logging CREATE, UPDATE, DELETE.
+  - `orderStore.ts`: Logging CREATE, UPDATE, DELETE, STATUS_CHANGE, CANCEL (termasuk auto-Packing).
+  - `financeStore.ts`: Logging CREATE, UPDATE, DELETE transaksi keuangan.
+
 ## [2026-03-02] - Penyesuaian Ikon Navigasi Dashboard
 ### Fixed & Improved
 - Mengubah tampilan ikon navigasi Dashboard dari transparan/glassmorphism menjadi solid gradient (100% opacity).

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
+import { logActivity } from '../utils/activityLogger';
 
 export interface Category {
     id: string;
@@ -37,8 +38,15 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     },
     addCategory: async (category) => {
         set({ isLoading: true });
-        const { error } = await supabase.from('categories').insert([category]);
-        if (!error) {
+        const { data: inserted, error } = await supabase.from('categories').insert([category]).select('id, nama_kategori').single();
+        if (!error && inserted) {
+            logActivity({
+                module: 'Kategori',
+                action: 'CREATE',
+                description: `Menambahkan kategori baru: ${category.nama_kategori}`,
+                referenceId: inserted.id,
+                newValue: { nama_kategori: category.nama_kategori },
+            });
             await get().fetchCategories();
         } else {
             console.error(error);
@@ -49,8 +57,17 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     },
     updateCategory: async (id, categoryUpdate) => {
         set({ isLoading: true });
+        const oldCat = get().categories.find(c => c.id === id);
         const { error } = await supabase.from('categories').update(categoryUpdate).eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Kategori',
+                action: 'UPDATE',
+                description: `Memperbarui kategori: ${oldCat?.nama_kategori || id}`,
+                referenceId: id,
+                oldValue: oldCat ? { nama_kategori: oldCat.nama_kategori } : null,
+                newValue: categoryUpdate,
+            });
             await get().fetchCategories();
         } else {
             console.error(error);
@@ -79,8 +96,16 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
             throw new Error(`Kategori ini tidak dapat dihapus karena masih memiliki ${count} produk terkait. Pindahkan atau hapus produk terlebih dahulu.`);
         }
 
+        const oldCat = get().categories.find(c => c.id === id);
         const { error } = await supabase.from('categories').delete().eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Kategori',
+                action: 'DELETE',
+                description: `Menghapus kategori: ${oldCat?.nama_kategori || id}`,
+                referenceId: id,
+                oldValue: oldCat ? { nama_kategori: oldCat.nama_kategori } : null,
+            });
             await get().fetchCategories();
         } else {
             console.error(error);

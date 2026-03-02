@@ -85,4 +85,23 @@ Pencatatan riwayat perubahan status untuk keamanan dan pelacakan.
 - **(Maret 2026)**: Penambahan tabel `order_audit_trail` dan logic trigger di level database (SQL) untuk menjamin konsistensi data secara transaksional (auto Packing & validasi status item).
 - **(Maret 2026)**: Finalisasi Modul Mitra (Plan 5). Implementasi constraint `UNIQUE` pada `nama_mitra`, otomatisasi `updated_at` via database trigger, serta standarisasi UI components (`Button` sizes & `Brand` color variables) untuk mencapai konsistensi Light Corporate Theme (WCAG AA).
 - **(Maret 2026)**: Audit & Penyempurnaan Modul Produk & Kategori (Plan 6). Implementasi trigger `prevent_category_deletion` dan `prevent_product_deletion` di level database untuk proteksi integritas data. Pre-delete validation di store layer (`categoryStore`, `productStore`) dengan pesan error human-readable. Penambahan fitur drill-down kategori → produk, statistik qty pesanan aktif per produk (SUM qty dari `order_details` WHERE `orders.status = 'Diproses'`), dan edit-mode isolation (item tersembunyi dari list saat diedit) di seluruh modul (Produk, Kategori, Mitra). Standarisasi UI/UX form mengikuti pattern MitraList (accent bar, X close, spacing konsisten).
+- **(Maret 2026)**: Implementasi Modul Aktivitas — Audit Trail Terpusat (Plan 7). Tabel baru `activity_logs` dengan RLS insert-only (tidak dapat diedit/dihapus user biasa). Central logger service (`activityLogger.ts`) terintegrasi di seluruh store (Mitra, Kategori, Produk, Pesanan, Keuangan) secara fire-and-forget. Pencatatan otomatis CREATE, UPDATE, DELETE, STATUS_CHANGE, CANCEL dengan old_value/new_value JSON. UI read-only dengan filter (modul, aksi, tanggal, pencarian) dan pagination.
 ... (existing history)
+
+## PLAN 7
+### SISTEM — AUDIT TRAIL TERPUSAT
+1. Tabel: activity_logs (Log Aktivitas Sistem)
+    Pencatatan seluruh aksi penting untuk kontrol internal dan investigasi.
+    id: Primary Key (UUID)
+    timestamp: Timestamp presisi (TIMESTAMPTZ, default NOW())
+    user_id: Pelaku aksi (default: 'Administrator')
+    user_role: Role pengguna (default: 'Admin')
+    module: Modul/entitas terdampak (Pesanan, Detail Pesanan, Produk, Kategori, Mitra, Keuangan)
+    action: Jenis aksi (CREATE, UPDATE, DELETE, STATUS_CHANGE, CANCEL)
+    description: Deskripsi ringkas human-readable
+    reference_id: ID data terkait (order_id, product_id, dll.)
+    old_value: JSONB — nilai sebelum perubahan
+    new_value: JSONB — nilai sesudah perubahan
+    metadata: JSONB — info tambahan (IP, device, trigger)
+    **Keamanan:** RLS insert-only. Tidak ada policy UPDATE/DELETE. Data tidak dapat diedit atau dihapus oleh user biasa.
+    **Integrasi:** Logger terpusat (`activityLogger.ts`) dipanggil dari semua store secara non-blocking (fire-and-forget).

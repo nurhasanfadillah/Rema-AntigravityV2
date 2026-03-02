@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
+import { logActivity } from '../utils/activityLogger';
 
 export interface FinanceSummary {
     mitra_id: string;
@@ -103,13 +104,25 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
             // reference_id kosong = transaksi manual
         };
 
-        const { error } = await supabase
+        const { data: inserted, error } = await supabase
             .from('financial_transactions')
-            .insert([payload]);
+            .insert([payload])
+            .select('id_transaksi')
+            .single();
 
         if (error) {
             set({ isLoading: false, error: error.message });
             throw error;
+        }
+
+        if (inserted) {
+            logActivity({
+                module: 'Keuangan',
+                action: 'CREATE',
+                description: `Menambahkan transaksi keluar: ${payload.deskripsi} (Rp ${amount.toLocaleString('id-ID')})`,
+                referenceId: inserted.id_transaksi,
+                newValue: { deskripsi: payload.deskripsi, keluar: amount, mitra_id: mitraId },
+            });
         }
 
         // Re-fetch data terbaru setelah insert berhasil
@@ -120,6 +133,9 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     updateTransactionKeluar: async (id_transaksi, deskripsi, amount, mitraId) => {
         set({ isLoading: true, error: null });
 
+        // Capture old value
+        const oldTx = get().transactions.find(t => t.id_transaksi === id_transaksi);
+
         const { error } = await supabase
             .from('financial_transactions')
             .update({
@@ -128,12 +144,21 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
                 updated_at: new Date().toISOString()
             })
             .eq('id_transaksi', id_transaksi)
-            .is('reference_id', null); // Hanya boleh edit transaksi manual (non-auto)
+            .is('reference_id', null);
 
         if (error) {
             set({ isLoading: false, error: error.message });
             throw error;
         }
+
+        logActivity({
+            module: 'Keuangan',
+            action: 'UPDATE',
+            description: `Memperbarui transaksi keluar: ${deskripsi}`,
+            referenceId: id_transaksi,
+            oldValue: oldTx ? { deskripsi: oldTx.deskripsi, keluar: oldTx.keluar } : null,
+            newValue: { deskripsi: deskripsi.trim(), keluar: amount },
+        });
 
         // Re-fetch dengan mitraId yang sudah diketahui dari parameter
         await get().fetchTransactionsByMitra(mitraId);
@@ -143,17 +168,27 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     deleteTransactionKeluar: async (id_transaksi, mitraId) => {
         set({ isLoading: true, error: null });
 
-        // mitraId diterima sebagai parameter — tidak bergantung pada state yang mungkin sudah tidak ada
+        // Capture old value for audit
+        const oldTx = get().transactions.find(t => t.id_transaksi === id_transaksi);
+
         const { error } = await supabase
             .from('financial_transactions')
             .delete()
             .eq('id_transaksi', id_transaksi)
-            .is('reference_id', null); // Guard: hanya transaksi manual yang boleh dihapus
+            .is('reference_id', null);
 
         if (error) {
             set({ isLoading: false, error: error.message });
             throw error;
         }
+
+        logActivity({
+            module: 'Keuangan',
+            action: 'DELETE',
+            description: `Menghapus transaksi keluar: ${oldTx?.deskripsi || id_transaksi}`,
+            referenceId: id_transaksi,
+            oldValue: oldTx ? { deskripsi: oldTx.deskripsi, keluar: oldTx.keluar } : null,
+        });
 
         // Re-fetch setelah delete
         await get().fetchTransactionsByMitra(mitraId);

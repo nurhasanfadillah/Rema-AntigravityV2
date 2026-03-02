@@ -9,6 +9,7 @@ import {
     Wallet,
     Building2,
     Sparkles,
+    Activity,
 } from 'lucide-react';
 
 /* ──────────────────────────────────────────────
@@ -86,6 +87,18 @@ const menuGroups: MenuGroup[] = [
                 icon: Wallet,
                 iconColor: 'text-white',
                 iconBgStyle: { background: 'linear-gradient(135deg, #10b981, #065f46)' },
+            },
+        ],
+    },
+    {
+        groupLabel: 'Sistem',
+        items: [
+            {
+                label: 'Aktivitas',
+                path: '/aktivitas',
+                icon: Activity,
+                iconColor: 'text-white',
+                iconBgStyle: { background: 'linear-gradient(135deg, #8b5cf6, #5b21b6)' },
             },
         ],
     },

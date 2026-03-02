@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../utils/supabase';
+import { logActivity } from '../utils/activityLogger';
 
 export interface Mitra {
     id: string;
@@ -47,8 +48,15 @@ export const useMitraStore = create<MitraState>((set, get) => ({
             throw new Error(`Mitra dengan nama "${mitra.nama_mitra}" sudah terdaftar.`);
         }
 
-        const { error } = await supabase.from('mitra').insert([mitra]);
-        if (!error) {
+        const { data: inserted, error } = await supabase.from('mitra').insert([mitra]).select().single();
+        if (!error && inserted) {
+            logActivity({
+                module: 'Mitra',
+                action: 'CREATE',
+                description: `Menambahkan mitra baru: ${mitra.nama_mitra}`,
+                referenceId: inserted.id,
+                newValue: { nama_mitra: mitra.nama_mitra, status: mitra.status, kontak: mitra.kontak, limit_tagihan: mitra.limit_tagihan },
+            });
             await get().fetchMitras();
         } else {
             console.error(error);
@@ -75,8 +83,19 @@ export const useMitraStore = create<MitraState>((set, get) => ({
             }
         }
 
+        // Capture old value for audit
+        const oldMitra = get().mitras.find(m => m.id === id);
+
         const { error } = await supabase.from('mitra').update(mitraUpdate).eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Mitra',
+                action: 'UPDATE',
+                description: `Memperbarui data mitra: ${oldMitra?.nama_mitra || id}`,
+                referenceId: id,
+                oldValue: oldMitra ? { nama_mitra: oldMitra.nama_mitra, status: oldMitra.status, kontak: oldMitra.kontak, limit_tagihan: oldMitra.limit_tagihan } : null,
+                newValue: mitraUpdate,
+            });
             await get().fetchMitras();
         } else {
             console.error(error);
@@ -106,8 +125,18 @@ export const useMitraStore = create<MitraState>((set, get) => ({
             throw new Error('Mitra ini tidak dapat dihapus karena masih memiliki riwayat pesanan.');
         }
 
+        // Capture old value for audit
+        const oldMitra = get().mitras.find(m => m.id === id);
+
         const { error } = await supabase.from('mitra').delete().eq('id', id);
         if (!error) {
+            logActivity({
+                module: 'Mitra',
+                action: 'DELETE',
+                description: `Menghapus mitra: ${oldMitra?.nama_mitra || id}`,
+                referenceId: id,
+                oldValue: oldMitra ? { nama_mitra: oldMitra.nama_mitra, status: oldMitra.status } : null,
+            });
             await get().fetchMitras();
         } else {
             console.error(error);
