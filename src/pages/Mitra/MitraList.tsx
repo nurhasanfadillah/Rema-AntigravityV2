@@ -235,7 +235,7 @@ export function MitraList() {
                     </div>
                 ) : (
                     <div className="grid gap-4">
-                        {mitras.map(mitra => (
+                        {mitras.filter(m => m.id !== editingId).map(mitra => (
                             <Card key={mitra.id} className="group transition-all duration-150 bg-brand-surface shadow-sm border-brand-border px-5 py-5 overflow-hidden active:scale-[0.99] relative">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1 min-w-0 pr-4">
