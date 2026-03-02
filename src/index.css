@@ -10,6 +10,8 @@
   /* white - Elevated surfaces */
   --color-brand-border: #e5e7eb;
   /* gray-200 - Subtle boundaries */
+  --color-brand-overlay: rgba(15, 23, 42, 0.3);
+  /* slate-900 with transparency for modfal backdrops */
 
   /* Accent — Interactive Elements */
   --color-brand-accent: #2563eb;
@@ -261,6 +263,19 @@
   .form-input:focus {
     border-color: var(--color-brand-accent);
     box-shadow: 0 0 0 1px var(--color-brand-accent);
+  }
+
+  /* ----- Shadow Systems ----- */
+  .shadow-soft {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  }
+
+  .shadow-medium {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+
+  .shadow-premium {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
   }
 
   /* ----- Status Badge Utilities ----- */

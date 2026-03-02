@@ -41,36 +41,36 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-overlay backdrop-blur-[2px] animate-in fade-in duration-200">
+            <div className="w-full max-w-md bg-brand-surface border border-brand-border rounded-3xl shadow-premium overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className={`p-6 border-b border-zinc-900 flex items-center justify-between ${isCritical ? 'bg-gradient-to-r from-red-500/10 to-transparent' : 'bg-gradient-to-r from-blue-500/10 to-transparent'}`}>
+                <div className={`p-6 border-b border-brand-border flex items-center justify-between ${isCritical ? 'bg-status-error-bg/50' : 'bg-brand-accent-light/50'}`}>
                     <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${isCritical ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                        <div className={`p-2 rounded-xl ${isCritical ? 'bg-status-error-bg text-status-error-text' : 'bg-status-info-bg text-status-info-text'}`}>
                             {isCritical ? <AlertTriangle className="w-5 h-5" /> : <Info className="w-5 h-5" />}
                         </div>
-                        <h3 className="text-lg font-bold text-white tracking-tight">Konfirmasi Perubahan</h3>
+                        <h3 className="text-lg font-bold text-text-primary tracking-tight">Konfirmasi Perubahan</h3>
                     </div>
-                    <button onClick={onClose} className="p-1 text-zinc-500 active:text-white transition-colors">
+                    <button onClick={onClose} className="p-2 text-text-tertiary hover:text-text-primary hover:bg-brand-bg rounded-full transition-all active:scale-95">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <div className="p-6 space-y-6">
                     {/* Status Transition Display */}
-                    <div className="flex items-center justify-center gap-4 py-4 px-2 bg-zinc-900/50 rounded-xl border border-zinc-800/50">
-                        <div className="text-center">
-                            <p className="section-label mb-1">Dari</p>
-                            <span className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700">
+                    <div className="flex items-center justify-center gap-4 py-5 px-3 bg-brand-bg rounded-2xl border border-brand-border/50">
+                        <div className="text-center flex-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary mb-1.5 px-2">Dari</p>
+                            <span className="inline-block px-3 py-1.5 rounded-xl bg-brand-surface text-text-secondary text-[11px] font-semibold border border-brand-border shadow-soft w-full">
                                 {currentStatus}
                             </span>
                         </div>
-                        <div className="flex flex-col items-center pt-4">
-                            <div className="w-8 h-[1px] bg-zinc-700"></div>
+                        <div className="flex flex-col items-center pt-5">
+                            <div className="w-8 h-[2px] bg-brand-border rounded-full"></div>
                         </div>
-                        <div className="text-center">
-                            <p className="section-label text-blue-400 mb-1">Ke</p>
-                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-900 to-blue-800 text-blue-100 text-xs font-bold border border-blue-700 shadow-lg shadow-blue-500/10">
+                        <div className="text-center flex-1">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-brand-accent mb-1.5 px-2">Ke</p>
+                            <span className="inline-block px-3 py-1.5 rounded-xl bg-brand-accent text-white text-[11px] font-bold border border-brand-accent shadow-md shadow-brand-accent/20 w-full">
                                 {targetStatus}
                             </span>
                         </div>
@@ -78,23 +78,23 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
 
                     {/* Prerequisites Check */}
                     {prerequisiteError ? (
-                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex gap-3">
-                            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
+                        <div className="p-4 bg-status-error-bg border border-status-error-border rounded-2xl flex gap-3 animate-in shake-in">
+                            <AlertTriangle className="w-5 h-5 text-status-error-text shrink-0" />
                             <div>
-                                <p className="text-sm font-bold text-red-300 mb-1">Gagal Prasyarat</p>
-                                <p className="text-xs text-red-200 leading-relaxed">{prerequisiteError}</p>
+                                <p className="text-sm font-bold text-status-error-text mb-1">Gagal Prasyarat</p>
+                                <p className="text-xs text-status-error-text/80 leading-relaxed font-medium">{prerequisiteError}</p>
                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <p className="section-label flex items-center gap-2">
+                        <div className="space-y-5">
+                            <div className="space-y-3">
+                                <p className="section-label flex items-center gap-2 text-text-secondary">
                                     Konsekuensi Perubahan
                                 </p>
-                                <ul className="space-y-2">
+                                <ul className="space-y-2.5">
                                     {consequences.map((c, i) => (
-                                        <li key={i} className="flex gap-2 text-xs text-zinc-400">
-                                            <div className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 shrink-0"></div>
+                                        <li key={i} className="flex gap-3 text-xs text-text-secondary font-medium leading-relaxed">
+                                            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-accent shrink-0"></div>
                                             {c}
                                         </li>
                                     ))}
@@ -103,12 +103,11 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
 
                             {requiresReason && (
                                 <div className="space-y-2">
-                                    <label className="section-label">
-                                        Alasan Perubahan <span className="text-red-500 font-bold">*Wajib</span>
+                                    <label className="form-label font-bold flex justify-between">
+                                        Alasan Perubahan <span className="text-status-error-text">*Wajib</span>
                                     </label>
                                     <textarea
-                                        className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
-                                        rows={3}
+                                        className="form-input min-h-[100px] resize-none"
                                         placeholder="Tulis alasan perubahan status di sini..."
                                         value={reason}
                                         onChange={(e) => setReason(e.target.value)}
@@ -117,9 +116,9 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                             )}
 
                             {showDoubleConfirmation && (
-                                <div className="p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl flex gap-3 animate-in slide-in-from-top-2">
-                                    <AlertTriangle className="w-5 h-5 text-orange-400 shrink-0" />
-                                    <p className="text-xs text-orange-200 leading-relaxed font-bold">
+                                <div className="p-4 bg-status-warning-bg border border-status-warning-border rounded-2xl flex gap-3 animate-in slide-in-from-top-2">
+                                    <AlertTriangle className="w-5 h-5 text-status-warning-text shrink-0" />
+                                    <p className="text-xs text-status-warning-text leading-relaxed font-bold">
                                         Ini adalah tindakan kritis. Apakah Anda benar-benar yakin ingin melanjutkan?
                                     </p>
                                 </div>
@@ -129,23 +128,23 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-6 bg-zinc-900/30 border-t border-zinc-900 flex gap-3">
+                <div className="p-6 bg-brand-bg/50 border-t border-brand-border flex gap-3">
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-4 py-2.5 rounded-xl text-zinc-400 font-bold active:bg-zinc-800 active:text-white transition-all disabled:opacity-50"
+                        className="flex-1 px-4 py-3 rounded-2xl text-text-secondary font-bold hover:bg-brand-bg active:scale-95 transition-all disabled:opacity-50 text-sm"
                     >
                         Batal
                     </button>
                     <button
                         onClick={handleConfirm}
                         disabled={!canConfirm || isLoading}
-                        className={`flex-1 px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2
+                        className={`flex-1 px-4 py-3 rounded-2xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 text-sm
                             ${!canConfirm || isLoading
-                                ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                                ? 'bg-brand-border text-text-muted cursor-not-allowed shadow-none'
                                 : isCritical
-                                    ? 'bg-gradient-to-r from-red-600 to-red-700 text-white active:from-red-500 active:to-red-600 shadow-red-500/20'
-                                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white active:from-blue-500 active:to-blue-600 shadow-blue-500/20'
+                                    ? 'bg-status-error-text text-white hover:bg-red-700 active:scale-95 shadow-status-error-text/20'
+                                    : 'bg-brand-accent text-white hover:bg-brand-accent-dark active:scale-95 shadow-brand-accent/20'
                             }`}
                     >
                         {isLoading ? (

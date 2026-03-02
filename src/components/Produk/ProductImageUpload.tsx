@@ -61,15 +61,15 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
     };
 
     return (
-        <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-zinc-300 ml-1">Foto Produk</label>
+        <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-text-tertiary ml-1">Foto Produk</label>
             <div className="relative group">
                 <div
                     className={`
-                        relative aspect-square w-full sm:w-48 bg-zinc-900 border-2 border-dashed 
-                        ${previewUrl ? 'border-blue-900/50' : 'border-zinc-700'} 
-                        rounded-xl overflow-hidden transition-all duration-300 flex items-center justify-center
-                        cursor-pointer
+                        relative aspect-square w-full sm:w-48 bg-brand-bg border-2 border-dashed 
+                        ${previewUrl ? 'border-brand-accent/30' : 'border-brand-border'} 
+                        rounded-2xl overflow-hidden transition-all duration-300 flex items-center justify-center
+                        cursor-pointer hover:border-brand-accent/50 group-hover:bg-brand-accent-light/30
                     `}
                     onClick={() => !isUploading && fileInputRef.current?.click()}
                 >
@@ -80,11 +80,11 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                             className="w-full h-full object-cover"
                         />
                     ) : (
-                        <div className="flex flex-col items-center gap-2 text-zinc-500 transition-colors">
-                            <div className="p-3 rounded-full bg-zinc-800/50">
+                        <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors group-hover:text-brand-accent">
+                            <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30 group-hover:shadow-brand-accent/10">
                                 <ImageIcon className="w-8 h-8" />
                             </div>
-                            <span className="text-xs font-medium">Tambah Foto</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Tambah Foto</span>
                         </div>
                     )}
 
@@ -118,7 +118,7 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                     onChange={handleUpload}
                 />
             </div>
-            <p className="text-[10px] text-zinc-500 ml-1">JPG, PNG, WebP (Maks 5MB)</p>
+            <p className="text-[10px] text-text-tertiary italic ml-1">Mendukung format JPG, PNG, WebP (Maks 5MB)</p>
         </div>
     );
 }

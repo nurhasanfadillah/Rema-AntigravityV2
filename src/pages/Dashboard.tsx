@@ -134,7 +134,7 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
                     width: '60px',
                     height: '60px',
                     borderRadius: '18px',
-                    boxShadow: '0 10px 20px -5px rgba(0,0,0,0.15)',
+                    boxShadow: '0 8px 16px -4px rgba(0,0,0,0.1)',
                     ...item.iconBgStyle,
                 }}
             >
@@ -177,9 +177,9 @@ function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: numb
         <div
             className="
                 animate-slide-up
-                rounded-2xl overflow-hidden
+                rounded-3xl overflow-hidden
                 border border-brand-border/60
-                shadow-[0_8px_24px_rgba(0,0,0,0.04)]
+                shadow-premium
             "
             style={{
                 margin: '0 16px',
@@ -191,8 +191,8 @@ function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: numb
             {/* ── Group Header ── */}
             <div style={{ padding: '12px 16px 10px' }}>
                 <span
-                    className="text-text-tertiary uppercase tracking-widest font-bold"
-                    style={{ fontSize: '9.5px', letterSpacing: '0.12em' }}
+                    className="text-text-secondary uppercase tracking-widest font-extrabold"
+                    style={{ fontSize: '10px', letterSpacing: '0.12em' }}
                 >
                     {group.groupLabel}
                 </span>
@@ -261,15 +261,15 @@ export function Dashboard() {
                 <div className="relative z-10 flex items-center justify-between gap-3 px-4 py-[16px]">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-[8px]">
-                            <Building2 className="w-[10px] h-[10px] text-blue-100/70 flex-shrink-0" strokeWidth={2.5} />
-                            <span className="text-[9.5px] font-extrabold tracking-[0.12em] uppercase text-blue-100/70 font-sans">
+                            <Building2 className="w-[10px] h-[10px] text-white/80 flex-shrink-0" strokeWidth={2.5} />
+                            <span className="text-[9.5px] font-extrabold tracking-[0.12em] uppercase text-white/80 font-sans">
                                 PT. Redone Berkah Mandiri Utama
                             </span>
                         </div>
                         <h2 className="font-display text-[18px] font-extrabold leading-snug tracking-tight text-white mb-[5px]">
                             Selamat Datang 👋
                         </h2>
-                        <p className="text-[11.5px] leading-[1.55] text-blue-50/90 font-medium max-w-[220px]">
+                        <p className="text-[12px] leading-[1.55] text-white/90 font-medium max-w-[240px]">
                             Platform manajemen pesanan, produksi &amp; keuangan bisnis Anda.
                         </p>
                     </div>

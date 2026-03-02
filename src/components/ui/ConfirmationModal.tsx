@@ -183,7 +183,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-[2px]"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-brand-overlay backdrop-blur-[2px]"
             style={{ animation: 'fadeIn 0.18s ease' }}
             onClick={handleBackdropClick}
         >

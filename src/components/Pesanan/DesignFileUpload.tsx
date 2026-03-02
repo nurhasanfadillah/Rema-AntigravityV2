@@ -57,14 +57,14 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
     return (
         <div className="space-y-3">
             <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium text-zinc-400">File Desain (Pilih Multiple JPG/PNG/PDF)</label>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-text-tertiary">File Desain (Pilih Multiple JPG/PNG/PDF)</label>
             </div>
 
             <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-3">
                 {paths.map((path, idx) => (
                     <div
                         key={idx}
-                        className="relative aspect-square rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden group shadow-md"
+                        className="relative aspect-square rounded-2xl bg-brand-bg border border-brand-border overflow-hidden group shadow-soft"
                     >
                         {isImage(path) ? (
                             <img
@@ -73,10 +73,10 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                                 className="w-full h-full object-cover transition-transform"
                             />
                         ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 p-2 bg-gradient-to-br from-zinc-900 to-zinc-950">
-                                <FileText className="w-8 h-8 text-blue-500/80" />
-                                <span className="text-[10px] text-zinc-500 font-mono font-medium truncate w-full text-center">
-                                    PDF Document
+                            <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 p-2 bg-brand-accent-light/30">
+                                <FileText className="w-8 h-8 text-brand-accent/80" />
+                                <span className="text-[10px] text-text-tertiary font-mono font-medium truncate w-full text-center px-2">
+                                    DOC (PDF)
                                 </span>
                             </div>
                         )}
@@ -111,19 +111,19 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
                     className={`
-                        aspect-square rounded-xl border-2 border-dashed border-zinc-800 active:border-blue-600/50 
-                        active:bg-blue-900/5 transition-all flex flex-col items-center justify-center gap-2
-                        ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                        aspect-square rounded-2xl border-2 border-dashed border-brand-border active:border-brand-accent/50 
+                        active:bg-brand-accent-light/50 transition-all flex flex-col items-center justify-center gap-2
+                        ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-brand-accent/50 hover:bg-brand-accent-light/30'}
                     `}
                 >
                     {isUploading ? (
                         <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
                     ) : (
                         <>
-                            <div className="p-2 rounded-full bg-zinc-800/50">
-                                <Plus className="w-5 h-5 text-zinc-400" />
+                            <div className="p-2 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30">
+                                <Plus className="w-5 h-5 text-text-tertiary" />
                             </div>
-                            <span className="text-[10px] font-medium text-zinc-500">Tambah File</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary">Tambah File</span>
                         </>
                     )}
                 </button>

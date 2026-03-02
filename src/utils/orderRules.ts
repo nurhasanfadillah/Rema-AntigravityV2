@@ -55,10 +55,10 @@ export const ORDER_TRANSITIONS: OrderTransitionRule[] = [
         doubleConfirmation: true,
     },
     {
-        from: ['Menunggu Konfirmasi', 'Diproses', 'Packing', 'Selesai'],
+        from: ['Diproses', 'Packing', 'Selesai'],
         to: 'Dibatalkan',
         prerequisites: () => null,
-        consequences: ['Pesanan akan dibatalkan.', 'Seluruh proses akan dihentikan.'],
+        consequences: ['Pesanan akan dibatalkan.', 'Seluruh proses produksi akan dihentikan.', 'Status akan berubah menjadi "Dibatalkan" dan tercatat di Audit Trail.'],
         requiresReason: true,
         doubleConfirmation: true,
     }

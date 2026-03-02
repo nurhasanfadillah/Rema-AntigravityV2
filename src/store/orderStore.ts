@@ -360,11 +360,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     deleteOrder: async (no_pesanan) => {
         set({ isLoading: true });
 
-        // Logic Data #2: Hanya pesanan berstatus 'Dibatalkan' yang bisa dihapus permanen
+        // Logic Data #2: Hanya pesanan berstatus 'Menunggu Konfirmasi' atau 'Dibatalkan' yang bisa dihapus permanen
         const { data: orderToDelete } = await supabase.from('orders').select('*, order_details(*)').eq('no_pesanan', no_pesanan).single();
-        if (orderToDelete && orderToDelete.status !== 'Dibatalkan') {
+        if (orderToDelete && orderToDelete.status !== 'Menunggu Konfirmasi' && orderToDelete.status !== 'Dibatalkan') {
             set({ isLoading: false });
-            throw new Error('Hanya pesanan dengan status "Dibatalkan" yang dapat dihapus secara permanen.');
+            throw new Error('Hanya pesanan dengan status "Menunggu Konfirmasi" atau "Dibatalkan" yang dapat dihapus secara permanen.');
         }
 
         // Cleanup storage files

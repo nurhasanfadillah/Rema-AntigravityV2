@@ -33,8 +33,8 @@ export function PesananDetail() {
     }, [orders.length, fetchOrders]);
 
     const order = orders.find(o => o.no_pesanan === id);
-    const canDelete = order ? order.status === 'Dibatalkan' : false;
-    const canCancel = order ? (order.status !== 'Dibatalkan' && order.status !== 'Selesai') : false;
+    const canDelete = order ? (order.status === 'Menunggu Konfirmasi' || order.status === 'Dibatalkan') : false;
+    const canCancel = order ? (['Diproses', 'Packing', 'Selesai'].includes(order.status)) : false;
 
     const handleOpenStatusModal = (target: string, type: 'order' | 'detail', detailId?: string) => {
         if (!order) return;
@@ -133,24 +133,32 @@ export function PesananDetail() {
                     </div>
                 </div>
                 {canCancel && (
-                    <button onClick={() => handleOpenStatusModal('Dibatalkan', 'order')} className="p-2.5 text-orange-600 rounded-xl active:bg-orange-50 transition-all border border-orange-100 active:scale-95" title="Batalkan Pesanan">
-                        <Trash2 className="w-5 h-5" />
+                    <button
+                        onClick={() => handleOpenStatusModal('Dibatalkan', 'order')}
+                        className="flex items-center gap-2 px-3 py-2 text-orange-600 rounded-xl active:bg-orange-50 transition-all border border-orange-100 active:scale-95 shadow-sm"
+                        title="Batalkan Pesanan"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Batalkan</span>
                     </button>
                 )}
                 {canDelete && (
                     <button onClick={async () => {
                         if (!order) return;
+                        const isNewOrder = order.status === 'Menunggu Konfirmasi';
                         const { confirmed } = await confirm({
-                            title: 'Hapus Pesanan?',
-                            description: 'Pesanan ini akan dihapus secara permanen beserta data di dalamnya.',
+                            title: isNewOrder ? 'Hapus Pesanan Baru?' : 'Hapus Pesanan?',
+                            description: isNewOrder
+                                ? 'Pesanan ini masih dalam tahap konfirmasi. Menghapus akan membatalkan seluruh rencana transaksi secara permanen.'
+                                : 'Pesanan ini sudah dibatalkan sebelumnya. Menghapus akan membersihkan record dari database secara permanen.',
                             subject: `${order.no_pesanan} — ${order.mitra?.nama_mitra || 'Tamu'}`,
                             variant: 'danger',
-                            confirmLabel: 'Hapus Pesanan',
+                            confirmLabel: 'Hapus Permanen',
                             requiresDoubleConfirm: true,
                             consequences: [
-                                'Semua item produksi akan dihapus.',
-                                'Transaksi keuangan yang terhubung sudah dibersihkan.',
-                                'Tindakan ini tidak dapat dibatalkan.',
+                                'Data pesanan dan item produksi akan dihapus.',
+                                'Aset desain yang diunggah akan dihapus dari storage.',
+                                'Tindakan ini bersifat destruktif dan tidak dapat diurungkan.',
                             ],
                         });
                         if (!confirmed) return;
@@ -163,8 +171,9 @@ export function PesananDetail() {
                         } catch (error) {
                             handleBackendError(error, 'Gagal menghapus pesanan', toastId, 'Pesanan');
                         }
-                    }} className="p-2.5 text-red-600 rounded-xl active:bg-red-50 transition-all border border-red-100 active:scale-95" title="Hapus Permanen">
-                        <Trash2 className="w-5 h-5" />
+                    }} className="flex items-center gap-2 px-3 py-2 text-red-600 rounded-xl active:bg-red-50 transition-all border border-red-100 active:scale-95 shadow-sm" title="Hapus Permanen">
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Hapus</span>
                     </button>
                 )}
             </div>

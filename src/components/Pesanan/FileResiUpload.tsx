@@ -62,39 +62,39 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
         <div className="space-y-1.5 w-full">
             <div
                 className={`
-                    relative w-full bg-zinc-900 border-2 border-dashed 
-                    ${value ? 'border-blue-900/50' : 'border-zinc-700'} 
-                    rounded-xl overflow-hidden transition-all duration-300 flex flex-col items-center justify-center
-                    cursor-pointer min-h-[140px]
+                    relative w-full bg-brand-bg border-2 border-dashed 
+                    ${value ? 'border-brand-accent/30' : 'border-brand-border'} 
+                    rounded-2xl overflow-hidden transition-all duration-300 flex flex-col items-center justify-center
+                    cursor-pointer min-h-[140px] hover:border-brand-accent/50 hover:bg-brand-accent-light/30
                 `}
                 onClick={() => !isUploading && fileInputRef.current?.click()}
             >
                 {value ? (
                     <div className="flex flex-col items-center gap-3 p-4">
-                        <div className="p-4 rounded-full bg-blue-900/20 text-blue-400">
+                        <div className="p-4 rounded-full bg-brand-accent-light text-brand-accent border border-brand-accent/20">
                             <FileText className="w-10 h-10" />
                         </div>
                         <div className="text-center">
-                            <span className="text-xs font-medium text-white block mb-1">Resi Uploaded</span>
+                            <span className="text-xs font-bold text-text-primary block mb-1">Resi Berhasil Diupload</span>
                             <a
                                 href={previewUrl || '#'}
                                 target="_blank"
                                 rel="noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="text-[10px] text-blue-400 hover:underline"
+                                className="text-[10px] text-brand-accent font-bold hover:underline"
                             >
                                 Lihat File (PDF)
                             </a>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center gap-2 text-zinc-500 transition-colors p-4">
-                        <div className="p-3 rounded-full bg-zinc-800/50">
+                    <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors p-4 group-hover:text-brand-accent">
+                        <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30 group-hover:shadow-brand-accent/10">
                             <UploadCloud className="w-8 h-8" />
                         </div>
                         <div className="text-center">
-                            <span className="text-sm font-semibold block">Klik untuk Upload Resi</span>
-                            <span className="text-[10px] text-zinc-600 block mt-1">Hanya mendukung format PDF (Maks 10MB)</span>
+                            <span className="text-[11px] font-bold uppercase tracking-wider block">Klik untuk Upload Resi</span>
+                            <span className="text-[10px] text-text-muted block mt-1">Hanya mendukung format PDF (Maks 10MB)</span>
                         </div>
                     </div>
                 )}
