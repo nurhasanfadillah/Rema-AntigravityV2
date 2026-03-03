@@ -184,8 +184,14 @@ export function PesananBaru() {
                             <span className="w-1.5 h-6 bg-blue-400 rounded-full" />
                             Daftar Item Produk
                         </h3>
-                        <Button type="button" variant="outline" className="!p-1.5 border-brand-accent/20 text-brand-accent active:bg-brand-accent/5 rounded-xl h-9 w-9 flex items-center justify-center transition-all" onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}>
+                        <Button
+                            type="button"
+                            className="!bg-blue-600 !bg-none text-white hover:!bg-blue-700 active:!bg-blue-800 rounded-xl px-4 flex items-center gap-2 font-bold text-sm shadow-sm transition-colors border-none"
+                            style={{ minHeight: '44px' }}
+                            onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}
+                        >
                             <Plus className="w-5 h-5" />
+                            <span>Tambah Item</span>
                         </Button>
                     </div>
 

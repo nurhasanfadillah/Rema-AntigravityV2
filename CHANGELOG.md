@@ -1,3 +1,11 @@
+## [2026-03-03] - Revamping Komponen Form Pesanan Baru
+### Added
+- **Form Multiupload Desain Terintegrasi**: Memodifikasi fitur pengunggahan `DesignFileUpload` dengan dukungan *multiple files selected at once*, kapasitas masif (maksimal 10 file per pesanan), lengkap dengan validasi file (10MB/file dan filter format ekstensi JPG/PNG/PDF yang ketat).
+- **Penambahan File Counter Label**: Mengimplementasi live counter untuk mengetahui beban batas unggah (contoh `(2/10)`) serta informasi kapasitas.
+### Changed
+- **Penyelarasan Tata Letak Upload & Label Aktual**: Menyempurnakan layout hasil preview file ke dalam format 4-kolom (*cards list*) pada ukuran desktop/tablet dan 3-kolom pada layar mobile, menghasilkan ukuran thumbnail konstan 1:1 yang lebih proporsional (compact) dan rapi (*gap-2*). Menyingkirkan block layout *Tile "Tambah File"* menggantikannya menjadi *inline block Button* *Primary Solid Blue* dengan label "Upload File Desain" secara eksplisit untuk "Penambahan file" lanjutan agar ruang tetap seimbang.
+- **Standarisasi Aksi Utama form.**: Mengganti styling ikon Plus untuk tombol array `Tambah Item` di form pendaftaran menjadi representatif penuh warna primer menggunakan teks instruksional yang memperbesar target touch (Touch Target >44px) untuk kemudahan operasional *admin* saat menambahkan produk.
+
 ## [2026-03-03] - Penyesuaian Skala Logo Header
 ### Changed
 - **Peningkatan Ukuran Logo Header**: Menambah ukuran logo header (`LOGO_HEADER_REMVAV2`) sebesar ±30% dari ukuran sebelumnya untuk memperkuat visibilitas brand. Skala baru disesuaikan menjadi `h-[47px]` (dari `h-9`/36px) pada perangkat mobile dan `sm:h-[55px]` (dari `h-[42px]`) pada layar yang lebih lebar.
