@@ -30,19 +30,32 @@ export interface ProduksiItem {
     } | null;
 }
 
+export interface ProduksiFilters {
+    startDate?: string;
+    endDate?: string;
+    mitraId?: string;
+    productId?: string;
+    statusDetail?: string;
+    sortBy?: 'Baru ke Lama' | 'Lama ke Baru';
+}
+
 interface ProduksiState {
     items: ProduksiItem[];
+    totalItems: number;
+    totalFilteredQty: number;
     isLoading: boolean;
-    fetchProduksi: () => Promise<void>;
+    fetchProduksi: (page?: number, limit?: number, filters?: ProduksiFilters) => Promise<void>;
 }
 
 export const useProduksiStore = create<ProduksiState>((set) => ({
     items: [],
+    totalItems: 0,
+    totalFilteredQty: 0,
     isLoading: false,
-    fetchProduksi: async () => {
+    fetchProduksi: async (page = 1, limit = 10, filters = {}) => {
         set({ isLoading: true });
         try {
-            const { data, error } = await supabase
+            let query = supabase
                 .from('order_details')
                 .select(`
                     id,
@@ -63,17 +76,77 @@ export const useProduksiStore = create<ProduksiState>((set) => ({
                         nama_penerima,
                         kontak_penerima,
                         alamat_penerima,
+                        mitra_id,
                         mitra ( id, nama_mitra ) 
                     )
-                `)
-                .in('orders.status', ['Diproses', 'Packing'])
-                .order('created_at', { ascending: false });
+                `, { count: 'exact' })
+                .in('orders.status', ['Diproses', 'Packing']);
 
+            if (filters.statusDetail && filters.statusDetail !== 'Semua') {
+                query = query.eq('status', filters.statusDetail);
+            }
+            if (filters.productId) {
+                query = query.eq('product_id', filters.productId);
+            }
+            if (filters.startDate) {
+                query = query.gte('orders.tanggal', filters.startDate);
+            }
+            if (filters.endDate) {
+                query = query.lte('orders.tanggal', filters.endDate);
+            }
+            if (filters.mitraId) {
+                query = query.eq('orders.mitra_id', filters.mitraId);
+            }
+
+            const isAscending = filters.sortBy === 'Lama ke Baru';
+            query = query.order('created_at', { ascending: isAscending });
+
+            const from = (page - 1) * limit;
+            const to = from + limit - 1;
+            query = query.range(from, to);
+
+            const { data, error, count } = await query;
             if (error) throw error;
-            set({ items: data as unknown as ProduksiItem[], isLoading: false });
+
+            let calculatedTotalQty = 0;
+
+            if (count && count > 0) {
+                let qtyQuery = supabase.from('order_details').select(`
+                    qty,
+                    orders!inner ( status, tanggal, mitra_id )
+                `);
+                qtyQuery = qtyQuery.in('orders.status', ['Diproses', 'Packing']);
+                if (filters.statusDetail && filters.statusDetail !== 'Semua') {
+                    qtyQuery = qtyQuery.eq('status', filters.statusDetail);
+                }
+                if (filters.productId) {
+                    qtyQuery = qtyQuery.eq('product_id', filters.productId);
+                }
+                if (filters.startDate) {
+                    qtyQuery = qtyQuery.gte('orders.tanggal', filters.startDate);
+                }
+                if (filters.endDate) {
+                    qtyQuery = qtyQuery.lte('orders.tanggal', filters.endDate);
+                }
+                if (filters.mitraId) {
+                    qtyQuery = qtyQuery.eq('orders.mitra_id', filters.mitraId);
+                }
+
+                const { data: qtyData, error: qtyError } = await qtyQuery;
+                if (!qtyError && qtyData) {
+                    calculatedTotalQty = qtyData.reduce((sum, item) => sum + (item.qty || 0), 0);
+                }
+            }
+
+            set({
+                items: data as unknown as ProduksiItem[],
+                totalItems: count || 0,
+                totalFilteredQty: calculatedTotalQty,
+                isLoading: false
+            });
         } catch (error) {
             console.error('Error fetching produksi:', error);
-            set({ isLoading: false });
+            set({ items: [], totalItems: 0, totalFilteredQty: 0, isLoading: false });
         }
     }
 }));
