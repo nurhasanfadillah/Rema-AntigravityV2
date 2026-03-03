@@ -113,14 +113,14 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                     className={`
                         aspect-square rounded-2xl border-2 border-dashed border-brand-border active:border-brand-accent/50 
                         active:bg-brand-accent-light/50 transition-all flex flex-col items-center justify-center gap-2
-                        ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-brand-accent/50 hover:bg-brand-accent-light/30'}
+                        ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:border-brand-accent/50 active:bg-brand-accent-light/30'}
                     `}
                 >
                     {isUploading ? (
                         <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
                     ) : (
                         <>
-                            <div className="p-2 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30">
+                            <div className="p-2 rounded-full bg-brand-surface border border-brand-border shadow-soft group-active:border-brand-accent/30">
                                 <Plus className="w-5 h-5 text-text-tertiary" />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary">Tambah File</span>

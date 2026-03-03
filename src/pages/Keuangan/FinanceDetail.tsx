@@ -248,7 +248,7 @@ export function FinanceDetail() {
                                     <span className="text-[10px] font-bold truncate max-w-[180px]">
                                         {activePeriodLabel()}
                                     </span>
-                                    <button onClick={resetFilter} className="ml-1 p-0.5 hover:bg-blue-100 rounded-full transition-colors">
+                                    <button onClick={resetFilter} className="ml-1 p-0.5 active:bg-blue-100 rounded-full transition-colors">
                                         <X className="w-2.5 h-2.5" />
                                     </button>
                                 </div>
@@ -296,7 +296,7 @@ export function FinanceDetail() {
                             </div>
                             <button
                                 onClick={() => setShowFilterModal(false)}
-                                className="p-2 text-text-tertiary hover:bg-brand-bg rounded-xl transition-colors"
+                                className="p-2 text-text-tertiary active:bg-brand-bg rounded-xl transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>

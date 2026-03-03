@@ -30,30 +30,30 @@ function _show(
 
     const configs = {
         success: {
-            bg: '#ecfdf5', // brand-status-success-bg
-            border: '#d1fae5', // brand-status-success-border
-            text: '#059669', // brand-status-success-text
+            bg: 'var(--color-status-success-bg)', // brand-status-success-bg
+            border: 'var(--color-status-success-border)', // brand-status-success-border
+            text: 'var(--color-status-success-text)', // brand-status-success-text
             icon: <CheckCircle className="text-emerald-600 w-5 h-5" />,
             duration: 3000,
         },
         error: {
-            bg: '#fef2f2', // brand-status-error-bg
-            border: '#fee2e2', // brand-status-error-border
-            text: '#dc2626', // brand-status-error-text
+            bg: 'var(--color-status-error-bg)', // brand-status-error-bg
+            border: 'var(--color-status-error-border)', // brand-status-error-border
+            text: 'var(--color-status-error-text)', // brand-status-error-text
             icon: <XCircle className="text-red-600 w-5 h-5" />,
             duration: 5000,
         },
         warning: {
-            bg: '#fffbeb', // brand-status-warning-bg
-            border: '#fef3c7', // brand-status-warning-border
-            text: '#b45309', // brand-status-warning-text
+            bg: 'var(--color-status-warning-bg)', // brand-status-warning-bg
+            border: 'var(--color-status-warning-border)', // brand-status-warning-border
+            text: 'var(--color-status-warning-text)', // brand-status-warning-text
             icon: <AlertTriangle className="text-amber-600 w-5 h-5" />,
             duration: 4000,
         },
         info: {
-            bg: '#eff6ff', // brand-status-info-bg
-            border: '#dbeafe', // brand-status-info-border
-            text: '#2563eb', // brand-status-info-text
+            bg: 'var(--color-status-info-bg)', // brand-status-info-bg
+            border: 'var(--color-status-info-border)', // brand-status-info-border
+            text: 'var(--color-status-info-text)', // brand-status-info-text
             icon: <Info className="text-blue-600 w-5 h-5" />,
             duration: 3500,
         },
@@ -91,10 +91,10 @@ function _loading(message: string, id?: string): string {
         id: toastId,
         position: 'top-center',
         style: {
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
+            background: 'var(--color-brand-surface)',
+            border: '1px solid var(--color-brand-border)',
             padding: '12px 16px',
-            color: '#374151',
+            color: 'var(--color-text-primary)',
             borderRadius: '16px',
             fontSize: '14px',
             fontWeight: '600',

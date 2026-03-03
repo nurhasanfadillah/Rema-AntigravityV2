@@ -69,7 +69,7 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                         relative aspect-square w-full sm:w-48 bg-brand-bg border-2 border-dashed 
                         ${previewUrl ? 'border-brand-accent/30' : 'border-brand-border'} 
                         rounded-2xl overflow-hidden transition-all duration-300 flex items-center justify-center
-                        cursor-pointer hover:border-brand-accent/50 group-hover:bg-brand-accent-light/30
+                        cursor-pointer active:border-brand-accent/50 group-active:bg-brand-accent-light/30
                     `}
                     onClick={() => !isUploading && fileInputRef.current?.click()}
                 >
@@ -80,8 +80,8 @@ export function ProductImageUpload({ value, onChange, onDelete }: ProductImageUp
                             className="w-full h-full object-cover"
                         />
                     ) : (
-                        <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors group-hover:text-brand-accent">
-                            <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30 group-hover:shadow-brand-accent/10">
+                        <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors group-active:text-brand-accent">
+                            <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-active:border-brand-accent/30 group-active:shadow-brand-accent/10">
                                 <ImageIcon className="w-8 h-8" />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider">Tambah Foto</span>

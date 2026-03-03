@@ -51,7 +51,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                         </div>
                         <h3 className="text-base font-bold text-text-primary tracking-tight">Konfirmasi Perubahan</h3>
                     </div>
-                    <button onClick={onClose} className="p-1.5 text-text-tertiary hover:text-text-primary hover:bg-brand-bg rounded-full transition-all active:scale-95">
+                    <button onClick={onClose} className="p-1.5 text-text-tertiary active:text-text-primary active:bg-brand-bg rounded-full transition-all active:scale-95">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
@@ -141,7 +141,7 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 px-4 py-2 rounded-xl text-text-secondary font-bold hover:bg-brand-bg active:scale-95 transition-all disabled:opacity-50 text-xs"
+                        className="flex-1 px-4 py-2 rounded-xl text-text-secondary font-bold active:bg-brand-bg active:scale-95 transition-all disabled:opacity-50 text-xs"
                     >
                         Batal
                     </button>
@@ -152,8 +152,8 @@ export const StatusConfirmationModal: React.FC<StatusConfirmationModalProps> = (
                             ${!canConfirm || isLoading
                                 ? 'bg-brand-border text-text-muted cursor-not-allowed shadow-none'
                                 : isCritical
-                                    ? 'bg-status-error-text text-white hover:bg-red-700 active:scale-95 shadow-status-error-text/20'
-                                    : 'bg-brand-accent text-white hover:bg-brand-accent-dark active:scale-95 shadow-brand-accent/20'
+                                    ? 'bg-status-error-text text-white active:bg-red-700 active:scale-95 shadow-status-error-text/20'
+                                    : 'bg-brand-accent text-white active:bg-brand-accent-dark active:scale-95 shadow-brand-accent/20'
                             }`}
                     >
                         {isLoading ? (

@@ -65,7 +65,7 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
                     relative w-full bg-brand-bg border-2 border-dashed 
                     ${value ? 'border-brand-accent/30' : 'border-brand-border'} 
                     rounded-2xl overflow-hidden transition-all duration-300 flex flex-col items-center justify-center
-                    cursor-pointer min-h-[140px] hover:border-brand-accent/50 hover:bg-brand-accent-light/30
+                    cursor-pointer min-h-[140px] active:border-brand-accent/50 active:bg-brand-accent-light/30
                 `}
                 onClick={() => !isUploading && fileInputRef.current?.click()}
             >
@@ -81,15 +81,15 @@ export function FileResiUpload({ value, onChange }: FileResiUploadProps) {
                                 target="_blank"
                                 rel="noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="text-[10px] text-brand-accent font-bold hover:underline"
+                                className="text-[10px] text-brand-accent font-bold active:underline"
                             >
                                 Lihat File (PDF)
                             </a>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors p-4 group-hover:text-brand-accent">
-                        <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-hover:border-brand-accent/30 group-hover:shadow-brand-accent/10">
+                    <div className="flex flex-col items-center gap-2 text-text-tertiary transition-colors p-4 group-active:text-brand-accent">
+                        <div className="p-3 rounded-full bg-brand-surface border border-brand-border shadow-soft group-active:border-brand-accent/30 group-active:shadow-brand-accent/10">
                             <UploadCloud className="w-8 h-8" />
                         </div>
                         <div className="text-center">
