@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFinanceStore } from '../../store/financeStore';
 import { Card } from '../../components/ui/Card';
-import { ArrowLeft, Wallet, Clock, RefreshCw, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Wallet, Clock, RefreshCw, AlertCircle, TrendingUp } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export function FinanceList() {
@@ -112,6 +112,10 @@ export function FinanceList() {
         ));
     };
 
+    const globalSaldo = summaries.reduce((acc, curr) => acc + curr.saldo, 0);
+    const globalPending = summaries.reduce((acc, curr) => acc + curr.tagihan_pending, 0);
+    const globalProyeksi = globalSaldo + globalPending;
+
     return (
         <div className="p-4 space-y-5 pb-24 max-w-2xl mx-auto w-full">
             {/* Page Header */}
@@ -131,6 +135,52 @@ export function FinanceList() {
                     <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
             </div>
+
+            {/* Global Statistics */}
+            {summaries.length > 0 && !isLoading && !localError && !error && (
+                <div className="space-y-3">
+                    {/* Baris 1: Card Utama */}
+                    <div className="bg-gradient-to-tr from-blue-600 to-blue-900 rounded-2xl p-4 shadow-lg shadow-blue-900/20 text-white">
+                        <div className="flex items-center gap-2">
+                            <Wallet className="w-4 h-4 text-blue-100" />
+                            <span className="text-sm font-semibold text-blue-50/90">Saldo Tagihan</span>
+                        </div>
+                        <div className="text-right mt-2">
+                            <span className="text-3xl font-extrabold font-display tracking-tight text-white drop-shadow-sm">
+                                {formatRupiah(globalSaldo)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Baris 2: Dua Card Sejajar */}
+                    <div className="grid grid-cols-2 gap-3">
+                        {/* Kolom 1: Pending */}
+                        <div className="bg-brand-surface rounded-xl p-3.5 border border-brand-border flex flex-col justify-between shadow-sm">
+                            <div className="flex items-center gap-1.5 text-text-secondary min-w-0">
+                                <Clock className="w-3.5 h-3.5 shrink-0 text-amber-500" />
+                                <span className="text-xs font-medium truncate">Pending</span>
+                            </div>
+                            <div className="text-right mt-2">
+                                <span className="text-[13px] font-extrabold text-text-primary">
+                                    {formatRupiah(globalPending)}
+                                </span>
+                            </div>
+                        </div>
+                        {/* Kolom 2: Proyeksi */}
+                        <div className="bg-brand-surface rounded-xl p-3.5 border border-brand-border flex flex-col justify-between shadow-sm">
+                            <div className="flex items-center gap-1.5 text-text-secondary min-w-0">
+                                <TrendingUp className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                                <span className="text-xs font-medium truncate">Proyeksi Saldo</span>
+                            </div>
+                            <div className="text-right mt-2">
+                                <span className="text-[13px] font-extrabold text-blue-600">
+                                    {formatRupiah(globalProyeksi)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="space-y-3">
                 {renderContent()}
