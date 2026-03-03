@@ -59,6 +59,7 @@ export interface OrderFilters {
 interface OrderState {
     orders: Order[];
     totalOrders: number;
+    totalFilteredQty: number;
     isLoading: boolean;
     fetchOrders: (page?: number, limit?: number, filters?: OrderFilters) => Promise<void>;
     addOrder: (order: Omit<Order, 'order_details' | 'mitra'>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
@@ -71,6 +72,7 @@ interface OrderState {
 export const useOrderStore = create<OrderState>((set, get) => ({
     orders: [],
     totalOrders: 0,
+    totalFilteredQty: 0,
     isLoading: false,
     fetchOrders: async (page = 1, limit = 999999, filters = {}) => {
         set({ isLoading: true });
@@ -112,7 +114,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
                 query = query.in('no_pesanan', orderIds);
             } else {
                 // If product filter matches no detail, return empty
-                set({ orders: [], totalOrders: 0, isLoading: false });
+                set({ orders: [], totalOrders: 0, totalFilteredQty: 0, isLoading: false });
                 return;
             }
         }
@@ -128,8 +130,41 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
         const { data, error, count } = await query;
 
+        let calculatedTotalQty = 0;
+
+        // If there are filters applied, we also fetch a lightweight query to get total filtered Qty
+        const hasFilters = filters.startDate || filters.endDate || filters.mitraId || (filters.status && filters.status !== 'Semua') || filters.productId;
+
+        if (hasFilters && !error && count && count > 0) {
+            // Re-build query without pagination and large joins just for IDs
+            let qtyQuery = supabase.from('orders').select('no_pesanan');
+
+            if (filters.startDate) qtyQuery = qtyQuery.gte('tanggal', filters.startDate);
+            if (filters.endDate) qtyQuery = qtyQuery.lte('tanggal', filters.endDate);
+            if (filters.mitraId) qtyQuery = qtyQuery.eq('mitra_id', filters.mitraId);
+            if (filters.status && filters.status !== 'Semua') qtyQuery = qtyQuery.eq('status', filters.status);
+
+            if (filters.productId) {
+                const { data: matchedDetails } = await supabase.from('order_details').select('o_pesanan').eq('product_id', filters.productId);
+                if (matchedDetails && matchedDetails.length > 0) {
+                    qtyQuery = qtyQuery.in('no_pesanan', matchedDetails.map(d => d.o_pesanan));
+                }
+            }
+
+            const { data: matchedOrderIds } = await qtyQuery;
+
+            if (matchedOrderIds && matchedOrderIds.length > 0) {
+                const ids = matchedOrderIds.map(o => o.no_pesanan);
+                // Fetch all details for these matched orders to sum Qty
+                const { data: detailsForQty } = await supabase.from('order_details').select('qty').in('o_pesanan', ids);
+                if (detailsForQty) {
+                    calculatedTotalQty = detailsForQty.reduce((sum, item) => sum + (item.qty || 0), 0);
+                }
+            }
+        }
+
         if (!error && data) {
-            set({ orders: data as Order[], totalOrders: count || 0, isLoading: false });
+            set({ orders: data as Order[], totalOrders: count || 0, totalFilteredQty: calculatedTotalQty, isLoading: false });
         } else {
             set({ isLoading: false });
             console.error(error);

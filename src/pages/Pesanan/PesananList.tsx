@@ -117,7 +117,7 @@ function PesananListItem({ order }: { order: Order }) {
 }
 
 export function PesananList() {
-    const { orders, totalOrders, fetchOrders, isLoading } = useOrderStore();
+    const { orders, totalOrders, totalFilteredQty, fetchOrders, isLoading } = useOrderStore();
     const { mitras, fetchMitras } = useMitraStore();
     const { products, fetchProducts } = useProductStore();
     const navigate = useNavigate();
@@ -221,13 +221,28 @@ export function PesananList() {
 
             {/* Filter Indicator */}
             {isFiltered && (
-                <div className="mb-4 flex items-center justify-between animate-in fade-in">
-                    <div className="flex items-center gap-1.5 text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm overflow-x-auto whitespace-nowrap hide-scrollbar max-w-full">
+                <div className="mb-4 flex flex-col gap-3 animate-in fade-in">
+                    {/* Active Filter Tags */}
+                    <div className="flex items-center gap-1.5 text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm overflow-x-auto whitespace-nowrap hide-scrollbar max-w-full w-max">
                         <Filter className="w-3.5 h-3.5 shrink-0" />
                         <span className="text-[11px] font-bold">Filter Aktif</span>
                         <button onClick={resetFilter} className="ml-1 p-0.5 bg-gray-200 hover:bg-gray-300 active:bg-gray-300 rounded-full transition-colors shrink-0">
                             <X className="w-3 h-3 text-gray-700" />
                         </button>
+                    </div>
+
+                    {/* Filter Summary */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <Card className="!p-3 flex flex-col items-center justify-center border-brand-border/60 bg-brand-surface shadow-sm">
+                            <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1 text-center">Jumlah Pesanan</span>
+                            <span className="text-xl font-bold text-text-primary font-mono">{totalOrders}</span>
+                        </Card>
+                        <Card className="!p-3 flex flex-col items-center justify-center border-brand-border/60 bg-brand-surface shadow-sm">
+                            <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1 text-center">Total Qty</span>
+                            <span className="text-xl font-bold text-text-primary font-mono flex items-center gap-1.5">
+                                {totalFilteredQty} <span className="text-[11px] text-text-tertiary">Pcs</span>
+                            </span>
+                        </Card>
                     </div>
                 </div>
             )}
