@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useOrderStore, type Order, getOrderDisplayStatus } from '../../store/orderStore';
+import { useEffect, useState, useCallback } from 'react';
+import { useOrderStore, type Order, getOrderDisplayStatus, type OrderFilters } from '../../store/orderStore';
+import { useMitraStore } from '../../store/mitraStore';
+import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ArrowLeft, Plus, ChevronDown, ShoppingBag, Package, History } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ShoppingBag, Package, History, Filter, X, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
@@ -113,12 +115,71 @@ function PesananListItem({ order }: { order: Order }) {
 }
 
 export function PesananList() {
-    const { orders, fetchOrders, isLoading } = useOrderStore();
+    const { orders, totalOrders, fetchOrders, isLoading } = useOrderStore();
+    const { mitras, fetchMitras } = useMitraStore();
+    const { products, fetchProducts } = useProductStore();
     const navigate = useNavigate();
 
+    // Pagination State
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+
+    // Filter State
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [activeFilters, setActiveFilters] = useState<OrderFilters>({});
+    const [tempFilters, setTempFilters] = useState<OrderFilters & { status: string }>({
+        startDate: '',
+        endDate: '',
+        mitraId: '',
+        productId: '',
+        status: 'Semua',
+        sortBy: 'Baru ke Lama'
+    });
+
+    const isFiltered = Object.keys(activeFilters).length > 0;
+
+    const doFetch = useCallback(() => {
+        fetchOrders(page, limit, activeFilters);
+    }, [fetchOrders, page, limit, activeFilters]);
+
     useEffect(() => {
-        fetchOrders();
-    }, [fetchOrders]);
+        doFetch();
+    }, [doFetch]);
+
+    useEffect(() => {
+        fetchMitras();
+        fetchProducts();
+    }, [fetchMitras, fetchProducts]);
+
+    const applyFilter = () => {
+        const filtersToApply: OrderFilters = {};
+        if (tempFilters.startDate) filtersToApply.startDate = tempFilters.startDate;
+        if (tempFilters.endDate) filtersToApply.endDate = tempFilters.endDate;
+        if (tempFilters.mitraId) filtersToApply.mitraId = tempFilters.mitraId;
+        if (tempFilters.productId) filtersToApply.productId = tempFilters.productId;
+        if (tempFilters.status !== 'Semua') filtersToApply.status = tempFilters.status;
+        if (tempFilters.sortBy) filtersToApply.sortBy = tempFilters.sortBy;
+
+        setActiveFilters(filtersToApply);
+        setPage(1);
+        setShowFilterModal(false);
+    };
+
+    const resetFilter = () => {
+        setTempFilters({
+            startDate: '',
+            endDate: '',
+            mitraId: '',
+            productId: '',
+            status: 'Semua',
+            sortBy: 'Baru ke Lama'
+        });
+        setActiveFilters({});
+        setPage(1);
+        setShowFilterModal(false);
+    };
+
+    const totalPages = Math.ceil(totalOrders / limit);
 
     return (
         <div className="p-4 flex flex-col min-h-screen pb-24 max-w-2xl mx-auto w-full">
@@ -131,17 +192,56 @@ export function PesananList() {
                     <h2 className="page-title font-display">Data Pesanan</h2>
                     <p className="page-subtitle mt-0.5">Kelola transaksi dan progres pesanan</p>
                 </div>
-                <Button
-                    variant="primary"
-                    className="!p-2.5 bg-gradient-to-br from-blue-600 to-blue-700 border-none shadow-lg shadow-blue-600/20 active:scale-95 transition-all"
-                    onClick={() => navigate('/pesanan/baru')}
+                <button
+                    onClick={() => {
+                        setTempFilters({
+                            ...tempFilters,
+                            ...activeFilters,
+                            status: activeFilters.status || 'Semua',
+                            sortBy: activeFilters.sortBy || 'Baru ke Lama'
+                        });
+                        setShowFilterModal(true);
+                    }}
+                    className={`relative p-2.5 transition-all rounded-xl border active:scale-95 shadow-sm ${isFiltered
+                        ? 'bg-gray-800 border-gray-900 text-white'
+                        : 'bg-brand-surface border-gray-300 text-gray-700 active:bg-gray-100'
+                        }`}
                 >
-                    <Plus className="w-5 h-5 text-white" />
-                </Button>
+                    <Filter className="w-5 h-5" />
+                    {isFiltered && (
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                        </span>
+                    )}
+                </button>
             </div>
 
+            {/* Filter Indicator */}
+            {isFiltered && (
+                <div className="mb-4 flex items-center justify-between animate-in fade-in">
+                    <div className="flex items-center gap-1.5 text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200 shadow-sm overflow-x-auto whitespace-nowrap hide-scrollbar max-w-full">
+                        <Filter className="w-3.5 h-3.5 shrink-0" />
+                        <span className="text-[11px] font-bold">Filter Aktif</span>
+                        <button onClick={resetFilter} className="ml-1 p-0.5 bg-gray-200 hover:bg-gray-300 active:bg-gray-300 rounded-full transition-colors shrink-0">
+                            <X className="w-3 h-3 text-gray-700" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Primary Action Button */}
+            <Button
+                variant="primary"
+                className="w-full mb-4 !py-3.5 shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all bg-gradient-to-br from-blue-600 to-blue-700 border-none font-bold group"
+                onClick={() => navigate('/pesanan/baru')}
+            >
+                <FileText className="w-5 h-5 group-active:rotate-12 transition-transform mr-2" />
+                Buat Pesanan Baru
+            </Button>
+
             {/* List Section */}
-            <div className="space-y-3">
+            <div className="space-y-3 flex-1">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20 animate-pulse">
                         <div className="w-10 h-10 rounded-full border-2 border-brand-accent/20 border-t-brand-accent animate-spin mb-4"></div>
@@ -150,7 +250,8 @@ export function PesananList() {
                 ) : orders.length === 0 ? (
                     <div className="text-center py-20 px-6 bg-brand-surface/50 rounded-2xl border border-brand-border border-dashed shadow-sm">
                         <ShoppingBag className="w-10 h-10 text-brand-border mx-auto mb-3" />
-                        <p className="text-sm text-text-tertiary">Belum ada pesanan yang dicatat.</p>
+                        <p className="text-sm font-bold text-text-secondary">Tidak ada pesanan.</p>
+                        <p className="text-xs text-text-tertiary mt-1">Belum ada data atau filter tidak cocok.</p>
                     </div>
                 ) : (
                     orders.map(order => (
@@ -158,6 +259,178 @@ export function PesananList() {
                     ))
                 )}
             </div>
+
+            {/* Pagination Controls */}
+            {!isLoading && totalOrders > 0 && (
+                <div className="mt-6 pt-4 border-t border-brand-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary w-full sm:w-auto justify-between sm:justify-start">
+                        <span>Menampilkan</span>
+                        <select
+                            value={limit}
+                            onChange={(e) => {
+                                setLimit(Number(e.target.value));
+                                setPage(1);
+                            }}
+                            className="bg-brand-surface border border-brand-border rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+                        >
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                        <span>dari {totalOrders} data</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                        <button
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="p-1.5 rounded-lg border border-brand-border text-text-secondary disabled:opacity-40 active:bg-brand-bg transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <span className="text-xs font-bold text-text-secondary px-2">
+                            Halaman {page} / {totalPages || 1}
+                        </span>
+                        <button
+                            onClick={() => setPage(p => (p < totalPages ? p + 1 : p))}
+                            disabled={page >= totalPages || totalPages === 0}
+                            className="p-1.5 rounded-lg border border-brand-border text-text-secondary disabled:opacity-40 active:bg-brand-bg transition-colors"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Filter Modal */}
+            {showFilterModal && (
+                <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-text-primary/30 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowFilterModal(false)}>
+                    <Card
+                        className="w-full max-w-md border-brand-border shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300 pointer-events-auto max-h-[85vh] overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-5 sticky top-0 bg-brand-surface z-10 pb-2 border-b border-brand-border/60">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-gray-100 rounded-lg">
+                                    <Filter className="w-5 h-5 text-gray-700" />
+                                </div>
+                                <h3 className="font-bold text-text-primary text-lg">Filter Data Pesanan</h3>
+                            </div>
+                            <button
+                                onClick={() => setShowFilterModal(false)}
+                                className="p-2 text-text-tertiary active:bg-brand-bg rounded-xl transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {/* Date Range */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Dari Tanggal</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                        value={tempFilters.startDate}
+                                        onChange={(e) => setTempFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">S/D Tanggal</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                        value={tempFilters.endDate}
+                                        onChange={(e) => setTempFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Mitra */}
+                            <div>
+                                <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Nama Mitra</label>
+                                <select
+                                    className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                    value={tempFilters.mitraId}
+                                    onChange={(e) => setTempFilters(prev => ({ ...prev, mitraId: e.target.value }))}
+                                >
+                                    <option value="">Semua Mitra</option>
+                                    {mitras.map(m => (
+                                        <option key={m.id} value={m.id}>{m.nama_mitra}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Product */}
+                            <div>
+                                <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Kategori / Produk</label>
+                                <select
+                                    className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                    value={tempFilters.productId}
+                                    onChange={(e) => setTempFilters(prev => ({ ...prev, productId: e.target.value }))}
+                                >
+                                    <option value="">Semua Produk</option>
+                                    {products.map(p => (
+                                        <option key={p.id} value={p.id}>{p.nama_produk}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Status */}
+                            <div>
+                                <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Status Pesanan</label>
+                                <select
+                                    className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                    value={tempFilters.status}
+                                    onChange={(e) => setTempFilters(prev => ({ ...prev, status: e.target.value }))}
+                                >
+                                    <option value="Semua">Semua Status</option>
+                                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                                    <option value="Diproses">Diproses</option>
+                                    <option value="Packing">Packing</option>
+                                    <option value="Selesai">Selesai</option>
+                                    <option value="Dibatalkan">Dibatalkan</option>
+                                </select>
+                            </div>
+
+                            {/* Sort By */}
+                            <div>
+                                <label className="text-[11px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Urutkan Data</label>
+                                <select
+                                    className="w-full bg-brand-bg border-brand-border rounded-xl px-3 py-2.5 text-sm font-bold text-text-primary focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                    value={tempFilters.sortBy}
+                                    onChange={(e) => setTempFilters(prev => ({ ...prev, sortBy: e.target.value as any }))}
+                                >
+                                    <option value="Baru ke Lama">Baru ke Lama</option>
+                                    <option value="Lama ke Baru">Lama ke Baru</option>
+                                </select>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2.5 pt-4 border-t border-brand-border/60 sticky bottom-0 bg-brand-surface">
+                                <Button
+                                    variant="outline"
+                                    fullWidth
+                                    onClick={resetFilter}
+                                    className="font-bold !py-3 rounded-xl"
+                                >
+                                    Reset
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={applyFilter}
+                                    className="font-bold !py-3 rounded-xl shadow-lg shadow-gray-400/20 !bg-gray-800 active:!bg-gray-900 border-none"
+                                >
+                                    <Filter className="w-4 h-4 mr-2" />
+                                    Filter Data
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            )}
         </div>
     );
 }

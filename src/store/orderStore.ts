@@ -47,10 +47,20 @@ export interface OrderDetail {
     products?: Product | null;
 }
 
+export interface OrderFilters {
+    startDate?: string;
+    endDate?: string;
+    mitraId?: string;
+    productId?: string;
+    status?: string;
+    sortBy?: 'Baru ke Lama' | 'Lama ke Baru';
+}
+
 interface OrderState {
     orders: Order[];
+    totalOrders: number;
     isLoading: boolean;
-    fetchOrders: () => Promise<void>;
+    fetchOrders: (page?: number, limit?: number, filters?: OrderFilters) => Promise<void>;
     addOrder: (order: Omit<Order, 'order_details' | 'mitra'>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
     updateOrderData: (no_pesanan: string, orderData: Partial<Order>, items: Omit<OrderDetail, 'id' | 'o_pesanan' | 'products' | 'status'>[]) => Promise<void>;
     updateOrderStatus: (no_pesanan: string, status: Order['status'], reason?: string) => Promise<void>;
@@ -60,21 +70,66 @@ interface OrderState {
 
 export const useOrderStore = create<OrderState>((set, get) => ({
     orders: [],
+    totalOrders: 0,
     isLoading: false,
-    fetchOrders: async () => {
+    fetchOrders: async (page = 1, limit = 999999, filters = {}) => {
         set({ isLoading: true });
         // Fetch orders with nested mitra and order_details (and nested products inside details)
-        const { data, error } = await supabase
+        let query = supabase
             .from('orders')
             .select(`
-        *,
-        mitra ( * ),
-        order_details ( *, products ( * ) )
-      `)
-            .order('created_at', { ascending: false });
+                *,
+                mitra ( * ),
+                order_details ( *, products ( * ) )
+            `, { count: 'exact' });
+
+        // Apply filters
+        if (filters.startDate) {
+            query = query.gte('tanggal', filters.startDate);
+        }
+        if (filters.endDate) {
+            query = query.lte('tanggal', filters.endDate);
+        }
+        if (filters.mitraId) {
+            query = query.eq('mitra_id', filters.mitraId);
+        }
+        if (filters.status && filters.status !== 'Semua') {
+            query = query.eq('status', filters.status);
+        }
+
+        // Apply productId filter if specified
+        if (filters.productId) {
+            // Because order_details is a child table, filtering on the parent based on child's field
+            // requires either a join query or fetching matching order IDs first.
+            // Using RPC or separate query is better for Supabase. Let's do a subquery-like approach:
+            const { data: matchedDetails } = await supabase
+                .from('order_details')
+                .select('o_pesanan')
+                .eq('product_id', filters.productId);
+
+            if (matchedDetails && matchedDetails.length > 0) {
+                const orderIds = matchedDetails.map(d => d.o_pesanan);
+                query = query.in('no_pesanan', orderIds);
+            } else {
+                // If product filter matches no detail, return empty
+                set({ orders: [], totalOrders: 0, isLoading: false });
+                return;
+            }
+        }
+
+        // Apply sorting
+        const isAscending = filters.sortBy === 'Lama ke Baru';
+        query = query.order('created_at', { ascending: isAscending });
+
+        // Apply pagination
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+        query = query.range(from, to);
+
+        const { data, error, count } = await query;
 
         if (!error && data) {
-            set({ orders: data as Order[], isLoading: false });
+            set({ orders: data as Order[], totalOrders: count || 0, isLoading: false });
         } else {
             set({ isLoading: false });
             console.error(error);

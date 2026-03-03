@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { FileText, X, Loader2, Plus } from 'lucide-react';
+import { FileText, X, Loader2, Plus, FilePlus } from 'lucide-react';
 import { uploadOrderFile, deleteOrderFile, getOrderFileUrl } from '../../utils/orderStorage';
 import { notify } from '../../utils/notify';
 
@@ -149,15 +149,15 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                         disabled={isUploading}
                         style={{ minHeight: '44px' }}
                         className={`
-                            w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 rounded-xl bg-blue-600 text-white font-bold text-sm
-                            active:bg-blue-700 transition-colors shadow-sm
+                            w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 rounded-xl bg-brand-surface text-text-primary border border-brand-border font-bold text-sm
+                            active:bg-brand-bg transition-colors shadow-sm
                             ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}
                         `}
                     >
                         {isUploading ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
-                            <Plus className="w-5 h-5" />
+                            <FilePlus className="w-5 h-5 text-text-secondary" />
                         )}
                         <span>{isUploading ? 'Mengupload...' : 'Upload File Desain'}</span>
                     </button>

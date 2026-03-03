@@ -5,8 +5,7 @@ import { useMitraStore } from '../../store/mitraStore';
 import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { NumberInput } from '../../components/ui/NumberInput';
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, PackagePlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { FileResiUpload } from '../../components/Pesanan/FileResiUpload';
 import { DesignFileUpload } from '../../components/Pesanan/DesignFileUpload';
@@ -71,6 +70,11 @@ export function PesananBaru() {
             return;
         }
 
+        if (items.some(i => !i.harga_satuan || i.harga_satuan <= 0 || !i.qty || i.qty <= 0)) {
+            notify.warning('Pastikan Qty dan Harga Satuan pada semua produk lebih dari 0.');
+            return;
+        }
+
         const toastId = notify.loading('Menyimpan pesanan baru...');
         try {
             await addOrder({
@@ -120,12 +124,14 @@ export function PesananBaru() {
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1.5">
                                 <label className="form-label font-bold text-text-secondary">No. Pesanan</label>
-                                <input required type="text" value={formData.no_pesanan} onChange={e => setFormData({ ...formData, no_pesanan: e.target.value })} className="form-input bg-brand-bg border-brand-border focus:ring-2 focus:ring-brand-accent/20" />
+                                <div className="form-input bg-brand-bg/50 border-brand-border text-text-primary font-bold h-11 flex items-center">{formData.no_pesanan}</div>
                             </div>
 
                             <div className="space-y-1.5">
                                 <label className="form-label font-bold text-text-secondary">Tanggal</label>
-                                <input required type="date" value={formData.tanggal} onChange={e => setFormData({ ...formData, tanggal: e.target.value })} className="form-input bg-brand-bg border-brand-border focus:ring-2 focus:ring-brand-accent/20" />
+                                <div className="form-input bg-brand-bg/50 border-brand-border text-text-primary font-bold h-11 flex items-center">
+                                    {new Date(formData.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                </div>
                             </div>
                         </div>
 
@@ -207,12 +213,48 @@ export function PesananBaru() {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
-                                    <NumberInput label="Harga Kesepakatan" value={item.harga_satuan.toString()} onChange={(val) => { const newItems = [...items]; newItems[idx].harga_satuan = parseInt(val || '0', 10); setItems(newItems); }} />
-                                    <NumberInput label="Jumlah (Qty)" value={item.qty.toString()} onChange={(val) => { const newItems = [...items]; newItems[idx].qty = parseInt(val || '0', 10); setItems(newItems); }} />
+                                    <div className="space-y-1.5 relative w-full">
+                                        <label className="form-label font-bold text-text-secondary">Harga Satuan</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={item.harga_satuan || ''}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '');
+                                                const newAmt = parseInt(val, 10);
+                                                const newItems = [...items];
+                                                newItems[idx].harga_satuan = isNaN(newAmt) ? 0 : newAmt;
+                                                setItems(newItems);
+                                            }}
+                                            className={`form-input bg-brand-bg border-brand-border focus:ring-2 focus:ring-brand-accent/20 ${!item.harga_satuan || item.harga_satuan <= 0 ? 'border-status-error-text/50 focus:ring-status-error-text/20 !bg-status-error-bg' : ''}`}
+                                            placeholder="0"
+                                        />
+                                        {(!item.harga_satuan || item.harga_satuan <= 0) && <p className="text-[10px] text-status-error-text mt-1 font-bold">Harga harus &gt; 0</p>}
+                                    </div>
+                                    <div className="space-y-1.5 relative w-full">
+                                        <label className="form-label font-bold text-text-secondary">Jumlah (Qty)</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={item.qty || ''}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '');
+                                                const newAmt = parseInt(val, 10);
+                                                const newItems = [...items];
+                                                newItems[idx].qty = isNaN(newAmt) ? 0 : newAmt;
+                                                setItems(newItems);
+                                            }}
+                                            className={`form-input bg-brand-bg border-brand-border focus:ring-2 focus:ring-brand-accent/20 ${!item.qty || item.qty <= 0 ? 'border-status-error-text/50 focus:ring-status-error-text/20 !bg-status-error-bg' : ''}`}
+                                            placeholder="1"
+                                        />
+                                        {(!item.qty || item.qty <= 0) && <p className="text-[10px] text-status-error-text mt-1 font-bold">Qty minimal 1</p>}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="form-label font-bold text-text-secondary">Instruksi Desain & Sablon</label>
+                                    <label className="form-label font-bold text-text-secondary">Catatan & Deskripsi Desain</label>
                                     <textarea rows={2} value={item.deskripsi_desain || ''} onChange={e => { const newItems = [...items]; newItems[idx].deskripsi_desain = e.target.value; setItems(newItems); }} className="form-input bg-brand-bg border-brand-border focus:ring-2 focus:ring-brand-accent/20" placeholder="Contoh: Logo depan dada kiri, tulisan belakang punggung..." />
                                 </div>
 
@@ -235,7 +277,7 @@ export function PesananBaru() {
                                 style={{ minHeight: '44px' }}
                                 onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}
                             >
-                                <Plus className="w-5 h-5" />
+                                <PackagePlus className="w-5 h-5" />
                                 <span>Tambah Item Produk</span>
                             </Button>
                         </div>
@@ -254,8 +296,7 @@ export function PesananBaru() {
                 <div className="mt-8 flex gap-3 pb-8">
                     <Button type="button" variant="outline" fullWidth onClick={() => navigate('/pesanan')} className="font-bold border-brand-border active:bg-brand-bg">Batal</Button>
                     <Button type="submit" variant="primary" fullWidth disabled={isLoading} className="bg-gradient-to-br from-blue-600 to-blue-700 border-none shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 font-bold py-3">
-                        <Save className="w-5 h-5 text-white/90" />
-                        {isLoading ? 'Menyimpan...' : 'Simpan Transaksi'}
+                        {isLoading ? 'Menyimpan...' : 'Buat Pesanan'}
                     </Button>
                 </div>
             </form>
