@@ -4,7 +4,7 @@ import { useMitraStore } from '../../store/mitraStore';
 import { useProductStore } from '../../store/productStore';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ArrowLeft, ChevronDown, ShoppingBag, Package, History, Filter, X, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ShoppingBag, Package, Filter, X, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
@@ -23,32 +23,34 @@ function PesananListItem({ order }: { order: Order }) {
                 className="flex-1 cursor-pointer select-none active:bg-brand-bg/50 transition-colors"
                 onClick={() => navigate(`/pesanan/${order.no_pesanan}`)}
             >
-                {/* Main Row / Header */}
-                <div className="flex items-start justify-between pt-4 pb-3 px-4 pl-5">
-                    {/* Left: Mitra, Meta Info */}
-                    <div className="flex flex-col gap-1 items-start flex-1 min-w-0 pr-4">
-                        <h3 className="text-[15px] font-bold text-text-primary font-display truncate w-full transition-colors tracking-tight leading-tight">
-                            {order.mitra?.nama_mitra || 'Pelanggan'}
-                        </h3>
-                        {/* Meta row: tanggal • no pesanan • qty */}
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-0.5 w-full">
-                            <span className="shrink-0 flex items-center gap-1 text-xs text-text-tertiary">
-                                <History className="w-3 h-3 text-text-muted" />
+                <div className="flex flex-col gap-2 pt-4 pb-3 px-4 pl-5">
+                    {/* Baris Pertama: Nama Mitra - Tanggal (Kiri) & Status Badge (Kanan) */}
+                    <div className="flex items-start justify-between gap-3 w-full">
+                        <div className="flex items-center gap-2 flex-1 min-w-0 mt-0.5">
+                            <h3 className="text-[15px] font-bold text-text-primary font-display truncate tracking-tight leading-tight">
+                                {order.mitra?.nama_mitra || 'Pelanggan'}
+                            </h3>
+                            <span className="shrink-0 text-[11px] text-text-tertiary flex items-center gap-1.5">
+                                <span className="w-1 h-1 rounded-full bg-brand-border/80 hidden sm:block"></span>
+                                <span className="hidden sm:inline-block">-</span>
                                 {new Date(order.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
                             </span>
-                            <span className="w-1 h-1 rounded-full bg-brand-border shrink-0"></span>
-                            <span className="font-mono text-xs text-text-tertiary shrink-0 uppercase tracking-wider">{order.no_pesanan}</span>
-                            <span className="w-1 h-1 rounded-full bg-brand-border shrink-0"></span>
-                            <span className="text-xs text-text-secondary shrink-0 flex items-center gap-1 font-bold">
-                                <Package className="w-2.5 h-2.5 text-text-tertiary" />
-                                {totalQty} Pcs
-                            </span>
+                        </div>
+                        <div className="flex flex-col items-end shrink-0">
+                            <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
                         </div>
                     </div>
 
-                    {/* Right: Status Badge */}
-                    <div className="flex flex-col items-end shrink-0">
-                        <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
+                    {/* Baris Kedua: No. Pesanan - Total Qty */}
+                    <div className="flex items-center gap-2 w-full">
+                        <span className="font-mono text-[12px] text-text-muted uppercase tracking-wider">
+                            {order.no_pesanan}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-brand-border shrink-0"></span>
+                        <span className="text-[12px] text-text-tertiary flex items-center gap-1">
+                            <Package className="w-3 h-3 text-text-muted" />
+                            {totalQty} Pcs
+                        </span>
                     </div>
                 </div>
 
