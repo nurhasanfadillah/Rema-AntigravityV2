@@ -9,7 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { NumberInput } from '../../components/ui/NumberInput';
 import {
     ArrowLeft, TrendingUp, TrendingDown, Plus, Edit2, Trash2,
-    RefreshCw, Wallet, AlertCircle, Filter, Calendar, X, Check
+    RefreshCw, Wallet, AlertCircle, Filter, Calendar, X, Check, Clock
 } from 'lucide-react';
 
 const formatRupiah = (val: number) =>
@@ -227,16 +227,46 @@ export function FinanceDetail() {
 
             {/* Summary Cards */}
             {summary && (
-                <div className="space-y-2.5">
-                    {/* Saldo Utama - Selalu Tampil */}
-                    <div className="bg-gradient-to-r from-emerald-50 via-brand-surface to-brand-surface px-4 py-3 rounded-2xl border border-emerald-100 flex items-center justify-between shadow-sm">
-                        <div className="flex items-center gap-2 text-emerald-600">
-                            <Wallet className="w-5 h-5" />
-                            <span className="font-extrabold uppercase tracking-wider text-[11px]">Saldo Tagihan</span>
+                <div className="space-y-3">
+                    {/* Baris 1: Card Utama */}
+                    <div className="bg-gradient-to-tr from-blue-600 to-blue-900 rounded-2xl p-4 shadow-lg shadow-blue-900/20 text-white">
+                        <div className="flex items-center gap-2">
+                            <Wallet className="w-4 h-4 text-blue-100" />
+                            <span className="text-sm font-semibold text-blue-50/90">Saldo Tagihan</span>
                         </div>
-                        <span className={`font-display font-extrabold text-xl ${summary.saldo >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                            {formatRupiah(summary.saldo)}
-                        </span>
+                        <div className="text-right mt-2">
+                            <span className="text-3xl font-extrabold font-display tracking-tight text-white drop-shadow-sm">
+                                {formatRupiah(summary.saldo)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Baris 2: Dua Card Sejajar */}
+                    <div className="grid grid-cols-2 gap-3">
+                        {/* Kolom 1: Pending */}
+                        <div className="bg-brand-surface rounded-xl p-3.5 border border-brand-border flex flex-col justify-between shadow-sm">
+                            <div className="flex items-center gap-1.5 text-text-secondary min-w-0">
+                                <Clock className="w-3.5 h-3.5 shrink-0 text-amber-500" />
+                                <span className="text-xs font-medium truncate">Pending</span>
+                            </div>
+                            <div className="text-right mt-2">
+                                <span className="text-[13px] font-extrabold text-text-primary">
+                                    {formatRupiah(summary.tagihan_pending)}
+                                </span>
+                            </div>
+                        </div>
+                        {/* Kolom 2: Proyeksi */}
+                        <div className="bg-brand-surface rounded-xl p-3.5 border border-brand-border flex flex-col justify-between shadow-sm">
+                            <div className="flex items-center gap-1.5 text-text-secondary min-w-0">
+                                <TrendingUp className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                                <span className="text-xs font-medium truncate">Proyeksi Saldo</span>
+                            </div>
+                            <div className="text-right mt-2">
+                                <span className="text-[13px] font-extrabold text-blue-600">
+                                    {formatRupiah(summary.saldo + summary.tagihan_pending)}
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Filter Period Indicator + Contextual Totals */}

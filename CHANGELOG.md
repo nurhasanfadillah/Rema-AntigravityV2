@@ -1,3 +1,7 @@
+## [2026-03-04] - Penyelarasan UI Statistik Detail Keuangan
+### Changed
+- **Konsistensi UI Card Statistik**: Mensinkronkan struktur dan layout statistik card pada halaman Detail Keuangan (`FinanceDetail.tsx`) agar presisi dan identik dengan halaman utama Keuangan (`FinanceList.tsx`). Pengaturan meliputi hierarki dua tingkat untuk "Saldo Tagihan", serta layout grid dua kolom (sejajar) untuk "Pending" dan "Proyeksi Saldo" menggunakan tipografi `font-display`, spasi proporsional, border, alignment icon, dan *rounded-corner* yang konsisten.
+
 ## [2026-03-03] - Revamping Komponen Form Pesanan Baru
 ### Added
 - **Form Multiupload Desain Terintegrasi**: Memodifikasi fitur pengunggahan `DesignFileUpload` dengan dukungan *multiple files selected at once*, kapasitas masif (maksimal 10 file per pesanan), lengkap dengan validasi file (10MB/file dan filter format ekstensi JPG/PNG/PDF yang ketat).
