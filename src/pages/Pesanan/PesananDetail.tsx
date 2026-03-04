@@ -124,11 +124,10 @@ export function PesananDetail() {
                 <Link to="/pesanan" className="p-2 -ml-2 text-text-tertiary rounded-full active:bg-brand-border/40 transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
-                <div className="flex flex-col justify-center">
-                    <h2 className="text-xl font-bold text-text-primary leading-tight">Detail Pesanan</h2>
-                    <div className="mt-1">
-                        <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
-                    </div>
+                <div className="flex flex-col justify-center min-w-0">
+                    <h2 className="text-xl font-bold text-text-primary leading-tight truncate">
+                        {order.mitra?.nama_mitra || 'Tamu / Walk-in'}
+                    </h2>
                 </div>
                 <div className="flex items-center gap-2 justify-end">
                     {canCancel && (
@@ -185,12 +184,13 @@ export function PesananDetail() {
                 <div className="flex flex-col gap-4 relative z-10">
                     {/* Row 1: Customer Info & Action Buttons */}
                     <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0 pt-1">
-                            <h3 className="text-lg font-bold text-text-primary leading-tight truncate">
-                                {order.mitra?.nama_mitra || 'Tamu / Walk-in'}{' '}
-                                <span className="font-normal text-text-tertiary mx-1">-</span>{' '}
-                                <span className="text-base font-medium text-text-secondary font-mono">{order.no_pesanan}</span>
+                        <div className="flex-1 flex items-center gap-2.5 min-w-0 pt-1">
+                            <h3 className="text-lg font-bold text-text-primary font-mono leading-tight truncate">
+                                {order.no_pesanan}
                             </h3>
+                            <div className="shrink-0 flex items-center">
+                                <StatusBadge status={getOrderDisplayStatus(order)} size="sm" />
+                            </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             {order.status === 'Menunggu Konfirmasi' && (

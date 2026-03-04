@@ -893,3 +893,7 @@ Gunakan checklist ini untuk memverifikasi setiap halaman atau komponen baru.
 ---
 
 *Dokumen ini diperbarui secara berkala seiring perkembangan aplikasi. Setiap penambahan komponen atau modul baru wajib disertai pembaruan dokumentasi ini.*
+
+## Changelog
+
+- 2026-03-04: Penyesuaian UI Detail View Pesanan (PesananDetail.tsx). Header disesuaikan ke tiga kolom dengan nama mitra sebagai judul utama. Card utama (detail pelanggan) menampilkan Nomor Pesanan dan Badge Status sejajar, serta tidak lagi menampilkan nama pelanggan.
