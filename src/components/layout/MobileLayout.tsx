@@ -5,7 +5,7 @@ import { BottomNavigation } from './BottomNavigation';
 
 export function MobileLayout() {
     return (
-        <div className="flex flex-col min-h-screen bg-brand-bg text-text-primary max-w-md mx-auto shadow-2xl relative">
+        <div className="theme-deep-dark flex flex-col min-h-screen bg-brand-bg text-text-primary max-w-md mx-auto shadow-2xl relative">
             {/* Top Header */}
             <header className="bg-brand-surface px-4 py-2.5 flex items-center justify-center border-b border-brand-border transition-all duration-200 sticky top-0 z-50">
                 <div className="flex items-center justify-center w-full">

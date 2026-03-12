@@ -204,7 +204,7 @@ export function PesananList() {
                         });
                         setShowFilterModal(true);
                     }}
-                    className={`relative p-2.5 transition-all rounded-xl border active:scale-95 shadow-sm ${isFiltered
+                    className={`relative p-2.5 transition-all rounded-lg border active:scale-95 shadow-sm ${isFiltered
                         ? 'bg-gray-800 border-gray-900 text-white'
                         : 'bg-brand-surface border-gray-300 text-gray-700 active:bg-gray-100'
                         }`}
@@ -265,7 +265,7 @@ export function PesananList() {
                         <p className="text-sm text-text-tertiary">Memuat pesanan...</p>
                     </div>
                 ) : orders.length === 0 ? (
-                    <div className="text-center py-20 px-6 bg-brand-surface/50 rounded-2xl border border-brand-border border-dashed shadow-sm">
+                    <div className="text-center py-20 px-6 bg-brand-surface/50 rounded-lg border border-brand-border border-dashed shadow-sm">
                         <ShoppingBag className="w-10 h-10 text-brand-border mx-auto mb-3" />
                         <p className="text-sm font-bold text-text-secondary">Tidak ada pesanan.</p>
                         <p className="text-xs text-text-tertiary mt-1">Belum ada data atau filter tidak cocok.</p>
@@ -323,7 +323,7 @@ export function PesananList() {
             {showFilterModal && (
                 <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-text-primary/30 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowFilterModal(false)}>
                     <Card
-                        className="w-full max-w-md border-brand-border shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300 pointer-events-auto max-h-[85vh] overflow-y-auto"
+                        className="w-full max-w-md border-brand-border shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300 pointer-events-auto max-h-[85vh] overflow-y-auto rounded-lg"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between mb-5 sticky top-0 bg-brand-surface z-10 pb-2 border-b border-brand-border/60">

@@ -23,8 +23,8 @@ export function Lainnya() {
                     const Icon = item.icon;
                     return (
                         <Link key={idx} to={item.path} className="block group animate-slide-up" style={{ animationDelay: `${idx * 75}ms`, animationFillMode: 'both' }}>
-                            <Card className="flex flex-col items-center justify-center p-3 h-28 space-y-3 transition-all duration-150 bg-brand-surface border-brand-border shadow-sm shadow-black/[0.03] active:scale-95 active:bg-brand-bg active:border-brand-accent/30 rounded-3xl">
-                                <div className={`p-3 rounded-2xl ${item.bg} transition-all duration-300 ease-out border border-transparent shadow-sm shadow-black/[0.02]`}>
+                            <Card className="flex flex-col items-center justify-center p-3 h-28 space-y-3 transition-all duration-150 bg-brand-surface border-brand-border shadow-sm shadow-black/[0.03] active:scale-95 active:bg-brand-bg active:border-brand-accent/30 rounded-lg">
+                                <div className={`p-3 rounded-md ${item.bg} transition-all duration-300 ease-out border border-transparent shadow-sm shadow-black/[0.02]`}>
                                     <Icon className={`w-6 h-6 ${item.color}`} strokeWidth={2.5} />
                                 </div>
                                 <span className="text-[10px] font-bold text-center text-text-tertiary transition-colors leading-tight uppercase tracking-widest">

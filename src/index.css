@@ -13,6 +13,14 @@
   --color-brand-overlay: rgba(15, 23, 42, 0.3);
   /* slate-900 with transparency for modfal backdrops */
 
+  /* Deep Dark Theme (Based on Analysis) */
+  --color-deep-dark-bg: #121212;
+  --color-deep-dark-surface: #1a1a1a;
+  --color-deep-dark-border: #242424;
+  --color-deep-dark-text-primary: #e0e0e0;
+  --color-deep-dark-text-secondary: #9ca3af;
+  --color-deep-dark-text-tertiary: #6b7280;
+
   /* Accent — Interactive Elements */
   --color-brand-accent: #2563eb;
   /* blue-600 - More vibrant for light backgrounds */
@@ -354,5 +362,22 @@
 
   .animate-fade-in {
     animation: fade-in 0.6s ease-out forwards;
+  }
+
+  /* ----- Deep Dark Theme Applicator ----- */
+  .theme-deep-dark {
+    --color-brand-bg: var(--color-deep-dark-bg);
+    --color-brand-surface: var(--color-deep-dark-surface);
+    --color-brand-border: var(--color-deep-dark-border);
+    --color-text-primary: var(--color-deep-dark-text-primary);
+    --color-text-secondary: var(--color-deep-dark-text-secondary);
+    --color-text-tertiary: var(--color-deep-dark-text-tertiary);
+    
+    background-color: var(--color-brand-bg);
+    color: var(--color-text-primary);
+  }
+
+  .theme-deep-dark .shadow-premium {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }
 }

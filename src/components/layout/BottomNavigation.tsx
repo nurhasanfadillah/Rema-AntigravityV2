@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, PackageOpen } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, PackageOpen, Wallet } from 'lucide-react';
 
 export function BottomNavigation() {
     const location = useLocation();
@@ -8,6 +8,7 @@ export function BottomNavigation() {
         { label: 'Home', path: '/', icon: LayoutDashboard },
         { label: 'Pesanan', path: '/pesanan', icon: ShoppingCart },
         { label: 'Produksi', path: '/produksi', icon: PackageOpen },
+        { label: 'Keuangan', path: '/keuangan', icon: Wallet },
     ];
 
     // List of paths where the bottom navigation should be hidden

@@ -97,7 +97,7 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                     {paths.map((path, idx) => (
                         <div
                             key={idx}
-                            className="relative aspect-square rounded-2xl bg-brand-bg border border-brand-border overflow-hidden group shadow-sm"
+                            className="relative aspect-square rounded-lg bg-brand-bg border border-brand-border overflow-hidden group shadow-sm"
                         >
                             {isImage(path) ? (
                                 <img
@@ -149,7 +149,7 @@ export function DesignFileUpload({ value, onChange }: DesignFileUploadProps) {
                         disabled={isUploading}
                         style={{ minHeight: '44px' }}
                         className={`
-                            w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 rounded-xl bg-brand-surface text-text-primary border border-brand-border font-bold text-sm
+                            w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 rounded-lg bg-brand-surface text-text-primary border border-brand-border font-bold text-sm
                             active:bg-brand-bg transition-colors shadow-sm
                             ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}
                         `}

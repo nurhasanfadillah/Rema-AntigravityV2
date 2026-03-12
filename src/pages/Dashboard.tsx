@@ -133,8 +133,8 @@ function MenuCell({ item, delay }: { item: MenuItem; delay: number }) {
                 style={{
                     width: '60px',
                     height: '60px',
-                    borderRadius: '18px',
-                    boxShadow: '0 8px 16px -4px rgba(0,0,0,0.1)',
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 16px -4px rgba(0,0,0,0.4)',
                     ...item.iconBgStyle,
                 }}
             >
@@ -177,8 +177,8 @@ function MenuGroupCard({ group, baseDelay }: { group: MenuGroup; baseDelay: numb
         <div
             className="
                 animate-slide-up
-                rounded-3xl overflow-hidden
-                border border-brand-border/60
+                rounded-xl overflow-hidden
+                border border-brand-border
                 shadow-premium
             "
             style={{
@@ -238,14 +238,14 @@ export function Dashboard() {
                 Welcome Banner
             ══════════════════════════════════════ */}
             <div
-                className="relative overflow-hidden rounded-2xl animate-slide-up"
+                className="relative overflow-hidden rounded-md animate-slide-up"
                 style={{ margin: '16px 16px 16px', animationFillMode: 'both' }}
             >
                 {/* Background layers */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-slate-900 to-black" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 <div
-                    className="absolute inset-0 opacity-[0.1]"
+                    className="absolute inset-0 opacity-[0.05]"
                     style={{
                         backgroundImage:
                             'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),' +
@@ -255,7 +255,7 @@ export function Dashboard() {
                 />
                 <div className="absolute -top-8 -right-8 w-36 h-36 bg-white/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
-                <div className="absolute inset-0 rounded-2xl border border-white/10" />
+                <div className="absolute inset-0 rounded-md border border-white/10" />
 
                 {/* Content */}
                 <div className="relative z-10 flex items-center justify-between gap-3 px-4 py-[16px]">
@@ -274,7 +274,7 @@ export function Dashboard() {
                         </p>
                     </div>
                     <div
-                        className="flex-shrink-0 flex items-center justify-center rounded-xl border border-white/20 shadow-lg shadow-blue-900/10"
+                        className="flex-shrink-0 flex items-center justify-center rounded-md border border-white/20 shadow-lg shadow-blue-900/10"
                         style={{ width: '46px', height: '46px', backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                     >
                         <Sparkles className="w-[20px] h-[20px] text-white" strokeWidth={1.8} />

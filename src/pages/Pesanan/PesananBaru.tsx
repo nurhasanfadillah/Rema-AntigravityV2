@@ -105,7 +105,7 @@ export function PesananBaru() {
     return (
         <div className="p-4 space-y-6 max-w-2xl mx-auto w-full">
             <div className="flex items-center gap-3">
-                <Button variant="outline" className="!p-2 -ml-1 h-10 w-10 rounded-xl border-brand-border active:bg-brand-bg transition-colors" onClick={() => navigate('/pesanan')}>
+                <Button variant="outline" className="!p-2 -ml-1 h-10 w-10 rounded-lg border-brand-border active:bg-brand-bg transition-colors" onClick={() => navigate('/pesanan')}>
                     <ArrowLeft className="w-5 h-5 text-text-secondary" />
                 </Button>
                 <div className="flex-1">
@@ -206,7 +206,7 @@ export function PesananBaru() {
                                         </select>
                                     </div>
                                     {items.length > 1 && (
-                                        <Button type="button" variant="ghost" className="!p-2 text-red-500 active:text-red-600 active:bg-red-50 rounded-xl mt-6 transition-colors border border-transparent active:border-red-100" onClick={() => setItems(items.filter((_, i) => i !== idx))}>
+                                        <Button type="button" variant="ghost" className="!p-2 text-red-500 active:text-red-600 active:bg-red-50 rounded-lg mt-6 transition-colors border border-transparent active:border-red-100" onClick={() => setItems(items.filter((_, i) => i !== idx))}>
                                             <Trash2 className="w-5 h-5" />
                                         </Button>
                                     )}
@@ -273,7 +273,7 @@ export function PesananBaru() {
                             <Button
                                 type="button"
                                 fullWidth
-                                className="!bg-blue-600 !bg-none text-white hover:!bg-blue-700 active:!bg-blue-800 rounded-xl flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors border-none"
+                                className="!bg-blue-600 !bg-none text-white hover:!bg-blue-700 active:!bg-blue-800 rounded-lg flex items-center justify-center gap-2 font-bold text-sm shadow-sm transition-colors border-none"
                                 style={{ minHeight: '44px' }}
                                 onClick={() => setItems([...items, { product_id: '', harga_satuan: 0, qty: 1, deskripsi_desain: '', design_file: [] }])}
                             >
@@ -283,7 +283,7 @@ export function PesananBaru() {
                         </div>
                     </div>
 
-                    <div className="mt-6 pt-5 border-t border-brand-border flex justify-between items-center bg-brand-bg/50 -mx-3.5 px-3.5 -mb-3.5 rounded-b-2xl py-4">
+                    <div className="mt-6 pt-5 border-t border-brand-border flex justify-between items-center bg-brand-bg/50 -mx-3.5 px-3.5 -mb-3.5 rounded-b-lg py-4">
                         <div>
                             <span className="section-label font-bold text-text-tertiary block mb-0.5">ESTIMASI TOTAL</span>
                             <span className="text-2xl font-black text-text-primary tracking-tight tabular-nums">
